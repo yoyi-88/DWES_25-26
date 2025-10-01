@@ -17,8 +17,9 @@
 
         <!-- cabecera del documento -->
         <header class="pb-3 mb-4 border-bottom">
+        
             <i class="bi bi-calculator"></i>
-            <span class="fs-6">Proyecto 2.1 - Calculadora Básica con PHP</span>
+            <span class="fs-6">Proyecto 2.1 - Tema 2 DWES 25/26</span>
         </header>
 
         <!-- contenido principal -->
@@ -37,10 +38,13 @@
                 </div>
 
                 <!-- Botones de acción -->
-                 <div class="btn-group" role="group">
+                <div class="btn-group" role="group">
                     <button type="reset" class="btn btn-secondary">Borrar</button>
                     <button type="submit" class="btn btn-warning" formaction="sumar.php">sumar</button>
-    
+                    <button type="submit" class="btn btn-primary" formaction="restar.php">restar</button>
+                    <button type="submit" class="btn btn-success" formaction="multiplicar.php">multiplicar</button>
+                    <button type="submit" class="btn btn-danger" formaction="dividir.php">dividir</button>
+                </div>
 
             </form>
         </main>
