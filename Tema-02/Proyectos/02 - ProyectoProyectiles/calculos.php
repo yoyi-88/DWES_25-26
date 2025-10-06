@@ -16,7 +16,7 @@
     // Modelo
     include "models/calculos.model.php";
     // Vista
-    include "views/calculos.view.php";
+    include "views/resultados.view.php";
 
     
 ?>

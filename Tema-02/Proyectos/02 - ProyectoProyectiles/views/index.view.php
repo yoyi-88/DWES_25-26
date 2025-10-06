@@ -45,7 +45,7 @@
                 <!-- Botones de acción -->
                 <div class="btn-group" role="group">
                     <button type="reset" class="btn btn-secondary">Borrar</button>
-                    <button type="submit" class="btn btn-warning" formaction="calcular.php">Calcular lanzamiento</button>
+                    <button type="submit" class="btn btn-warning" formaction="calculos.php">Calcular lanzamiento</button>
                 </div>
 
             </form>
