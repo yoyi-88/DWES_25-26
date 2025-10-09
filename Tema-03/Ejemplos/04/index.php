@@ -1,0 +1,65 @@
+<?php
+
+    /**
+    * Ejemplo 3.4: Uso de if alternativo
+    */
+
+    $perfil = 'admin'; // valores posibles: 'admin' o 'usuario'
+
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantilla Básica Bootsstrap 5.3.8</title>
+
+    <!-- css bootstrap5.3.8 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Bootstrap icons 1.13.1 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <!-- capa principal -->
+    <div class="container mt-3">
+
+        <!-- cabecera del documento -->
+        <header class="pb-3 mb-4 border-bottom">
+            <i class="bi bi-emoji-heart-eyes"></i>
+            <span class="fs-6">Plantilla Básica Bootsstrap 5.3.8</span>
+        </header>
+
+        <nav>
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a class="nav-link" href="#">Inicio</a></li>
+                <?php if ($perfil == 'admin'): ?>
+                    <li class="nav-item"><a class="nav-link" href="#">Administración</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Gestión de usuarios</a></li>
+                <?php else: ?>
+                    <li class="nav-item"><a class="nav-link" href="#">Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Configuración</a></li>
+                <?php endif; ?>
+
+            </ul>
+        </nav>
+
+        <!-- contenido principal -->
+        <main>
+            
+
+        </main>
+
+        <!-- pie de página -->
+        <footer class="footer mt-auto py-3 fixed-bottom bg-light">
+            <div class="container">
+                <span class="text-muted">&copy; 2025
+                    Yoël Gómez Benítez - DWES - 2º DAW - Curso 25/26</span>
+            </div>
+        </footer>
+    </div>
+    <!-- javascript bootstrap5.3.8 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
