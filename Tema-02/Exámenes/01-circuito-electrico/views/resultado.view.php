@@ -30,20 +30,20 @@
                     <label class="form-label" for="tension">Tensión</label>
                     <input type="number" class="form-control" value="<?= $tension?>" name="tension" step="0.01"
                     aria-describedby="helpId" readonly>
-                    <small id="helpId" class="text-muted">(Voltios, V)</small>
+                    <small id="helpId" class="text-muted">(Voltios) - (Símbolo = V)</small>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="resElec">Resistencia eléctrica</label>
                     <input type="number" class="form-control" value="<?= $resElec?>" name="resElec" step="0.01"
                     aria-describedby="helpId" readonly>
-                    <small id="helpId" class="text-muted">(Ohmios, Ω)</small>
+                    <small id="helpId" class="text-muted">(Ohmios, Ω) - (Símbolo = R)</small>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label" for="resElec">Tiempo</label>
                     <input type="number" class="form-control" value="<?= $tiempo?>" name="tiempo" step="0.01"
                     aria-describedby="helpId" readonly>
-                    <small id="helpId" class="text-muted">(Segundos, s)</small>
+                    <small id="helpId" class="text-muted">(Segundos) - (Símbolo = S)</small>
                 </div>
             <h2>Resultados:</h2>
 
@@ -52,6 +52,7 @@
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Magnitud</th>
+                        <th scope="col" class="text-center">Símbolo</th>
                         <th scope="col" class="text-end">Valor</th>
                         <th scope="col">Unidad</th>
                     </tr>
@@ -60,24 +61,28 @@
                     <tr>
                         <th scope="row">1</th>
                         <td>Corriente</td>
+                        <td class="text-center">I</td>
                         <td class="text-end"><?= number_format($intCorr, 2, ',', '') ?></td>
                         <td>A</td>
                     </tr>
                     <tr>
                         <th scope="row">2</th>
                         <td>Potencia</td>
+                        <td class="text-center">P</td>
                         <td class="text-end"><?= number_format($potElec, 2, ',', '') ?></td>
                         <td>W</td>
                     </tr>
                     <tr>
                         <th scope="row">3</th>
                         <td>Energía en <?= $tiempo ?> segundos</td>
+                        <td class="text-center">E</td>
                         <td class="text-end"><?= number_format($enXSeg, 2, ',', '') ?></td>
                         <td>J</td>
                     </tr>
                     <tr>
                         <th scope="row">4</th>
                         <td>Resistencia equivalente (2 resistencias en paralelo)</td>
+                        <td class="text-center">RP</td>
                         <td class="text-end"><?= number_format($dosRes, 2, ',', '') ?></td>
                         <td>Ω</td>
                     </tr>
