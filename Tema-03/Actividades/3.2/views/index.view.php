@@ -29,27 +29,33 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th scope="col">id</th>
+                        <th scope="col" class="text-end">id</th>
                         <th scope="col">Título</th>
                         <th scope="col">Autor</th>
                         <th scope="col">Género</th>
-                        <th scope="col">Precio</th>
+                        <th scope="col" class="text-end">Precio</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php for ($i = 0; $i < count($libros); $i++): ?>
                         <tr>
-                            <th scope="row"><?= $i ?></th>
+                            <th scope="row" class="text-end"><?= $i ?></th>
                             <td><?= htmlspecialchars($libros[$i]['titulo']) ?></td>
                             <td><?= htmlspecialchars($libros[$i]['autor']) ?></td>
                             <td><?= htmlspecialchars($libros[$i]['genero']) ?></td>
-                            <td><?= htmlspecialchars($libros[$i]['precio']) ?></td>
+                            <td class="text-end"><?= htmlspecialchars(number_format($libros[$i]['precio'], 2, ',', '.')) ?></td>
                         </tr>
 
-                    <?php endfor; ?>
-                   
 
+                    <?php endfor; ?>
+                    
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">Total libros: <?= count($libros) ?></td>
+                    </tr>
+                </tfoot>
+
             </table>
 
 
