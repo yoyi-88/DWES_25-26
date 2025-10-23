@@ -81,19 +81,22 @@
                 <tbody>
                     <?php for ($i = 0; $i < count($libros); $i++): ?>
                         <tr>
-                            <th scope="row"><?= $i ?></th>
-                            <td><?= htmlspecialchars($libros[$i]['titulo']) ?></td>
-                            <td><?= htmlspecialchars($libros[$i]['autor']) ?></td>
-                            <td><?= htmlspecialchars($libros[$i]['editorial']) ?></td>
-                            <td><?= htmlspecialchars($libros[$i]['genero']) ?></td>
-                            <td class="text-end"><?= htmlspecialchars(number_format($libros[$i]['precio'], 2, ',', '.')) ?></td>
+                            <th scope="row"><?= $libros[$i]['id'] ?></th>
+                            <td><?= $libros[$i]['titulo'] ?></td>
+                            <td><?= $libros[$i]['autor'] ?></td>
+                            <td><?= $libros[$i]['editorial'] ?></td>
+                            <td><?= $libros[$i]['genero'] ?></td>
+                            <td class="text-end"><?= number_format($libros[$i]['precio'], 2, ',', '.') ?></td>
 
                             <!-- Botones de acción -->
-                             <td>
-                                <a href="delete.php?id=<?= $libros['id'] ?>" class="btn btn-danger btn-sm" title="Eliminar">
-                                    <i  class="bi bi-trash3"></i>
+                            <td>
+                                <a href="delete.php?id=<?= $libros[$i]['id'] ?>" class="btn btn-danger btn-sm" title="Eliminar">
+                                    <i class="bi bi-trash3"></i>
                                 </a>
-                             </td>
+
+                                
+                            </td>
+
                         </tr>
 
 
