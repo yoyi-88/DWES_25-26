@@ -25,3 +25,5 @@ if ($indice !== null) {
     echo "ERROR: Libro no encontrado.";
     exit();
 }
+
+?>

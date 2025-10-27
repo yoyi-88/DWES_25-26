@@ -18,3 +18,5 @@ if ($indice !== null) {
     // Reindexar el array para mantener los índices consecutivos
     $libros = array_values($libros);
 }
+
+?>

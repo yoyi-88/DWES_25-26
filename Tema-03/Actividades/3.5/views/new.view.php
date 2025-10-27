@@ -2,7 +2,7 @@
 <html lang="es">
 
 <head>
-    <?php require_once __DIR__ . 'views/layouts/head.layout.php'; ?>
+    <?php require_once 'views/layouts/head.layout.php'; ?>
     <title>Actividad 3.2 - Tabla de Libros</title>
 
 

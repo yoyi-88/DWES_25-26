@@ -22,10 +22,11 @@
         <main>
             
 
-
+            
 
             <!-- Formulario editar libro -->
-            <form action="create.php" method="POST">
+            <form action="update.php?id=<?= $id_editar ?>" method="POST">
+            
                 <div class="mb-3">
                     <label for="id" class="form-label">ID:</label>
                     <input type="number" class="form-control" id="id" name="id" value="<?= $libro['id'] ?>" readonly>
@@ -56,7 +57,7 @@
                 <div>
                     <a href="index.php" class="btn btn-danger">Cancelar</a>
                     <button type="reset" class="btn btn-secondary">Limpiar</button>
-                    <button type="submit" class="btn btn-primary" formaction="edit.php">Guardar</button>
+                    <button type="submit" class="btn btn-primary" formaction="update.php">Guardar</button>
                 </div>
                 
 
