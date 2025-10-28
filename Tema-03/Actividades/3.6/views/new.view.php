@@ -3,7 +3,7 @@
 
 <head>
     <?php require_once 'views/layouts/head.layout.php'; ?>
-    <title>Actividad 3.2 - Editar libro geslibros</title>
+    <title>Actividad 3.2 - Tabla de Libros</title>
 
 
 </head>
@@ -20,36 +20,32 @@
 
         <!-- contenido principal -->
         <main>
-            
 
-            
-
-            <!-- Formulario editar libro -->
-            <form action="update.php?id=<?= $id_editar ?>" method="POST">
-            
+            <!-- Formulario añadir nuevo libro -->
+            <form action="create.php" method="POST">
                 <div class="mb-3">
                     <label for="id" class="form-label">ID:</label>
-                    <input type="number" class="form-control" id="id" name="id" value="<?= $libro['id'] ?>" readonly>
+                    <input type="number" class="form-control" id="id" name="id" required>
                 </div>
                 <div class="mb-3">
                     <label for="titulo" class="form-label">Título:</label>
-                    <input type="text" class="form-control" id="titulo" name="titulo" value="<?= $libro['titulo'] ?>" >
+                    <input type="text" class="form-control" id="titulo" name="titulo" required>
                 </div>
                 <div class="mb-3">
                     <label for="autor" class="form-label">Autor:</label>
-                    <input type="text" class="form-control" id="autor" name="autor" value="<?= $libro['autor'] ?>" >
+                    <input type="text" class="form-control" id="autor" name="autor" required>
                 </div>
                 <div class="mb-3">
                     <label for="editorial" class="form-label">Editorial:</label>
-                    <input type="text" class="form-control" id="editorial" name="editorial" value="<?= $libro['editorial'] ?>" >
+                    <input type="text" class="form-control" id="editorial" name="editorial" required>
                 </div>
                 <div class="mb-3">
                     <label for="genero" class="form-label">Género:</label>
-                    <input type="text" class="form-control" id="genero" name="genero" value="<?= $libro['genero'] ?>" >
+                    <input type="text" class="form-control" id="genero" name="genero" required>
                 </div>
                 <div class="mb-3">
                     <label for="precio" class="form-label">Precio:</label>
-                    <input type="float" class="form-control" id="precio" name="precio" value="<?= $libro['precio'] ?>" >
+                    <input type="float" class="form-control" id="precio" name="precio" required>
                 </div>
 
                 <!-- Botones de acción -->
@@ -57,7 +53,7 @@
                 <div>
                     <a href="index.php" class="btn btn-danger">Cancelar</a>
                     <button type="reset" class="btn btn-secondary">Limpiar</button>
-                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="submit" class="btn btn-primary" formaction="create.php">Guardar</button>
                 </div>
                 
 
@@ -67,10 +63,15 @@
         </main>
 
         <!-- pie de página -->
-        <?php require_once 'views/partials/footer.partial.php'; ?>
+        <footer class="footer mt-auto py-3 fixed-bottom bg-light">
+            <div class="container">
+                <span class="text-muted">&copy; 2025
+                    Yoël Gómez Benítez - DWES - 2º DAW - Curso 25/26</span>
+            </div>
+        </footer>
     </div>
     <!-- javascript bootstrap5.3.8 -->
-    <?php require_once 'views/layouts/js.bootstrap.layout.php'; ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 
 </html>
