@@ -58,4 +58,26 @@
 
     }
 
+    function get_nombre_categoria($categoria_id) {
+        $categorias = get_tabla_categorias();
+
+        foreach ($categorias as $categoria) {
+            if ($categoria['id'] == $categoria_id) {
+                return $categoria['nombre'];
+            }
+        }
+        return 'No encontrado';
+
+    }
+
+    function get_indice_articulo_por_id($articulos, $id_editar) {
+
+        foreach ($articulos as $indice => $libro) {
+            if ($libro['id'] == $id_editar) {
+                return $indice;
+            }
+
+        }
+        return null;
+     }
 ?>

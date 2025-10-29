@@ -46,12 +46,17 @@
                         <th scope="row"><?= $articulos[$i]['id'] ?></th>
                         <td><?= $articulos[$i]['descripcion'] ?></td>
                         <td><?= $articulos[$i]['modelo'] ?></td>
-                        <td><?= $categorias['nombre'][$articulos][$i]['categoria_id'] ?></td>
+
+                        <td><?= get_nombre_categoria($articulos[$i]['categoria_id']) ?></td>
                         <td class="text-end"><?= $articulos[$i]['unidades'] ?></td>
                         <td class="text-end"><?= $articulos[$i]['precio'] ?></td>
                         <td>
-                            <a href=""></a>
-                            <a href=""></a>
+                            <a href="edit.php?id=<?= $articulos[$i]['id'] ?>" class="btn btn-primary btn-sm" title="Editar">
+                                <i class="bi bi-pen"></i>
+                            </a>
+                            <a href="delete.php?id=<?= $articulos[$i]['id']?>" class="btn btn-danger btn-sm" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </a>
                             <a href=""></a>
                         </td>
 

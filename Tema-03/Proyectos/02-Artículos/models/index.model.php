@@ -1,6 +1,6 @@
 <?php
 /*
-    Crea el array articulos 
+    Crea el array articulos y categorias para usar en el view
 */
 
 $articulos = get_tabla_articulos();
