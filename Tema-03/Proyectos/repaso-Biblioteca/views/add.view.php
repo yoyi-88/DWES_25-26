@@ -29,7 +29,7 @@
 
             <div class="mb-3">
                 <label for="formGroupExampleInput" class="form-label">Título</label>
-                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Introduzca título" ?>" required>
+                <input type="text" class="form-control" id="formGroupExampleInput" placeholder="Introduzca título" required> 
             </div>
             <div class="mb-3">
                 <label for="formGroupExampleInput2" class="form-label">Autor</label>
