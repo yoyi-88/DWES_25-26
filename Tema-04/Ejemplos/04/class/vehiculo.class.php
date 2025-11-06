@@ -1,23 +1,28 @@
 <?php
     /*
-        Ejemplo 4.1: Definición de una clase Vehículo en PHP
+        Ejemplo 4.4: Herencia
         Autor: Javier Rodríguez
         Fecha: 05/11/2025
     */
     
     class Class_vehiculo{
         // Atributos
-        public $matricula;
-        public $marca;
-        public $modelo;
-        public $velocidad;
+        private $matricula;
+        private $marca;
+        private $modelo;
+        private $velocidad;
 
         //Constructor (inicializa los atributos):
-        public function __construct(){
-            $this->matricula = null;
-            $this->marca = null;
-            $this->modelo = null;
-            $this->velocidad = 0;
+        public function __construct(
+            $matricula = null,
+            $marca = null,
+            $modelo = null,
+            $velocidad = 0
+        ){
+            $this->matricula = $matricula;
+            $this->marca = $marca;
+            $this->modelo = $modelo;
+            $this->velocidad = $velocidad;
         }
 
         // Getters (obtener) y Setters (establecer/actualizar) (cuando haya encapsulamiento):
@@ -45,7 +50,5 @@
         public function set_velocidad($velocidad){
             $this->velocidad = $velocidad;
         }
-
-
     }
 ?>
