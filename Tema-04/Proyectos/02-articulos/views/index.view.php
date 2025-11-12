@@ -25,7 +25,8 @@
                         <th scope="col">id</th>
                         <th scope="col">Descripción</th>
                         <th scope="col">Modelo</th>
-                        <th scope="col">Categoria_id</th>
+                        <th scope="col">Marca</th>
+                        <th scope="col">Categorias</th>
                         <th scope="col" class="text-end">Unidades</th>
                         <th scope="col" class="text-end">Precio</th>
                         <th scope="col">Acciones</th>

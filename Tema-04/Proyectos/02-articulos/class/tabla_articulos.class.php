@@ -71,6 +71,7 @@
                 $nombres_categorias[] = $todas_categorias[$indice];
                 
             }
+            return $nombres_categorias;
         }
 
         /*Método: create()

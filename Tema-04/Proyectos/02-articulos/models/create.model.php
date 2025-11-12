@@ -6,10 +6,10 @@
 
 // Cargar los detalles del formulario
 
-$id = $_POST['ID'] ?? null;
+$id = 6;
 $descripcion = $_POST['descripcion'] ?? null;
 $modelo = $_POST['modelo'] ?? null;
-$marca = $_POST['narca'] ?? null;
+$marca = $_POST['marca'] ?? null;
 $categorias = $_POST['categorias'] ?? [];
 $unidades = $_POST['unidades'] ?? null;
 $precio = $_POST['precio'] ?? null;
