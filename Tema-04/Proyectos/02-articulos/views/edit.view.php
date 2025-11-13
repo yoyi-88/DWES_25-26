@@ -5,7 +5,6 @@
     <?php require_once 'views/layouts/head.layout.php'; ?>
     <title>Proyecto 3.2</title>
 
-    
 </head>
 
 <body>
@@ -18,65 +17,72 @@
         <main>
             <h4>Formulario editar artículo</h4>
             <!-- contenido principal -->
-            <form action="update.php?id=<?= $id_editar ?>" method="POST">
+            <form action="update.php?id=<?= $id ?>" method="POST">
+
                 <div class="mb-3">
-                    <label for="formGroupExampleInput" class="form-label">Descripcion</label>
-                    <input type="text" class="form-control" id="descripcion" name="descripcion" value="<?= $articulo['descripcion']?>" required>
+                    <label for="descripcion" class="form-label">ID:</label>
+                    <input type="number" class="form-control" id="id" name="id" value="<?= $articulo->getId() ?>" readonly>
                 </div>
+
+
                 <div class="mb-3">
-                    <label for="formGroupExampleInput2" class="form-label">Modelo</label>
-                    <input type="text" class="form-control" id="modelo" name="modelo" value="<?= $articulo['modelo']?>" required>
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <input type="text" class="form-control" id="descripcion" name="descripcion" value="<?= $articulo->getDescripcion() ?>">
                 </div>
+
                 <div class="mb-3">
-                    <label for="formGroupExampleInput2" class="form-label">Marcas</label>
-                    <select class="form-control" id="categorias" name="categorias" value="<?= $articulo['categoria_id']?>" required>
-                        <option selected disabled>-- Seleccione una marca --</option>
-                        <!-- mostrar lista Marcas -->
-                        <?php foreach ($marcas as $indice=>$marca) : ?>
-                            <option value="<?= $marca['id'] ?>" 
-                                <?= $articulo['marca_id'] == $marca['id'] ? 'selected' : '' ?>>
-                                <?= $marca['nombre'] ?>
+                    <label for="modelo" class="form-label">Modelo</label>
+                    <input type="text" class="form-control" id="modelo" name="modelo" value="<?= $articulo->getModelo() ?>" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="marca" class="form-label">Marca</label>
+                    <select class="form-select" id="marca" name="marca" required>
+                        <option selected disabled>Seleccione una marca</option>
+                        <?php foreach ($marcas as $indice => $nombre_marca): ?>
+                            <option value="<?= $indice ?>"
+                                <?= ($articulo->getMarca() == $indice) ? 'selected' : null ?>>
+                                <?= $nombre_marca ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="mb-3">
-                    <label for="formGroupExampleInput2" class="form-label">Stock</label>
-                    <input type="number" class="form-control" id="unidades" name="unidades" value="<?= $articulo['unidades']?>" required>
-                </div>
-                <div class="mb-3">
-                    <label for="formGroupExampleInput2" class="form-label">Precio</label>
-                    <input type="float" class="form-control" id="precio" name="precio" value="<?= $articulo['precio']?>" required>
-                </div>
 
-                <!-- lista checkbox dinamica de categorias -->
                 <div class="mb-3">
                     <label class="form-label">Categorías</label>
-                    <div class="form-control">
-                        <?php foreach ($categorias as $indice=>$categoria) : ?>
+                    <div>
+                        <?php foreach ($categorias as $indice => $categoria): ?>
+
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="checkbox" name="categorias[]"
-                                value="<?= $indice ?>">
+                                    value="<?= $indice ?>"
+                                    <?= in_array($indice, $articulo->getCategorias()) ? 'checked' : null ?>>
+
                                 <label class="form-check-label">
                                     <?= $categoria ?>
                                 </label>
                             </div>
+
                         <?php endforeach; ?>
                     </div>
-
                 </div>
 
-                <div>
-                    <a href="index.php" class="btn btn-danger" 
-                    onclick="return confirm('Confirmar cancelación de la edición')">Cancelar</a>
+                <div class="mb-3">
+                    <label for="unidades" class="form-label">Unidades</label>
+                    <input type="number" class="form-control" id="unidades" name="unidades" value="<?= $articulo->getUnidades() ?>" required>
+                </div>
 
-                    <button type="reset" class="btn btn-secondary"
-                    onclick="return confirm('Confirmar reseteo de la información artículo')">Reset</button>
+                <div class="mb-3">
+                    <label for="precio" class="form-label">Precio</label>
+                    <input type="number" class="form-control" id="precio" name="precio" step="0.01" min="0" value="<?= $articulo->getPrecio() ?>" required>
+                </div>
 
-                    <button type="submit" class="btn btn-primary">Añadir</button>
+                <div class="mb-3">
+                    <a href="index.php" class="btn btn-danger">Cancelar</a>
+                    <button type="reset" class="btn btn-secondary">Reset</button>
+                    <button type="submit" class="btn btn-primary">Actualizar artículo</button>
                 </div>
             </form>
-
 
 
         </main>

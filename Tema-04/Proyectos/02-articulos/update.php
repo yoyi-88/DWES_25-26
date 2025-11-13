@@ -1,6 +1,6 @@
 <?php 
 /* 
-Controlador que muestra en un formulario editable los detalles de un artículo
+Actualiza los detalles de un artículo a partir del doemulario editable
 */
 
 
@@ -9,9 +9,9 @@ require_once 'class/articulo.class.php';
 require_once 'class/tabla_articulos.class.php';
 
 // Incluir el modelo
-require_once 'models/edit.model.php';
+require_once 'models/update.model.php';
 
 // incluir la vista
-require_once 'views/edit.view.php';
+require_once 'views/index.view.php';
 
 ?>

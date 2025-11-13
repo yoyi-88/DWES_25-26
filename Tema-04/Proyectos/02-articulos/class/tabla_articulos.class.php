@@ -82,6 +82,67 @@
             $this->articulos[] = $articulo;
         }
 
+        /*
+            Método: get_indice_a_partir_id()
+            descripción: obtiene el índice del array en el que se encuentra un artículo
+            a partir del id
+
+            Parámetros:
+            - id: id del artículo
+
+            Retorno:
+            -índice: del array
+        */
+        public function get_indice_from_id($id) {
+            foreach($this->articulos as $indice => $articulo) {
+                if ($articulo->getId() == $id) {
+                    return $indice;
+                }
+            }
+            return null;
+        }
+
+        /*método: get_articulo_from_indice()
+        descripción: obtiene un objeto de la clase artículo a partir del índice del array
+        tabla artículos
+
+        Parámetros:
+            -indice: indice en el que se encuentra el artículo
+
+        Retorna:
+            - Objeto de la clase artículo
+        */
+        public function get_articulo_from_indice($indice) {
+            return $this->articulos[$indice];
+        }
+
+        /*
+            método: update()
+            descripción: actualiza los detalles de un artículo en la tabla a partir del id de dicho artículo
+
+            Parámetro:
+            - Objeto de la clase artículo, co los detalles del artículo
+            -indice del array en el que se encuentra dicho artículo
+        */
+        public function update(Class_articulo $articulo, $indice) {
+            // 
+            $this->articulos[$indice] = $articulo;
+
+        }
+
+        /*
+            método: delete()
+            descripción: elimino el artículo del array a partir del índice en el que se encuentra
+
+            parámetros:
+            -índice: indice del array en el que se encuent
+        */
+
+        public function delete($indice) {
+            unset($this->articulos[$indice]);
+            array_values($this->articulos);
+        }
+
         
     }
 

@@ -9,9 +9,9 @@ require_once 'class/articulo.class.php';
 require_once 'class/tabla_articulos.class.php';
 
 // Incluir el modelo
-require_once 'models/edit.model.php';
+require_once 'models/show.model.php';
 
 // incluir la vista
-require_once 'views/edit.view.php';
+require_once 'views/show.view.php';
 
 ?>

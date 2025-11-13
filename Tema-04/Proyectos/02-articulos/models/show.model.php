@@ -1,9 +1,9 @@
 <?php
 
 /*
-    Carga los datos necesarios para mostrr en un formulario editable los detalles de un artículo.
+    Carga los datos necesarios para mostrr en un formulario sin edición, los detalles de un artículo.
     Parámetro GET:
-    -ID: artículo a editar
+    -ID: artículo a mostrar
 */
 
 // Obtengo id del artículo

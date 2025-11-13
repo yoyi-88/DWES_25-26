@@ -1,9 +1,9 @@
 <?php
 
 /*
-    Carga los datos necesarios para mostrr en un formulario editable los detalles de un artículo.
+    Elimina un artículo de la tabla a partir de su id
     Parámetro GET:
-    -ID: artículo a editar
+    -ID: artículo a eliminar
 */
 
 // Obtengo id del artículo
@@ -17,14 +17,14 @@ $tabla_articulos = new Class_tabla_articulos();
 // Cargar los datos
 $tabla_articulos->get_datos();
 
-
-// Obtener los detalles del artículo mediante un objeto de la clase artículo
-
 // Obtener el índice del array en el que se encuentra el objeto de la clase artículo
 $indice = $tabla_articulos->get_indice_from_id($id);
 
-// Obtener el objeto de la clase artículo
-$articulo = $tabla_articulos->get_articulo_from_indice($indice);
+// Eliminar artículo del array mediante el método delete
+$tabla_articulos->delete($indice);
+
+// Obtener la tabla articulos
+$articulos = $tabla_articulos->get_articulos();
 
 // Cargar array de marcas 
 $marcas = Class_tabla_articulos::get_marcas();
