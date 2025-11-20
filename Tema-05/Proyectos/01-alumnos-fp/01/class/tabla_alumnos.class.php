@@ -38,14 +38,16 @@
                     ORDER BY 1
                 ";
 
-                // Prepare
+                // Prepare 
+                // Crear un objeto de la clase mysqli_stmt
                 $stmt = $this->mysqli->prepare($sql);
 
                 // No necesita vincular parámetros, ya que no los tengo definidos
                 // Ejecuto el comando
-                $result = $stmt->execute();
+                $stmt->execute();
 
-                return $result->get_result;
+                // devuelve un objeto de la clase mysqli_result con los detalles de los alumnos
+                return $stmt->get_result();
 
             }catch(mysqli_sql_exception $e) {
 

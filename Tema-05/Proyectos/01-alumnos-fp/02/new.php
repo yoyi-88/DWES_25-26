@@ -10,9 +10,9 @@
     require_once('class/tabla_alumnos.class.php');
 
     // Modelo
-    require_once('models/index.model.php');
+    require_once('models/new.model.php');
 
     // Vista
-    require_once('views/index.view.php');
+    require_once('views/new.view.php');
 
 ?>
