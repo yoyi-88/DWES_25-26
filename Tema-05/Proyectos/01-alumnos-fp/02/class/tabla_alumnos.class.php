@@ -138,6 +138,77 @@
             }
             
         }
+
+        /*
+        método: create()
+        descripcion: inserta un nuevo alumno en la tabla alumnos
+        parámetros: todos los campos necesarios para la inserción
+        devuelve: true si la inserción fue exitosa
+    */
+    public function create(
+        $nombre, 
+        $apellidos, 
+        $email, 
+        $telefono, 
+        $direccion, 
+        $poblacion, 
+        $provincia, 
+        $nacionalidad, 
+        $dni, 
+        $fecha_nac, 
+        $curso_id
+    ) {
+
+        try {
+
+            // La ID se omite o se pone a NULL, ya que es AUTO_INCREMENT
+            $sql = "
+                INSERT INTO alumnos (
+                    nombre, apellidos, email, telefono, direccion, poblacion, 
+                    provincia, nacionalidad, dni, fecha_nac, curso_id
+                )
+                VALUES (
+                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                )
+            ";
+
+            // Prepare 
+            $stmt = $this->mysqli->prepare($sql);
+
+            // Los 11 valores se corresponden con la cadena de tipos
+            // s = string, i = integer
+            $tipos = "sssssssssii"; 
+
+            $stmt->bind_param(
+                $tipos, 
+                $nombre, 
+                $apellidos, 
+                $email, 
+                $telefono, 
+                $direccion, 
+                $poblacion, 
+                $provincia, 
+                $nacionalidad, 
+                $dni, 
+                $fecha_nac, 
+                $curso_id
+            );
+
+            // Ejecuto el comando
+            $stmt->execute();
+            $stmt->close();
+            
+            return true; // Éxito en la inserción
+
+        } catch(mysqli_sql_exception $e) {
+            
+            // Podrías registrar el error ($e->getMessage()) en un log
+            include 'views/partials/errorDB.partial.php';
+
+            // Paro la ejecución
+            exit();
+        }
+    }
     }
 
 

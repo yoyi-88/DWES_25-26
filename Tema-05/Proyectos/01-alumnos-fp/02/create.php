@@ -12,6 +12,8 @@
     // Modelo
     require_once('models/create.model.php');
 
+    $alumnos = $conexion->get_alumnos();
+
     // Vista
     require_once('views/index.view.php');
 
