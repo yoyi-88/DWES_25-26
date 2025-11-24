@@ -177,7 +177,7 @@
 
             // Los 11 valores se corresponden con la cadena de tipos
             // s = string, i = integer
-            $tipos = "sssssssssii"; 
+            $tipos = "ssssssssssi"; 
 
             $stmt->bind_param(
                 $tipos, 
