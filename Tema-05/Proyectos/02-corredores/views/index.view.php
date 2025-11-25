@@ -1,41 +1,96 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plantilla Básica Bootsstrap 5.3.8</title>
 
-    <!-- css bootstrap5.3.8 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- Cargar bootstrap -->
+    <?php require_once 'views/layouts/head.layout.php'; ?>
+    <title> Proyecto 5.2 - CRUD Gestión Corredores PHP y MySQL</title>
 
-    <!-- Bootstrap icons 1.13.1 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
+
 <body>
+
     <!-- capa principal -->
     <div class="container mt-3">
 
         <!-- cabecera del documento -->
-        <header class="pb-3 mb-4 border-bottom">
-            <i class="bi bi-emoji-heart-eyes"></i>
-            <span class="fs-6">Plantilla Básica Bootsstrap 5.3.8</span>
-        </header>
+        <?php require_once 'views/partials/header.partial.php'; ?>
+
+        <!-- Navegador o menu libros -->
+        <?php require_once 'views/partials/menu.partial.php'; ?>
 
         <!-- contenido principal -->
         <main>
-            
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <!-- cabecera tabla alumnos -->
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Apellidos</th>
+                            <th scope="col">Ciudad</th>
+                            <th scope="col">Email</th>
+                            <th scope="col" class="text-end">Edad</th>
+                            <th scope="col">Categoría</th>
+                            <th scope="col">Club</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php while($corredor = $corredores->fetch_assoc()): ?>
+                            <tr class="">
+                                <td><?= $corredor['id'] ?></td>
+                                <td><?= $corredor['nombre'] ?></td>
+                                <td><?= $corredor['apellidos'] ?></td>
+                                <td><?= $corredor['ciudad'] ?></td>
+                                <td><?= $corredor['email'] ?></td>
+                                <td class="text-end"><?= $corredor['edad'] ?></td>
+                                <td><?= $corredor['categoria']  ?></td>
+                                <td><?= $corredor['club']  ?></td>
+
+                                <!-- botones de acción -->
+                                <td>
+                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        <!-- boton eliminar -->
+                                        <a href="delete.php?id=<?= $corredor['id'] ?>" class="btn btn-danger btn-sm" title="Eliminar"
+                                            onclick="return confirm('Confimar elimación del artículo')">
+                                            <i class="bi bi-trash3"></i>
+                                        </a>
+                                        <!-- boton editar -->
+                                        <a href="edit.php?id=<?= $corredor['id'] ?>" class="btn btn-warning btn-sm" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <!-- boton ver -->
+                                        <a href="show.php?id=<?= $corredor['id'] ?>" class="btn btn-primary btn-sm" title="Ver">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+                                </td>
+
+
+                            </tr>
+                        <?php endwhile; ?>
+                        
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">Total Artículos: <?= $corredores->num_rows ?></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
 
         </main>
 
         <!-- pie de página -->
-        <footer class="footer mt-auto py-3 fixed-bottom bg-light">
-            <div class="container">
-                <span class="text-muted">&copy; 2025
-                    Yoël Gómez Benítez - DWES - 2º DAW - Curso 25/26</span>
-            </div>
-        </footer>
+        <?php require_once 'views/partials/footer.partial.php'; ?>
     </div>
-    <!-- javascript bootstrap5.3.8 -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    <!-- javaScript bootstrap 5.3.8 -->
+    <?php require_once 'views/layouts/js_bootstrap.layout.php'; ?>
 </body>
+
 </html>
