@@ -1,20 +1,23 @@
 <?php
-    /*
-        Controlador: index.php
-        descripción: controlador principal proyeecto gestión alumnos
-    */
 
-    // Clases 
-    require_once('class/alumno.class.php');
-    require_once('class/conexion.class.php');
-    require_once('class/tabla_alumnos.class.php');
+/*
+    controlador: create.php
+    descripción. controlador para crear nuevos alumnos
+*/
 
-    // Modelo
-    require_once('models/create.model.php');
+// Configuración base de datos
+require_once('config/configDB.php');
 
-    $alumnos = $conexion->get_alumnos();
 
-    // Vista
-    require_once('views/index.view.php');
+// Clases
+require_once('class/alumno.class.php');
+require_once('class/conexion.class.php');
+require_once('class/tabla_alumnos.class.php');
+
+// Modelo
+require_once('models/create.model.php');
+
+// Cargo controlador index mediante redirección
+header('Location: index.php');
 
 ?>

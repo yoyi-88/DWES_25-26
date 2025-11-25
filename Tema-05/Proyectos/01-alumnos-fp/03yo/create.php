@@ -1,0 +1,20 @@
+<?php
+    /*
+        Controlador: index.php
+        descripción: controlador principal proyeecto gestión alumnos
+    */
+
+    // Clases 
+    require_once('class/alumno.class.php');
+    require_once('class/conexion.class.php');
+    require_once('class/tabla_alumnos.class.php');
+
+    // Modelo
+    require_once('models/create.model.php');
+
+    $alumnos = $conexion->get_alumnos();
+
+    // Vista
+    require_once('views/index.view.php');
+
+?>
