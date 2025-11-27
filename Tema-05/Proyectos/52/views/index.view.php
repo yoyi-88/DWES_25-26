@@ -5,7 +5,7 @@
 
     <!-- Cargar bootstrap -->
     <?php require_once 'views/layouts/head.layout.php'; ?>
-    <title> Proyecto 5.1 - CRUD Gestión Alumnos PHP y MySQL</title>
+    <title> Proyecto 5.2 - Panel Control de Libros - GESLIBROS</title>
 
 </head>
 
@@ -31,47 +31,47 @@
 
             <div class="table-responsive">
                 <table class="table table-hover">
-                    <!-- cabecera tabla alumnos -->
+                    <!-- cabecera tabla libros -->
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
-                            <th scope="col">Alumno</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Nacionalidad</th>
-                            <th scope="col">DNI</th>
-                            <th scope="col" class="text-end">Edad</th>
-                            <th>Curso</th>
+                            <th scope="col">Título</th>
+                            <th scope="col">Autor</th>
+                            <th scope="col">Editorial</th>
+                            <th scope="col">Géneros</th>
+                            <th scope="col" class="text-end">Stock</th>
+                            <th scope="col" class="text-end">Precio</th>
                             <th scope="col">Acciones</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- $alumnos es un objeto mysqli_result, se puede usar foreach directamente  -->
+                        <!-- $libros es un objeto mysqli_result, se puede usar foreach directamente  -->
                         <!-- solo cuando cada iteración devuelve un array asociativo -->
-                        <?php  while ($alumno = $alumnos->fetch_assoc()): ?>
+                        <?php  while ($libro = $libros->fetch()): ?>
                             <tr class="">
-                                <td><?= $alumno['id'] ?></td>
-                                <td><?= $alumno['alumno'] ?></td>
-                                <td><?= $alumno['email'] ?></td>
-                                <td><?= $alumno['nacionalidad'] ?></td>
-                                <td><?= $alumno['dni'] ?></td>
-                                <td class="text-end"><?= $alumno['edad'] ?></td>
-                                <td><?= $alumno['curso']  ?></td>
+                                <td><?= $libro->id ?></td>
+                                <td><?= $libro->titulo ?></td>
+                                <td><?= $libro->autor ?></td>
+                                <td><?= $libro->editorial ?></td>
+                                <td><?= $libro->generos ?></td>
+                                <td class="text-end"><?= $libro->stock ?></td>
+                                <td class="text-end"><?= $libro->precio ?></td>
 
                                 <!-- botones de acción -->
                                 <td>
                                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                         <!-- boton eliminar -->
-                                        <a href="delete.php?id=<?= $alumno['id'] ?>" class="btn btn-danger btn-sm" title="Eliminar"
+                                        <a href="delete.php?id=<?= $libro->id ?>" class="btn btn-danger btn-sm" title="Eliminar"
                                             onclick="return confirm('Confimar elimación del artículo')">
                                             <i class="bi bi-trash3"></i>
                                         </a>
                                         <!-- boton editar -->
-                                        <a href="edit.php?id=<?= $alumno['id'] ?>" class="btn btn-warning btn-sm" title="Editar">
+                                        <a href="edit.php?id=<?= $libro->id ?>" class="btn btn-warning btn-sm" title="Editar">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <!-- boton ver -->
-                                        <a href="show.php?id=<?= $alumno['id'] ?>" class="btn btn-primary btn-sm" title="Ver">
+                                        <a href="show.php?id=<?= $libro->id ?>" class="btn btn-primary btn-sm" title="Ver">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </div>
@@ -83,7 +83,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4">Total Artículos: <?= $alumnos->num_rows ?></td>
+                            <td colspan="4">Total Libros: <?= $libros->rowCount() ?></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -91,10 +91,11 @@
 
         </main>
 
-        <!-- pie de página -->
-        <?php require_once 'views/partials/footer.partial.php'; ?>
+       
     </div>
-
+    <br><br><br>
+    <!-- pie de página -->
+    <?php require_once 'views/partials/footer.partial.php'; ?>
     <!-- javaScript bootstrap 5.3.8 -->
     <?php require_once 'views/layouts/js_bootstrap.layout.php'; ?>
 </body>

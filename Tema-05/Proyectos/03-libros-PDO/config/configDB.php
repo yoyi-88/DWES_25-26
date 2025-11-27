@@ -5,7 +5,7 @@
 */
 
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'fp');
+define('DB_NAME', 'geslibros');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 

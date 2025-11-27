@@ -21,7 +21,7 @@ class class_conexion {
         try {
 
             // Definir el dsn o nombre de la fuente de datos
-            $dsn = "mysql:host=" . DB_HOST . ";dbname" . DB_NAME . "charset=utf8mb4";
+            $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
 
             // definir el array de opciones para la conexión PDO
             $options = [

@@ -1,10 +1,14 @@
 <?php
 
 /*
-    controlador: filter.php
+    controlador: search.php
     descripción. controlador de búsqueda y filtrado de alumnos de FP
 
     Necesito: Activar el campo búsqueda del menú 
+
+    Método GET:
+    
+        - prompt: cadena de búsqueda
 */
 
 // Configuración base de datos
@@ -16,7 +20,7 @@ require_once('class/conexion.class.php');
 require_once('class/tabla_alumnos.class.php');
 
 // Modelo
-require_once('models/index.model.php');
+require_once('models/search.model.php');
 
 // Vista
 require_once('views/index.view.php');
