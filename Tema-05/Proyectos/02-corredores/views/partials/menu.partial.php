@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary primary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="index.php">Alumnos</a>
+        <a class="navbar-brand" href="index.php">Corredores</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -15,12 +15,13 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="order.php?criterio=1">Id</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=2">Alumno</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=3">Email</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=4">Nacionalidad</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=5">Dni</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=2">Nombre</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=3">Apellidos</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=4">Ciudad</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=5">Email</a></li>
                         <li><a class="dropdown-item" href="order.php?criterio=6">Edad</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=7">Curso</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=7">Categoria</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=8">Club</a></li>
                        
                         <li>
                             <hr class="dropdown-divider">

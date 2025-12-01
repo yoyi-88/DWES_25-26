@@ -2,34 +2,34 @@
 
 /*
     modelo: delete.model.php
-    descripción: modelo para eliminar libro
+    descripción: modelo para eliminar cliente
 
     Método GET:
 
-            - id: id del alumno
+            - id: id del cliente
     
 */
 
-// Obtener id libro a eliminar
-$libro_id = $_GET['id'] ?? null;
+// Obtener id cliente a eliminar
+$cliente_id = $_GET['id'] ?? null;
 
 // Validar id (omitir para simplificar)
 
 // Conexión a la base de datos
-$geslibros = new class_tabla_libros();
+$gesbank = new class_tabla_clientes();
 
-// Eliminar alumno
+// Eliminar cliente
 // Comprobar si se ha eliminado correctamente
-if ($geslibros->delete($libro_id)) {
+if ($gesbank->delete($cliente_id)) {
     // Éxito
-    $notify = "Libro eliminado correctamente.";
+    $notify = "Cliente eliminado correctamente.";
 } else {
     // Error
-    $error = "Error al eliminar el alumno: ";
+    $error = "Error al eliminar el cliente: ";
 }   
 
-// Cargo la lista de alumnos actualizada
-$libros = $geslibros->get_libros();
+// Cargo la lista de clientes actualizada
+$clientes = $gesbank->get_clientes();
 
 
 

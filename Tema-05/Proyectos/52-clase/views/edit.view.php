@@ -19,7 +19,7 @@
         <main>
             <!-- Formulario añadir nuevo libro -->
             <legend>Formulario Editar Cliente</legend>
-            <form action="update.php?id=<?= $libro_id ?>" method="POST">
+            <form action="update.php?id=<?= $cliente_id ?>" method="POST">
 
                 
                 <!-- campo id

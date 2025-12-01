@@ -8,8 +8,8 @@ class class_corredor {
     public $nombre;
     public $apellidos;
     public $ciudad;
-    public $fechaNacimiento;
     public $sexo;
+    public $fechaNacimiento;
     public $email;
     public $dni;
     public $edad;
@@ -25,7 +25,6 @@ class class_corredor {
         $sexo,
         $email,
         $dni,
-        $edad,
         $id_categoria,
         $id_club
     ) {
@@ -37,7 +36,6 @@ class class_corredor {
         $this->sexo = $sexo;
         $this->email = $email;
         $this->dni = $dni;
-        $this->edad = $edad;
         $this->id_categoria = $id_categoria;
         $this->id_club = $id_club;
     }

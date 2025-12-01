@@ -71,7 +71,7 @@
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <!-- boton ver -->
-                                        <a href="show.php?id=<?= $cliente->id ?>" class="btn btn-primary btn-sm" title="Ver">
+                                        <a href="view.php?id=<?= $cliente->id ?>" class="btn btn-primary btn-sm" title="Ver">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </div>

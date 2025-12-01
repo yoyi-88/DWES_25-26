@@ -18,7 +18,7 @@
         <!-- contenido principal -->
         <main>
             <!-- Formulario añadir nuevo libro -->
-            <legend>Formulario Edición Alumno</legend>
+            <legend>Formulario Edición Libro</legend>
             <form action="update.php?id=<?=  $libro->id ?>" method="POST">
 
                 <!-- Se exculyen los campos id, poblacion, provincia y dirección por simplicidad -->

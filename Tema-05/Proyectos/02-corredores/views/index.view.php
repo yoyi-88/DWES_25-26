@@ -17,6 +17,12 @@
         <!-- cabecera del documento -->
         <?php require_once 'views/partials/header.partial.php'; ?>
 
+        <!-- mensajes de error -->
+        <?php require_once 'views/partials/error.partial.php'; ?>
+
+        <!-- mensajes de notificación -->
+        <?php require_once 'views/partials/notify.partial.php'; ?>
+
         <!-- Navegador o menu libros -->
         <?php require_once 'views/partials/menu.partial.php'; ?>
 

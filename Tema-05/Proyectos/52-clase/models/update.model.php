@@ -38,10 +38,6 @@ $cliente = new class_cliente(
     $email
 );
 
-// Añado la propiedad generos_id al objeto libro
-// con los géneros seleccionados en el formulario
-$libro->generos_id = $generos_id;
-
 // Conexión a la base de datos
 $gesbank = new class_tabla_clientes();
 
@@ -49,14 +45,14 @@ $gesbank = new class_tabla_clientes();
 // y cmprobar si se ha actualizado correctamente
 if ($gesbank->update($cliente, $cliente_id)) {
     // Éxito
-    $notify = "Libro actualizado correctamente.";
+    $notify = "Cliente actualizado correctamente.";
 } else {
     // Error
-    $error = "Error al actualizar el libro: ";
+    $error = "Error al actualizar el cliente: ";
 }
 
-// Obtener lista actualizada de libros
-$libros = $geslibros->get_libros();
+// Obtener lista actualizada de clientes
+$clientes = $gesbank->get_clientes();
 
 
 

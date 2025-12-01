@@ -21,13 +21,6 @@
             <legend>Formulario Nuevo Cliente</legend>
             <form action="create.php" method="POST">
 
-                <!-- Se exculyen los campos id, poblacion, provincia y dirección por simplicidad -->
-                <!-- campo id
-                <div class="mb-3">
-                    <label for="id" class="form-label">ID:</label>
-                    <input type="number" class="form-control" id="id" name="id" required>
-                </div> -->
-
                 <!-- campo apellidos -->
                 <div class="mb-3">
                     <label for="apellidos" class="form-label">Apellidos:</label>

@@ -2,7 +2,7 @@
 
 /*
     controlador: order.php
-    descripción. Controlador para ordenar la tabla de libros por diferentes columnas que se 
+    descripción. Controlador para ordenar la tabla de clientes por diferentes columnas que se 
     muestran en la vista principal
 */
 
@@ -10,9 +10,9 @@
 require_once('config/configDB.php');
 
 // Clases
-require_once('class/libro.class.php');
+require_once('class/cliente.class.php');
 require_once('class/conexion.class.php');
-require_once('class/tabla_libros.class.php');
+require_once('class/tabla_clientes.class.php');
 
 // Modelo
 require_once('models/order.model.php');

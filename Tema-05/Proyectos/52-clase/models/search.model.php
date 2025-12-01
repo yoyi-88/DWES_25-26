@@ -2,7 +2,7 @@
 
 /*
     modelo:  search.model.php
-    descripción: Modelo para filtrar la tabla libros a partir de un prompt de búsqueda
+    descripción: Modelo para filtrar la tabla clientes a partir de un prompt de búsqueda
 
     Parámetros GET:
 
@@ -14,10 +14,10 @@
 $prompt = $_GET['prompt'] ?? null;
 
 // Conectar base de datos
-$geslibros = new class_tabla_libros();
+$gesbank = new class_tabla_clientes();
 
 // Ejecutar filtro
-$libros = $geslibros->filter($prompt);
+$clientes = $gesbank->filter($prompt);
 
 // notificación 
 $notify = "Mostrando resultados para la búsqueda: '$prompt'";

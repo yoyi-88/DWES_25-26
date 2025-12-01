@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary primary">
     <div class="container-fluid">
-        <a class="navbar-brand" href="index.php">Libros</a>
+        <a class="navbar-brand" href="index.php">Clientes</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -15,17 +15,12 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="order.php?criterio=1">Id</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=2">Título</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=3">Autor</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=4">Editorial</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=5">Géneros</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=6">Stock</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=7">Precio</a></li>
-                       
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=2">Apellidos</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=3">Nombre</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=4">Telefono</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=5">Ciudad</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=6">DNI</a></li>
+                        <li><a class="dropdown-item" href="order.php?criterio=7">Email</a></li>
                     </ul>
                 </li>
                

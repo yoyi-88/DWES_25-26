@@ -261,7 +261,7 @@ class class_tabla_clientes extends class_conexion
                         telefono = :telefono, 
                         ciudad = :ciudad, 
                         dni = :dni,
-                        email = :email, 
+                        email = :email
                     
                     WHERE id = :id 
                     LIMIT 1";
@@ -315,17 +315,8 @@ class class_tabla_clientes extends class_conexion
             // inicio transacción
             $this->pdo->beginTransaction();
 
-            // elimino los temas asociados al libro
-            
-            // Este código no sería necesario si la tabla libros_temas la 
-            // clave ajena libro_id tuviera la opción ON DELETE CASCADE
-            $sql_delete_temas = "DELETE FROM libros_temas WHERE libro_id = :libro_id";
-            $stmt_delete_temas = $this->pdo->prepare($sql_delete_temas);
-            $stmt_delete_temas->bindParam(':libro_id', $id);
-            $stmt_delete_temas->execute();
-
             // preparo la consulta sql para eliminar el libro
-            $sql = "DELETE FROM libros WHERE id = :id LIMIT 1";
+            $sql = "DELETE FROM clientes WHERE id = :id LIMIT 1";
 
             $stmt = $this->pdo->prepare($sql);
 
@@ -367,19 +358,15 @@ class class_tabla_clientes extends class_conexion
             $sql = "
 
             SELECT 
-                l.id,
-                l.titulo,
-                a.nombre AS autor,
-                e.nombre AS editorial,
-                GROUP_CONCAT(t.tema ORDER BY t.tema SEPARATOR ', ') AS generos,
-                l.stock,
-                l.precio_venta precio 
-            FROM libros AS l
-            LEFT JOIN autores AS a         ON l.autor_id = a.id
-            LEFT JOIN editoriales AS e     ON l.editorial_id = e.id
-            LEFT JOIN libros_temas AS lt   ON l.id = lt.libro_id
-            LEFT JOIN temas AS t           ON lt.tema_id = t.id
-            GROUP BY l.id
+                c.id,
+                c.apellidos,
+                c.nombre,
+                c.telefono,
+                c.ciudad,
+                c.dni,
+                c.email
+            FROM clientes AS c
+            GROUP BY c.id
             ORDER BY :criterio ASC
     
             ";
@@ -427,21 +414,17 @@ class class_tabla_clientes extends class_conexion
             SELECT *
                 FROM (
                     SELECT 
-                        l.id,
-                        l.titulo,
-                        a.nombre AS autor,
-                        e.nombre AS editorial,
-                        GROUP_CONCAT(t.tema ORDER BY t.tema SEPARATOR ', ') AS generos,
-                        l.stock,
-                        l.precio_venta precio 
-                    FROM libros AS l
-                    LEFT JOIN autores AS a         ON l.autor_id = a.id
-                    LEFT JOIN editoriales AS e     ON l.editorial_id = e.id
-                    LEFT JOIN libros_temas AS lt   ON l.id = lt.libro_id
-                    LEFT JOIN temas AS t           ON lt.tema_id = t.id
-                    GROUP BY l.id
+                        c.id,
+                        c.apellidos,
+                        c.nombre,
+                        c.telefono,
+                        c.ciudad,
+                        c.dni,
+                        c.email
+                    FROM clientes AS c
+                    GROUP BY c.id
                 ) AS sub
-            WHERE CONCAT_WS(' ', sub.id, sub.titulo, sub.autor, sub.editorial, sub.generos, sub.stock, sub.precio, '') LIKE :prompt
+            WHERE CONCAT_WS(' ', sub.id, sub.apellidos, sub.nombre, sub.telefono, sub.ciudad, sub.dni, sub.email, '') LIKE :prompt
             ORDER BY sub.id ASC;
 
 
@@ -449,7 +432,7 @@ class class_tabla_clientes extends class_conexion
 
             // Ejecuto Prepare
             // Crear un objeto de la clase pdo_statement
-            $stmt = $this->pdo->prepare($sql2);
+            $stmt = $this->pdo->prepare($sql);
 
             // establezco el tipo de fetch a objeto
             $stmt->setFetchMode(PDO::FETCH_OBJ);

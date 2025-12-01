@@ -20,24 +20,24 @@
 */
 $t_orden = [ 
     1 => 'id ASC',
-    2 => 'Título ASC',
-    3 => 'Autor ASC',
-    4 => 'Editorial ASC',
-    5 => 'Géneros ASC',
-    6 => 'Stock ASC',
-    7 => 'Precio ASC'
+    2 => 'Apellidos ASC',
+    3 => 'Nombre ASC',
+    4 => 'Teléfono ASC',
+    5 => 'Ciudad ASC',
+    6 => 'DNI ASC',
+    7 => 'Email ASC'
 ];
 
 // obtener criterio ordenación
 $criterio = $_GET['criterio'] ?? null;
 
 // Conectar base de datos geslibros
-$geslibros = new class_tabla_libros();
+$gesbank = new class_tabla_clientes();
 
 // Ejecuto método order_by para obtener alumnos ordenados
-$libros = $geslibros->order_by($criterio);
+$clientes = $gesbank->order_by($criterio);
 
-$notify = "Libros ordenados por el criterio $t_orden[$criterio]";
+$notify = "Clientes ordenados por el criterio $t_orden[$criterio]";
 
 
 ?>
