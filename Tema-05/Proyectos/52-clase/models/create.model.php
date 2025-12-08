@@ -2,7 +2,7 @@
 
 /*
     modelo: craate.model.php
-    descripción: añadir nuevo alumno a la tabla de alumnos
+    descripción: añadir nuevo cliente a la tabla de cliente
     
     
 */
@@ -17,7 +17,7 @@ $email = $_POST['email'] ?? null;
 
 // Validar datos (omitir para simplificar)
 
-// Crear objeto classs_libro
+// Crear objeto classs_cliente
 $cliente = new class_cliente(
     null,
     $apellidos,
@@ -31,7 +31,7 @@ $cliente = new class_cliente(
 // Conexión a la base de datos
 $gesbank = new class_tabla_clientes();
 
-// Añadir nuevo alumno
+// Añadir nuevo cliente
 if ($gesbank->create($cliente)) {
     // Éxito
     $notify = "Cliente añadido correctamente.";
@@ -40,7 +40,7 @@ if ($gesbank->create($cliente)) {
     $error = "Error al añadir el cliente: ";
 }
 
-// Obtener lista actualizada de alumnos
+// Obtener lista actualizada de clientes
 $clientes = $gesbank->get_clientes();
 
 

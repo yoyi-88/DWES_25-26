@@ -17,7 +17,7 @@
 
         <!-- contenido principal -->
         <main>
-            <!-- Formulario añadir nuevo libro -->
+            <!-- Formulario ver cliente -->
             <legend>Formulario Ver Cliente</legend>
 
 

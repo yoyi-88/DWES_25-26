@@ -17,7 +17,7 @@
 
         <!-- contenido principal -->
         <main>
-            <!-- Formulario añadir nuevo libro -->
+            <!-- Formulario añadir nuevo cliente -->
             <legend>Formulario Nuevo Cliente</legend>
             <form action="create.php" method="POST">
 

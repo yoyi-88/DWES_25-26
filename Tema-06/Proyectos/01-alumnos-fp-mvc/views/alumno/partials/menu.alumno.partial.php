@@ -14,24 +14,26 @@
                         Ordenar por
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="order.php?criterio=1">Id</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=2">Título</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=3">Autor</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=4">Editorial</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=5">Géneros</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=6">Stock</a></li>
-                        <li><a class="dropdown-item" href="order.php?criterio=7">Precio</a></li>
-                       
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/orderBy/id">ID</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/orderBy/alumno">Alumno (Apellidos, Nombre)</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/orderBy/email">Email</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/orderBy/nacionalidad">Nacionalidad</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/orderBy/dni">DNI</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/orderBy/edad">Edad</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/orderBy/curso">Curso</a></li>
+
+
+
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item" href="#">Something else here</a></li>
                     </ul>
                 </li>
-               
+
             </ul>
             <form class="d-flex" role="search" method="GET" action="search.php">
-                <input class="form-control me-2" type="search" placeholder="buscar..." aria-label="Search" name="prompt"/>
+                <input class="form-control me-2" type="search" placeholder="buscar..." aria-label="Search" name="prompt" />
                 <button class="btn btn-outline-secondary" type="submit">Buscar</button>
             </form>
         </div>

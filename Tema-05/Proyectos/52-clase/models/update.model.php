@@ -2,20 +2,20 @@
 
 /*
     modelo: update.model.php
-    descripción: actualiza los datos de un libro en la base de datos
+    descripción: actualiza los datos de un cliente en la base de datos
     a partir de los datos recibidos del formulario update.view.php
     
     Métod POST:
         
-        - Los detalles del libro:
+        - Los detalles del cliente:
     
     Método GET:
 
-        - id: id del libro
+        - id: id del cliente
     
 */
 
-// Obtener id del libro a actualizar
+// Obtener id del cliente a actualizar
 $cliente_id = $_GET['id'] ?? null;
 
 // Obtener datos del formulario
@@ -27,7 +27,7 @@ $dni = $_POST['dni'] ?? null;
 $email = $_POST['email'] ?? null;
 
 
-// Crear objeto classs_libro
+// Crear objeto classs_cliente
 $cliente = new class_cliente(
     null,
     $apellidos,
@@ -41,8 +41,8 @@ $cliente = new class_cliente(
 // Conexión a la base de datos
 $gesbank = new class_tabla_clientes();
 
-// Actualizar alumno
-// y cmprobar si se ha actualizado correctamente
+// Actualizar cliente
+// y comprobar si se ha actualizado correctamente
 if ($gesbank->update($cliente, $cliente_id)) {
     // Éxito
     $notify = "Cliente actualizado correctamente.";

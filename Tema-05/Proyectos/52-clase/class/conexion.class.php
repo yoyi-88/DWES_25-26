@@ -2,7 +2,7 @@
 
 /*
     clase: class_conexion
-    descripción:  permite conectar con la base  de  datos geslibvros, a partir de  las constantes
+    descripción:  permite conectar con la base  de  datos gesbank, a partir de  las constantes
     de configuraciíon de la base de datos definidas en configDB.php
         - DB_HOST
         - DB_USER

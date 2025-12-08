@@ -44,7 +44,7 @@ class alumnoModel extends Model {
         $stmt->execute();
         
         // Devuelvo objeto de la clase PDOStatement o array con los datos
-        return $stmt;
+        return $stmt->fetchAll();
 
         } catch (PDOException $e) {
 
@@ -220,6 +220,83 @@ class alumnoModel extends Model {
            $this->handleError($e); 
         }
     }
+
+    /*
+        Método: delete()
+        Descripción: Elimina un alumno de la base de datos fp
+        Parámetros:
+            - $id: id del alumno a eliminar
+    */
+
+    public function delete(int $id) {
+
+        try {
+            // Consulta SQL para eliminar un alumno
+            $sql = "DELETE FROM alumnos WHERE id = :id";
+
+            // Conectar con la base de datos
+            $fp = $this->db->connect();
+
+            // Preparar la consulta obteniendo el objeto PDOStatement
+            $stmt = $fp->prepare($sql);
+
+            // Vincular los parámetros
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+            // Ejecutar la consulta
+            $stmt->execute();
+
+        } catch (PDOException $e) {
+
+           // Manejo del error
+           $this->handleError($e); 
+        }
+    }
+
+    /*
+        Método: orderBy
+        Descripción: Obtiene todos los alumnos ordenados por un campo específico
+    */    
+    public function orderBy($campo) {
+
+        try {
+        // Consulta SQL para obtener todos los alumnos ordenados por un campo específico
+        $sql = "SELECT 
+                    alumnos.id,
+                    concat_ws(', ', alumnos.apellidos, alumnos.nombre) as alumno,
+                    alumnos.email,
+                    alumnos.nacionalidad,
+                    alumnos.dni,
+                    timestampdiff(YEAR,  alumnos.fecha_nac, now()) as edad,
+                    cursos.nombreCorto as curso
+            FROM alumnos LEFT JOIN cursos
+            ON alumnos.curso_id = cursos.id 
+            ORDER BY `" . $campo . "`";
+
+        // Conectar con la base de datos
+        $fp = $this->db->connect();
+
+        // Preparar la consulta obteniendo el objeto PDOStatement
+        $stmt = $fp->prepare($sql);
+
+        // Establecer modo de obtención de datos  fectch
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+        // Ejecutar la consulta
+        $stmt->execute();
+        
+        // Devuelvo objeto de la clase PDOStatement o array con los datos
+        return $stmt->fetchAll();
+
+        } catch (PDOException $e) {
+
+            // Manejo del error
+           $this->handleError($e); 
+          
+        }
+    }
+
+
 
     
 

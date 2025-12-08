@@ -31,7 +31,7 @@
 
             <div class="table-responsive">
                 <table class="table table-hover">
-                    <!-- cabecera tabla libros -->
+                    <!-- cabecera tabla clientes -->
                     <thead>
                         <tr>
                             <th scope="col">Id</th>

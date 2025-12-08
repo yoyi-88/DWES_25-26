@@ -2,7 +2,7 @@
 
 /*
     controlador: update.php
-    descripción. controlador para actualizar los detalles de un libro
+    descripción. controlador para actualizar los detalles de un cliente
     a partir del formulario update.view.php
 */
 

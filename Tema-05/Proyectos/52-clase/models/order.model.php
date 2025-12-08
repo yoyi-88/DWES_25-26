@@ -2,7 +2,7 @@
 
 /*
     modelo:  order.model.php
-    descripción: Modelo para ordenar la tabla libros por diferentes campos.
+    descripción: Modelo para ordenar la tabla clientes por diferentes campos.
 
     Ordernar por:
     - 1: ordena por id ascendente

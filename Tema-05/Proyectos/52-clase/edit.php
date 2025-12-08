@@ -2,7 +2,7 @@
 
 /*
     controlador: edit.php
-    descripción. controlador para editar los detalles de un libro
+    descripción. controlador para editar los detalles de un cliente
 */
 
 

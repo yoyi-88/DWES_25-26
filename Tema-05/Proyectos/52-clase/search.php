@@ -2,7 +2,7 @@
 
 /*
     controlador: search.php
-    descripción. controlador de búsqueda y filtrado libros
+    descripción. controlador de búsqueda y filtrado clientes
 
     Necesito: Activar el campo búsqueda del menú 
 

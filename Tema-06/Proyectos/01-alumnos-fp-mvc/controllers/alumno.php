@@ -149,10 +149,79 @@
             );
 
             // Llamar al modelo para actualizar el alumno
-            $this->model->update($alumno);
+            $this->model->update($id, $alumno);
 
             // Redirigir a la lista de alumnos después de actualizar el alumno
             header('Location: ' . URL . 'alumno');
+        }
+
+        /*
+            Método: delete
+            Descripción: Elimina un alumno de la base de datos
+            Parámetros:
+                - $id: id del alumno a eliminar
+        */
+
+        public function delete($param = []) {
+            // Obtener el id del alumno que voy a eliminar
+            $id = $param[0];
+
+            // Llamar al modelo para eliminar el alumno
+            $this->model->delete($id);
+
+            // Redirigir a la lista de alumnos después de eliminar el alumno
+            header('Location: ' . URL . 'alumno');
+        }
+
+        /*
+            Método: show
+            Descripción: Muestra los detalles de un alumno
+        */
+        public function show($param = []) {
+            // Obtener el id del alumno que voy a mostrar
+            $id = $param[0];
+
+            // Obtener el objeto de la class_alumno con lo detalles de ese alumno
+            $this->view->alumno = $this->model->read($id);
+
+            // Creo la propiedad id en la vista
+            $this->view->id = $id;
+
+            // Crea el título para la vista
+            $this->view->title = "Detalles del Alumno";
+
+            // Cargamos los cursos
+            $this->view->cursos = $this->model->get_cursos();
+
+            // Cargo la vista
+            $this->view->render('alumno/show/index');
+        }
+
+        /*
+            Método: orderBy
+            Descripción: Ordena la lista de alumnos por un campo específico
+        */
+        public function orderBy($param = []) {
+            // Obtener el campo por el que se va a ordenar
+            $campo = $param[0] ?? 'id';
+
+            $campos_permitidos = [
+                'id', 'alumno', 'email', 'nacionalidad', 'dni', 'edad', 'curso'
+            ];
+
+            // Validar
+            if (!in_array($campo, $campos_permitidos)) {
+                $campo = 'id';
+            }
+
+            // Obtengo los datos del modelo para mostrar en la vista
+            $this->view->title = "Tabla Alumnos de FP";
+
+            // Obtengo los datos del modelo ordenados por el campo especificado
+            $this->view->alumnos = $this->model->orderBy($campo);
+
+            // Llama a la vista para renderizar la página
+            $this->view->render('alumno/main/index');
         }
     }
 

@@ -2,7 +2,7 @@
 
 /*
     clase: clase_tabla_clientes
-    descripción: define la  clase que va a permitir realizar CRUD clientes en la tabla clientes de la base de datos fp:
+    descripción: define la  clase que va a permitir realizar CRUD clientes en la tabla clientes de la base de datos gesbank:
         - index
         - añadir
         - actualizar
@@ -20,8 +20,8 @@ class class_tabla_clientes extends class_conexion
 
 
     /*
-        método:  get_libros()
-        descripción: extrae los detallesde los libros que se van a mostrar en la vista principal
+        método:  get_clientes()
+        descripción: extrae los detallesde los clientes que se van a mostrar en la vista principal
         parámetros:
         devuelve: devuelve un objeto de la clase pdo_statement con los registros obtenidos
         errores: muestra un mensaje de error si hay problemas con la base de datos
@@ -72,13 +72,12 @@ class class_tabla_clientes extends class_conexion
     
     /*
         metodo: create()
-        descripción: crea un nuevo libro en la base de datos
+        descripción: crea un nuevo cliente en la base de datos
         
         parámetros: 
-            - $libro: objeto de la clase class_libro con los datos del libro a crear 
-            - $generos_id: array con los ids de los géneros asociados al libro
+            - $cliente: objeto de la clase class_cliente con los datos del cliente a crear 
         devuelve: 
-            - id del libro creado si se ha creado correctamente
+            - id del cliente creado si se ha creado correctamente
             - false si hay algún error
     */
     
@@ -129,7 +128,7 @@ class class_tabla_clientes extends class_conexion
             // confirmo la transacción
             $this->pdo->commit();
 
-            // devuelvo el id del libro creado
+            // devuelvo el id del cliente creado
             return $cliente_id;
         } catch (PDOException $e) {
                 
@@ -145,11 +144,11 @@ class class_tabla_clientes extends class_conexion
 
     /*
         método: read()
-        descripción: obtiene los detalles de un libro a partir de su id
+        descripción: obtiene los detalles de un cliente a partir de su id
         parámetros: 
-            - $id: id del libro a obtener
+            - $id: id del cliente a obtener
         devuelve: 
-            - objeto de la clase class_libro con los datos del libro
+            - objeto de la clase class_cliente con los datos del cliente
             - false si hay algún error
     */
     public function read($id)
@@ -179,10 +178,10 @@ class class_tabla_clientes extends class_conexion
             // establezco el modo de fetch a clase
             $stmt->setFetchMode(PDO::FETCH_OBJ);
 
-            // obtengo el libro
+            // obtengo el cliente
             $cliente = $stmt->fetch();
 
-            // devuelvo el libro
+            // devuelvo el cliente
             return $cliente;
         } catch (PDOException $e) {
 
@@ -195,52 +194,12 @@ class class_tabla_clientes extends class_conexion
     }
 
     /*
-        método: temas_id_by_libro_id()
-        descripción: obtiene un array con los ids de los temas asociados a un libro
-        parámetros: 
-            - $libro_id: id del libro
-        devuelve: 
-            - array con los ids de los temas asociados al libro   
-    */
-    public function temas_id_by_libro_id($libro_id)
-    {
-        try {
-
-            $sql = "SELECT tema_id FROM libros_temas WHERE libro_id = :libro_id";
-
-            // creo el objeto pdo_statement
-            $stmt = $this->pdo->prepare($sql);
-
-            // vinculo el parámetro
-            $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
-
-            // ejecuto la consulta
-            $stmt->execute();
-
-            // obtengo un array con los ids de los temas
-            $temas_id = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-
-            // devuelvo el array con los ids de los temas
-            return $temas_id;
-        } catch (PDOException $e) {
-
-            // mostrar error de base de datos
-            include 'views/partials/errorDB.partial.php';
-
-            // paro la ejecución 
-            return false;
-        } 
-    }
-    
-    
-
-    /*
         método:  update()
-        descripción: actualiza los detalles de un libro en la base de datos.
-        Además debera actualizar los géneros asociados al libro.
+        descripción: actualiza los detalles de un cliente en la base de datos.
+        Además debera actualizar los géneros asociados al cliente.
         parámetros: 
-            - $libro: objeto de la clase class_libro con los datos del libro a actualizar 
-            - $id: id del libro a actualizar
+            - $cliente: objeto de la clase class_cliente con los datos del cliente a actualizar 
+            - $id: id del cliente a actualizar
         devuelve: 
             - true si se ha actualizado correctamente
             - false si hay algún error
@@ -253,7 +212,7 @@ class class_tabla_clientes extends class_conexion
             // inicio transacción
             $this->pdo->beginTransaction();
 
-            // preparo la consulta sql para actualizar el libro
+            // preparo la consulta sql para actualizar el cliente
             $sql = "UPDATE clientes 
                     SET 
                         apellidos = :apellidos,
@@ -300,9 +259,9 @@ class class_tabla_clientes extends class_conexion
 
     /*
         método:  delete()
-        descripción: elimina un libro de la base de datos
+        descripción: elimina un cliente de la base de datos
         parámetros: 
-            - $id: id del libro a eliminar
+            - $id: id del cliente a eliminar
         devuelve: 
             - true si se ha eliminado correctamente
             - false si hay algún error
@@ -342,7 +301,7 @@ class class_tabla_clientes extends class_conexion
 
     /*
         método:  order_by()
-        descripción: ordena los libros en la base de datos por un campo determinado
+        descripción: ordena los clientes en la base de datos por un campo determinado
         parámetros: 
             - $criterio: número de la columna por la que se va a ordenar
             - Siempre es ASC
@@ -398,7 +357,7 @@ class class_tabla_clientes extends class_conexion
 
     /*
         método:  filter()
-        descripción: busca libros en la base de datos por título, autor, editorial o tema
+        descripción: busca clientes en la base de datos por nombre, apellidos, teléfono, ciudad, dni o email
         parámetros: 
             - $prompt: cadena de texto con la expresión de búsqueda
         devuelve: 

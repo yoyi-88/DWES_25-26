@@ -2,7 +2,7 @@
 
 /*
     controlador: new.php
-    descripción. Controlador para la creación de un nuevo alumno
+    descripción. Controlador para la creación de un nuevo cliente
 */
 
 

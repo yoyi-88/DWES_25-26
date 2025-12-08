@@ -2,7 +2,7 @@
 
 /*
     controlador: create.php
-    descripción. controlador para añadir un nuevo libro a partir del formulario
+    descripción. controlador para añadir un nuevo cliente a partir del formulario
 */
 
 // Configuración base de datos
