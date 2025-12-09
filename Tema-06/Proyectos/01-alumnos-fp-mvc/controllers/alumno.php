@@ -201,28 +201,28 @@
             Método: orderBy
             Descripción: Ordena la lista de alumnos por un campo específico
         */
-        public function orderBy($param = []) {
-            // Obtener el campo por el que se va a ordenar
-            $campo = $param[0] ?? 'id';
+        // public function orderBy($param = []) {
+        //     // Obtener el campo por el que se va a ordenar
+        //     $campo = $param[0] ?? 'id';
 
-            $campos_permitidos = [
-                'id', 'alumno', 'email', 'nacionalidad', 'dni', 'edad', 'curso'
-            ];
+        //     $campos_permitidos = [
+        //         'id', 'alumno', 'email', 'nacionalidad', 'dni', 'edad', 'curso'
+        //     ];
 
-            // Validar
-            if (!in_array($campo, $campos_permitidos)) {
-                $campo = 'id';
-            }
+        //     // Validar
+        //     if (!in_array($campo, $campos_permitidos)) {
+        //         $campo = 'id';
+        //     }
 
-            // Obtengo los datos del modelo para mostrar en la vista
-            $this->view->title = "Tabla Alumnos de FP";
+        //     // Obtengo los datos del modelo para mostrar en la vista
+        //     $this->view->title = "Tabla Alumnos de FP";
 
-            // Obtengo los datos del modelo ordenados por el campo especificado
-            $this->view->alumnos = $this->model->orderBy($campo);
+        //     // Obtengo los datos del modelo ordenados por el campo especificado
+        //     $this->view->alumnos = $this->model->orderBy($campo);
 
-            // Llama a la vista para renderizar la página
-            $this->view->render('alumno/main/index');
-        }
+        //     // Llama a la vista para renderizar la página
+        //     $this->view->render('alumno/main/index');
+        // }
     }
 
 ?>

@@ -257,44 +257,44 @@ class alumnoModel extends Model {
         Método: orderBy
         Descripción: Obtiene todos los alumnos ordenados por un campo específico
     */    
-    public function orderBy($campo) {
+    // public function orderBy($campo) {
 
-        try {
-        // Consulta SQL para obtener todos los alumnos ordenados por un campo específico
-        $sql = "SELECT 
-                    alumnos.id,
-                    concat_ws(', ', alumnos.apellidos, alumnos.nombre) as alumno,
-                    alumnos.email,
-                    alumnos.nacionalidad,
-                    alumnos.dni,
-                    timestampdiff(YEAR,  alumnos.fecha_nac, now()) as edad,
-                    cursos.nombreCorto as curso
-            FROM alumnos LEFT JOIN cursos
-            ON alumnos.curso_id = cursos.id 
-            ORDER BY `" . $campo . "`";
+    //     try {
+    //     // Consulta SQL para obtener todos los alumnos ordenados por un campo específico
+    //     $sql = "SELECT 
+    //                 alumnos.id,
+    //                 concat_ws(', ', alumnos.apellidos, alumnos.nombre) as alumno,
+    //                 alumnos.email,
+    //                 alumnos.nacionalidad,
+    //                 alumnos.dni,
+    //                 timestampdiff(YEAR,  alumnos.fecha_nac, now()) as edad,
+    //                 cursos.nombreCorto as curso
+    //         FROM alumnos LEFT JOIN cursos
+    //         ON alumnos.curso_id = cursos.id 
+    //         ORDER BY `" . $campo . "`";
 
-        // Conectar con la base de datos
-        $fp = $this->db->connect();
+    //     // Conectar con la base de datos
+    //     $fp = $this->db->connect();
 
-        // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+    //     // Preparar la consulta obteniendo el objeto PDOStatement
+    //     $stmt = $fp->prepare($sql);
 
-        // Establecer modo de obtención de datos  fectch
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    //     // Establecer modo de obtención de datos  fectch
+    //     $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
-        // Ejecutar la consulta
-        $stmt->execute();
+    //     // Ejecutar la consulta
+    //     $stmt->execute();
         
-        // Devuelvo objeto de la clase PDOStatement o array con los datos
-        return $stmt->fetchAll();
+    //     // Devuelvo objeto de la clase PDOStatement o array con los datos
+    //     return $stmt->fetchAll();
 
-        } catch (PDOException $e) {
+    //     } catch (PDOException $e) {
 
-            // Manejo del error
-           $this->handleError($e); 
+    //         // Manejo del error
+    //        $this->handleError($e); 
           
-        }
-    }
+    //     }
+    // }
 
 
 
