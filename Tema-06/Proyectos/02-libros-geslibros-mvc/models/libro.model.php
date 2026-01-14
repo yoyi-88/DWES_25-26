@@ -185,38 +185,42 @@ class libroModel extends Model {
     public function create($libro) {
 
         try {
-        // Consulta SQL para insertar un nuevo libro
+        // Consulta SQL para insertar en la tabla 'libros' (OK)
         $sql = "INSERT INTO libros 
-                (titulo, autor_id, editorial_id, generos, stock, precio_venta, fecha_nac, curso_id) 
-                VALUES 
-                (:titulo, :autor_id, :editorial_id, :generos, :stock, :precio_venta, :fecha_nac, :curso_id)";
+                    (titulo, autor_id, editorial_id, stock, precio_venta) 
+                    VALUES 
+                    (:titulo, :autor_id, :editorial_id, :stock, :precio_venta)";
 
         // Conectar con la base de datos
         $geslibros = $this->db->connect();
-
-        // Preparar la consulta obteniendo el objeto PDOStatement
         $stmt = $geslibros->prepare($sql);
 
         // Vincular los parámetros
-        $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR, 30);
-        $stmt->bindParam(':autor_id', $libro->autor_id, PDO::PARAM_STR, 50);
-        $stmt->bindParam(':editorial_id', $libro->editorial_id, PDO::PARAM_STR, 50);
-        $stmt->bindParam(':generos', $libro->generos, PDO::PARAM_STR, 9);
-        $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_STR, 9);
-        $stmt->bindParam(':precio_venta', $libro->precio_venta, PDO::PARAM_STR, 30);
-        $stmt->bindParam(':fecha_nac', $libro->fecha_nac, PDO::PARAM_STR, 10);
-        $stmt->bindParam(':curso_id', $libro->curso_id, PDO::PARAM_INT);
+        $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR, 80);
+        $stmt->bindParam(':autor_id', $libro->autor_id, PDO::PARAM_INT);
+        $stmt->bindParam(':editorial_id', $libro->editorial_id, PDO::PARAM_INT);
+        $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
+        $stmt->bindParam(':precio_venta', $libro->precio_venta, PDO::PARAM_STR);
 
         // Ejecutar la consulta
         $stmt->execute();
+        
+        // 1. Obtener el ID del libro recién insertado
+        $libro_id = $geslibros->lastInsertId(); // <-- CLAVE
+
+        // 2. Insertar la relación N:M (temas)
+        if (!empty($libro->temas)) {
+            // Llama al método auxiliar que maneja la inserción en libros_temas
+            $this->insert_temas_libro($libro_id, $libro->temas); 
+        }
 
         // Devuelvo el id del nuevo libro insertado
-        return $geslibros->lastInsertId();
+        return $libro_id;
 
         } catch (PDOException $e) {
 
-           // Manejo del error
-           $this->handleError($e); 
+            // Manejo del error
+            $this->handleError($e); 
         }
     }
 
@@ -276,11 +280,21 @@ class libroModel extends Model {
         try {
 
             $sql = "SELECT 
-                    libros.id, libros.titulo, autor_id, editorial_id, stock, precio_venta, generos, fecha_nac, curso_id, cursos.titulo AS curso
-                    FROM libros INNER JOIN cursos
-                    ON libros.curso_id = cursos.id WHERE libros.id = :id
-                    LIMIT 1
-                    ";
+                    l.id,
+                    l.titulo,
+                    a.nombre AS autor,
+                    e.nombre AS editorial,
+                    GROUP_CONCAT(t.tema ORDER BY t.tema SEPARATOR ', ') AS generos,
+                    l.stock,
+                    l.precio_venta
+                FROM libros AS l
+                LEFT JOIN autores AS a         ON l.autor_id = a.id
+                LEFT JOIN editoriales AS e     ON l.editorial_id = e.id
+                LEFT JOIN libros_temas AS lt   ON l.id = lt.libro_id
+                LEFT JOIN temas AS t           ON lt.tema_id = t.id
+                WHERE l.id = :id
+                GROUP BY l.id
+                ";
             
             // conectamos con la base de datos
             $geslibros = $this->db->connect();
@@ -301,9 +315,9 @@ class libroModel extends Model {
             return $stmt->fetch();
 
         }
-         catch (PDOException $e){
+        catch (PDOException $e){
             // Manejo del error
-           $this->handleError($e); 
+            $this->handleError($e); 
         }
     }
 
@@ -326,30 +340,42 @@ class libroModel extends Model {
                     autor_id = :autor_id, 
                     editorial_id = :editorial_id, 
                     stock = :stock, 
-                    precio_venta = :precio_venta
+                    precio_venta = :precio_venta,
+                    fecha_edicion = :fecha_edicion,
+                    isbn = :isbn
                 WHERE id = :id";
 
         // Conectar con la base de datos
         $geslibros = $this->db->connect();
-
-        // Preparar la consulta obteniendo el objeto PDOStatement
         $stmt = $geslibros->prepare($sql);
 
-        // Vincular los parámetros
-        $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR, 30);
-        $stmt->bindParam(':autor_id', $libro->autor_id, PDO::PARAM_STR, 50);
-        $stmt->bindParam(':editorial_id', $libro->editorial_id, PDO::PARAM_STR, 50);
+        // 2. Vincular los parámetros de la tabla 'libros'
+        $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR, 80); // Ajustar longitud
+        $stmt->bindParam(':autor_id', $libro->autor_id, PDO::PARAM_INT);
+        $stmt->bindParam(':editorial_id', $libro->editorial_id, PDO::PARAM_INT);
         $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
-        $stmt->bindParam(':precio_venta', $libro->precio_venta, PDO::PARAM_INT);
+        $stmt->bindParam(':precio_venta', $libro->precio_venta, PDO::PARAM_STR); // DECIMAL
+        $stmt->bindParam(':fecha_edicion', $libro->fecha_edicion, PDO::PARAM_STR); // DATE
+        $stmt->bindParam(':isbn', $libro->isbn, PDO::PARAM_STR, 13);
         $stmt->bindParam(':id', $libro->id, PDO::PARAM_INT);
 
-        // Ejecutar la consulta
-        return $stmt->execute();
+        // Ejecutar la actualización de la tabla 'libros'
+        $stmt->execute();
+        
+        // Eliminar temas existentes
+        $this->delete_temas_libro($libro->id);
+
+        // Insertar temas nuevos (el array está en $libro->temas)
+        if (!empty($libro->temas)) {
+            $this->insert_temas_libro($libro->id, $libro->temas);
+        }
+        
+        return true; 
 
         } catch (PDOException $e) {
 
-           // Manejo del error
-           $this->handleError($e); 
+            // Manejo del error
+            $this->handleError($e); 
         }
     }
 
@@ -387,6 +413,44 @@ class libroModel extends Model {
     }
 
     /*
+    Método: delete_temas_libro(int $libro_id)
+    Descripción: Elimina los temas existentes para un libro.
+    */
+    public function delete_temas_libro(int $libro_id) {
+        try {
+            $sql = "DELETE FROM libros_temas WHERE libro_id = :libro_id";
+            $geslibros = $this->db->connect();
+            $stmt = $geslibros->prepare($sql);
+            $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            $this->handleError($e);
+        }
+    }
+
+    /*
+    Método: insert_temas_libro(int $libro_id, array $temas_seleccionados)
+    Descripción: Inserta los temas nuevos para un libro.
+    */
+    public function insert_temas_libro(int $libro_id, array $temas_seleccionados) {
+        try {
+            $sql = "INSERT INTO libros_temas (libro_id, tema_id) VALUES (:libro_id, :tema_id)";
+            $geslibros = $this->db->connect();
+            $stmt = $geslibros->prepare($sql);
+
+            foreach ($temas_seleccionados as $tema_id) {
+                $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
+                $stmt->bindParam(':tema_id', $tema_id, PDO::PARAM_INT);
+                // Ejecutar dentro del bucle
+                $stmt->execute(); 
+            }
+            return true;
+        } catch (PDOException $e) {
+            $this->handleError($e);
+        }
+    }
+
+    /*
         Método: search($term)
         Descripción: Busca libros en la base de datos ges$geslibros que coincidan con el término de búsqueda
         Parámetros: 
@@ -399,28 +463,27 @@ class libroModel extends Model {
         try {
         // Consulta SQL para buscar libros
         $sql = "SELECT 
-                    libros.id,
-                    concat_ws(', ', libros.autor_id, libros.titulo) as libro,
-                    libros.editorial_id,
-                    libros.precio_venta,
-                    libros.generos,
-                    timestampdiff(YEAR,  libros.fecha_nac, now()) as edad,
-                    cursos.tituloCorto as curso
-                FROM libros INNER JOIN cursos
-                ON libros.curso_id = cursos.id
-                WHERE concat_ws(' ',
-                    libros.titulo,  
-                    libros.autor_id,  
-                    libros.editorial_id,
-                    libros.precio_venta, 
-                    libros.generos,
-                    libros.fecha_nac,
-                    timestampdiff(YEAR,  libros.fecha_nac, now()),
-                    cursos.tituloCorto,
-                    cursos.titulo
+                    l.id,
+                    l.titulo,
+                    a.nombre AS autor,
+                    e.nombre AS editorial,
+                    GROUP_CONCAT(t.tema ORDER BY t.tema SEPARATOR ', ') AS generos,
+                    l.stock,
+                    l.precio_venta precio
+                FROM libros AS l
+                LEFT JOIN autores AS a       ON l.autor_id = a.id
+                LEFT JOIN editoriales AS e   ON l.editorial_id = e.id
+                LEFT JOIN libros_temas AS lt ON l.id = lt.libro_id
+                LEFT JOIN temas AS t         ON lt.tema_id = t.id
+                WHERE 
+                    concat_ws(' ',
+                        l.titulo, 
+                        a.nombre, 
+                        e.nombre, 
+                        t.tema
                     ) LIKE :term
-                ORDER BY 1
-                ";
+                GROUP BY l.id
+                ORDER BY l.id ASC";
 
         // Conectar con la base de datos
         $geslibros = $this->db->connect();
@@ -428,9 +491,9 @@ class libroModel extends Model {
         // Preparar la consulta obteniendo el objeto PDOStatement
         $stmt = $geslibros->prepare($sql);
 
-        // Vincular los parámetros
-        $likeTerm = '%' . $term . '%';
-        $stmt->bindParam(':term', $likeTerm, PDO::PARAM_STR);
+        // Vincular los parámetros con comodines para LIKE
+        $like_term = '%' . $term . '%';
+        $stmt->bindParam(':term', $like_term, PDO::PARAM_STR);
 
         // Establecer modo de obtención de datos  fectch
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -443,8 +506,8 @@ class libroModel extends Model {
 
         } catch (PDOException $e) {
 
-           // Manejo del error
-           $this->handleError($e); 
+            // Manejo del error
+            $this->handleError($e); 
         }
     }
 
@@ -464,30 +527,47 @@ class libroModel extends Model {
             - objeto PDOStatement con los resultados ordenados
     */
     public function order(int $criterio) {
-
         try {
+        // Mapeo de criterios a columnas SQL
+        $column_map = [
+            1 => 'l.id',
+            2 => 'l.titulo',
+            3 => 'a.nombre',
+            4 => 'e.nombre',
+            5 => 'generos',
+            6 => 'l.stock',
+            7 => 'l.precio_venta'
+        ];
+
+        // Verificar si el criterio es válido
+        if (!array_key_exists($criterio, $column_map)) {
+            throw new InvalidArgumentException("Criterio de ordenación inválido.");
+        }
+
+        $order_by_column = $column_map[$criterio];
 
         // Consulta SQL para ordenar libros
         $sql = "SELECT 
-                    libros.id,
-                    concat_ws(', ', libros.autor_id, libros.titulo) as libro,
-                    libros.editorial_id,
-                    libros.precio_venta,
-                    libros.generos,
-                    timestampdiff(YEAR,  libros.fecha_nac, now()) as edad,
-                    cursos.tituloCorto as curso
-                FROM libros INNER JOIN cursos
-                ON libros.curso_id = cursos.id
-                ORDER BY :criterio";
+                    l.id,
+                    l.titulo,
+                    a.nombre AS autor,
+                    e.nombre AS editorial,
+                    GROUP_CONCAT(t.tema ORDER BY t.tema SEPARATOR ', ') AS generos,
+                    l.stock,
+                    l.precio_venta precio
+                FROM libros AS l
+                LEFT JOIN autores AS a       ON l.autor_id = a.id
+                LEFT JOIN editoriales AS e   ON l.editorial_id = e.id
+                LEFT JOIN libros_temas AS lt ON l.id = lt.libro_id
+                LEFT JOIN temas AS t         ON lt.tema_id = t.id
+                GROUP BY l.id
+                ORDER BY $order_by_column ASC";
 
         // Conectar con la base de datos
         $geslibros = $this->db->connect();
 
         // Preparar la consulta obteniendo el objeto PDOStatement
         $stmt = $geslibros->prepare($sql);
-
-        // Vincular los parámetros
-        $stmt->bindParam(':criterio', $criterio, PDO::PARAM_INT);
 
         // Establecer modo de obtención de datos  fectch
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -500,10 +580,12 @@ class libroModel extends Model {
 
         } catch (PDOException $e) {
 
-           // Manejo del error
-           $this->handleError($e); 
+            // Manejo del error
+            $this->handleError($e); 
         }
     }
+
+       
 
 
     /*

@@ -45,8 +45,15 @@
             // Creo la propiedad  title para la vista
             $this->view->title = "Nuevo Libro";
 
-            // Obtengo los datos del modelo de cursos
-            $this->view->cursos = $this->model->get_cursos();
+            // Cargamos los autores
+            $this->view->autores = $this->model->get_autores();
+
+            // Cargamos los editoriales
+            $this->view->editoriales = $this->model->get_editoriales();
+
+            // Cargamos los generos
+            $this->view->generos = $this->model->get_generos();
+
 
             // Llama a la vista para renderizar la página
             $this->view->render('libro/new/index');
@@ -63,11 +70,9 @@
         $titulo = $_POST['titulo']?? '';
         $autor_id = $_POST['autor_id']?? '';
         $editorial_id = $_POST['editorial_id']?? '';
-        $generos = $_POST['generos']?? '';
         $stock = $_POST['stock']?? '';
         $precio_venta = $_POST['precio_venta']?? '';
-        $fecha_nac = $_POST['fecha_nac']?? '';
-        $curso_id = $_POST['curso_id']?? '';
+        $temas_seleccionados = $_POST['genero'] ?? [];
 
         // Validar los datos, se omite en este ejemplo
 
@@ -77,11 +82,9 @@
             $titulo, 
             $autor_id, 
             $editorial_id,
-            $stock,
-            $precio_venta,  
-            $generos,  
-            $fecha_nac, 
-            $curso_id
+            $precio_venta,
+            $stock,  
+            $temas_seleccionados
         );
 
         // Llamar al modelo para insertar el nuevo libro
@@ -138,7 +141,7 @@
     }
 
     /*
-        Método: update()
+        Método:     ()
         Descripción: Recibe los datos del formulario para actualizar un libro
         url asociada: libro/update/id
 
@@ -155,9 +158,9 @@
         $titulo = $_POST['titulo']?? '';
         $autor_id = $_POST['autor_id']?? '';
         $editorial_id = $_POST['editorial_id']?? '';
-        $generos = $_POST['generos']?? '';
         $stock = $_POST['stock']?? '';
         $precio_venta = $_POST['precio_venta']?? '';
+        $temas_seleccionados = $_POST['genero'] ?? []; 
 
         // Validar los datos, se omite en este ejemplo
 
@@ -167,10 +170,9 @@
             $titulo, 
             $autor_id, 
             $editorial_id,
-            null,
-            $stock,
-            $precio_venta,  
-            $generos
+            $precio_venta, 
+            $stock, 
+            $temas_seleccionados 
         );
 
         $libro->generos = $generos;
@@ -223,6 +225,9 @@
         // libro/delete/4 -> voy a eliminar el libro con id=4
         // $param es un array en la posición 0 está el id
         $id = (int) $params[0];
+
+        // Creo la propiedad  title para la vista
+        $this->view->notify = "Libro eliminado correctamente";
         
         // Llamar al modelo para eliminar el libro
         $this->model->delete($id);
@@ -241,9 +246,6 @@
         // Obtengo el término de búsqueda del formulario
         $term = $_GET['term'] ?? '';
 
-        // Creo la propiedad  title para la vista
-        $this->view->notify = "Resultados de la búsqueda";
-
         // Llamar al modelo para buscar los libros
         $this->view->libros = $this->model->search($term);
 
@@ -258,38 +260,23 @@
 
         Parámetros:
             - criterio: campo por el que se ordena la lista
-                1: id
-                2: titulo
-                3: editorial_id
-                4: precio_venta
-                5: generos
-                6: edad
-                7: curso
+                1: Título
+                2: Autor
+                3: Editorial
+                4: Precio venta
+                5: Stock
+                6: Género
     */
     public function order($params) {
 
-        // Obtener el criterio de ordenación
-        $criterio = (int) $params[0];
-
-        // Mapeo de criterios a columnas de la base de datos
-        $columnas = [
-            1 => 'libros.id',
-            2 => 'libro',
-            3 => 'libros.editorial_id',
-            4 => 'libros.precio_venta',
-            5 => 'libros.generos',
-            6 => 'edad',
-            7 => 'curso'
-        ];
+        // Obtengo el criterio de ordenación
+        $criteria = (int) $params[0];
 
         // Creo la propiedad  title para la vista
-        $this->view->title = "libros ordenados por " . ($columnas[$criterio] ?? 'Id');  
-
-        // Creo la propiedad  notify para la vista
-        $this->view->notify = "libros ordenados por " . ($columnas[$criterio] ?? 'Id');
+        $this->view->title = "Tabla Libros de GesLibros";
 
         // Llamar al modelo para ordenar los libros
-        $this->view->libros = $this->model->order($criterio);
+        $this->view->libros = $this->model->order($criteria);
 
         // Llama a la vista para renderizar la página
         $this->view->render('libro/main/index');

@@ -148,7 +148,7 @@
         // Llamar al modelo para actualizar el autor
         $this->model->update($autor, $id);
 
-        // Redirigir a la lista de autors
+        // Redirigir a la lista de autores
         header('Location: ' . URL . 'autor');     
     
     
@@ -197,13 +197,13 @@
         // Llamar al modelo para eliminar el autor
         $this->model->delete($id);
 
-        // Redirigir a la lista de autors
+        // Redirigir a la lista de autores
         header('Location: ' . URL . 'autor');
     }
 
     /*
         Método: search()
-        Descripción: Busca a partir de una expresión en todos los detalles de los autors
+        Descripción: Busca a partir de una expresión en todos los detalles de los autores
         url asociada: autor/search
     */
     public function search() {
@@ -214,8 +214,8 @@
         // Creo la propiedad  title para la vista
         $this->view->notify = "Resultados de la búsqueda";
 
-        // Llamar al modelo para buscar los autors
-        $this->view->autors = $this->model->search($term);
+        // Llamar al modelo para buscar los autores
+        $this->view->autores = $this->model->search($term);
 
         // Llama a la vista para renderizar la página
         $this->view->render('autor/main/index');
@@ -223,18 +223,17 @@
 
     /*
         Método: order()
-        Descripción: Ordena la lista de autors por un criterio
+        Descripción: Ordena la lista de autores por un criterio
         url asociada: autor/order/criterio
 
         Parámetros:
             - criterio: campo por el que se ordena la lista
                 1: id
                 2: nombre
-                3: email
-                4: nacionalidad
-                5: dni
-                6: edad
-                7: curso
+                3: nacionalidad
+                4: fecha_nac
+                5: email
+                6: premios
     */
     public function order($params) {
 
@@ -243,23 +242,22 @@
 
         // Mapeo de criterios a columnas de la base de datos
         $columnas = [
-            1 => 'autors.id',
-            2 => 'autor',
-            3 => 'autors.email',
-            4 => 'autors.nacionalidad',
-            5 => 'autors.dni',
-            6 => 'edad',
-            7 => 'curso'
+            1 => 'id',
+            2 => 'nombre',
+            3 => 'nacionalidad',
+            4 => 'fecha_nac',
+            5 => 'email',
+            6 => 'premios'
         ];
 
         // Creo la propiedad  title para la vista
-        $this->view->title = "autors ordenados por " . ($columnas[$criterio] ?? 'Id');  
+        $this->view->title = "autores ordenados por " . ($columnas[$criterio] ?? 'Id');  
 
         // Creo la propiedad  notify para la vista
-        $this->view->notify = "autors ordenados por " . ($columnas[$criterio] ?? 'Id');
+        $this->view->notify = "autores ordenados por " . ($columnas[$criterio] ?? 'Id');
 
-        // Llamar al modelo para ordenar los autors
-        $this->view->autors = $this->model->order($criterio);
+        // Llamar al modelo para ordenar los autores
+        $this->view->autores = $this->model->order($criterio);
 
         // Llama a la vista para renderizar la página
         $this->view->render('autor/main/index');

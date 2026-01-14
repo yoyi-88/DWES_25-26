@@ -42,7 +42,7 @@
             <!-- campo fecha nacimiento -->
             <div class="mb-3">
                 <label for="fecha_nac" class="form-label">Fecha Nacimiento:</label>
-                <input type="date" class="form-control" name="fecha_nac" value="<?= $this->autor->fecha_nac ?>" disabled>
+                <input type="date" class="form-control" name="fecha_nac" value="<?= date('Y-m-d', strtotime($this->autor->fecha_nac)) ?>" disabled>
             </div>
 
             <!-- campo email -->

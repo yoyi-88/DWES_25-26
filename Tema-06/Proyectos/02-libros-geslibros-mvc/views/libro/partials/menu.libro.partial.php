@@ -1,5 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary primary">
     <div class="container-fluid">
+        <i class="bi bi-book"></i>
         <a class="navbar-brand" href="<?= URL ?>libro">Libros</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -14,13 +15,13 @@
                         Ordenar por
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/1">Id</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/2">Título</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/3">Autor</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/4">Editorial</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/5">Géneros</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/6">Stock</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/7">Precio</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/1">Id</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/2">Título</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/3">Autor</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/4">Editorial</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/5">Géneros</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/6">Stock</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/7">Precio</a></li>
                        
                         <li>
                             <hr class="dropdown-divider">

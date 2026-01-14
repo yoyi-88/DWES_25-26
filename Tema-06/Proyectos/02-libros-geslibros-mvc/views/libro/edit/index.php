@@ -36,7 +36,7 @@
 
                 <!-- Select Dinámico Autores -->
                 <div class="mb-3">
-                    <label for="autor_id" class="form-label">Autores:</label>
+                    <label for="autor_id" class="form-label">Autor:</label>
                     <select class="form-select" name="autor_id" required>
                         <option selected disabled value="">Seleccione Autor</option>
 
@@ -51,7 +51,7 @@
 
                 <!-- Select Dinámico Editoriales -->
                 <div class="mb-3">
-                    <label for="editorial_id" class="form-label">Editoriales:</label>
+                    <label for="editorial_id" class="form-label">Editorial:</label>
                     <select class="form-select" name="editorial_id" required>
                         <option selected disabled value="">Seleccione Editorial</option>
                         <!-- mostrar lista marcas -->
@@ -62,6 +62,18 @@
                             </option>
                         <?php endforeach; ?>
                     </select>
+                </div>
+
+                <!-- campo precio_venta -->
+                <div class="mb-3">
+                    <label for="precio_venta" class="form-label">Precio:</label>
+                    <input type="number" class="form-control" name="precio_venta" value="<?= $this->libro->precio_venta ?>" required>
+                </div>
+
+                <!-- campo stock -->
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Stock:</label>
+                    <input type="number" class="form-control" name="stock" value="<?= $this->libro->stock ?>" required>
                 </div>
 
                 <!-- lista dinamica chackbox temas -->
@@ -92,17 +104,7 @@
                     </div>
                 </div>
 
-                <!-- campo stock -->
-                <div class="mb-3">
-                    <label for="stock" class="form-label">Stock:</label>
-                    <input type="number" class="form-control" name="stock" value="<?= $this->libro->stock ?>" required>
-                </div>
-
-                <!-- campo precio_venta -->
-                <div class="mb-3">
-                    <label for="precio_venta" class="form-label">Precio:</label>
-                    <input type="number" class="form-control" name="precio_venta" value="<?= $this->libro->precio_venta ?>" required>
-                </div>
+                
 
                 <!-- botones de acción -->
                 <a class="btn btn-secondary" href="<?= URL ?>libro" role="button"

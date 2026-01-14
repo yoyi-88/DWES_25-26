@@ -28,6 +28,8 @@
 			<div class="card-footer">
 				Curso 25/26
 			</div>
+			<!-- Añadimos una imagen para hacer la interfaz más atractiva -->
+			<img src="https://static.eldiario.es/clip/f3c3436b-c8f1-4193-938c-dd01205bd9b8_16-9-discover-aspect-ratio_default_0.jpg" alt="librería">
 		</div>
 
 	</div>
