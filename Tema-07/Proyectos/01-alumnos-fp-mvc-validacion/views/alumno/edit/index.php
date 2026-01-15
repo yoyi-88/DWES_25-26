@@ -75,7 +75,7 @@
                 <div class="mb-3">
                     <label for="curso" class="form-label">Cursos:</label>
                     <select class="form-select" name="curso_id" required>
-                        <option selected disabled>Seleccione Curso</option>
+                        <option value="" selected disabled>Seleccione Curso</option>
                         <!-- mostrar lista marcas -->
                         <?php foreach ($this->cursos as $indice => $curso): ?>
                             <option value="<?= $indice ?>"

@@ -24,21 +24,40 @@
         <!-- contenido principal -->
         <main>
             <legend>Formulario Nuevo Alumno</legend>
+            
             <!-- Formulario para crear un nuevo alumno -->
             <form action="<?=  URL ?>alumno/create" method="POST">
 
                 <!-- Se exculyen los campos id, poblacion, provincia y dirección por simplicidad -->
 
+                <!-- protección CSRF -->
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
                 <!-- campo nombre -->
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre:</label>
-                    <input type="text" class="form-control" name="nombre" required>
+                    <input type="text" class="form-control 
+                    <?= isset($this->errors['nombre']) ? 'is-invalid' : null ?>" 
+                    name="nombre" 
+                    value="<?= htmlspecialchars($this->alumno->nombre) ?>"
+                    required>
+                    <!-- Mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                        <?= $this->errors['nombre'] ??= null ?>
+                    </span>
                 </div>
 
                 <!-- campo apellidos -->
                 <div class="mb-3">
                     <label for="apellidos" class="form-label">Apellidos:</label>
-                    <input type="text" class="form-control" name="apellidos" required>
+                    <input type="text" class="form-control
+                    <?= isset($this->errors['apellidos']) ? 'is-invalid' : null ?>" name="apellidos" 
+                    value="<?= htmlspecialchars($this->alumno->apellidos) ?>" 
+                    required>
+
+                    <span class="form-text text-danger" role="alert">
+                        <?= $this->errors['apellidos'] ??= null ?>
+                    </span>
                 </div>
 
                 <!-- campo email -->
@@ -78,7 +97,9 @@
                         <option selected disabled>Seleccione Curso</option>
                         <!-- mostrar lista marcas -->
                         <?php foreach ($this->cursos as $indice => $curso): ?>
-                            <option value="<?= $indice ?>">
+                            <option value="<?= $indice ?>"
+                                <?= ($this->alumno->curso_id == $indice) ? 'selected' : null ?>
+                            >
                                 <?= $curso ?>
                             </option>
                         <?php endforeach; ?>

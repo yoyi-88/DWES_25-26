@@ -210,6 +210,7 @@ class alumnoModel extends Model {
             $stmt->bindParam(':fecha_nac', $alumno->fecha_nac, PDO::PARAM_STR, 10);
             $stmt->bindParam(':curso_id', $alumno->curso_id, PDO::PARAM_INT);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            var_dump($alumno->curso_id); exit;
 
             // Ejecutar la consulta
             $stmt->execute();
@@ -351,6 +352,82 @@ class alumnoModel extends Model {
 
             // Validamos
             if ($stmt->rowCount() > 0) {
+                return FALSE;
+            }
+
+            return TRUE;
+
+        } catch(PDOException $e) {
+            // Manejo del error
+            $this->handleError($e);
+        }
+    }
+
+    /*
+        Método: validate_unique_dni($dni)
+        Descripción: valida dni único en la table alumnos 
+        Parámeterros:
+            - $dni
+        Devuelve:
+            - Falso - dni existe
+            - Verdadero - dni único
+    */
+    public function validate_unique_dni($dni) {
+        try {
+            // Gemeramos select
+            $sql = 'SELECT dni FROM alumnos WHERE dni = :dni';
+
+            // Conectar con la base de datos
+            $fp = $this->db->connect();
+
+            // Preparar la consulta obteniendo el objeto PDOStatement
+            $stmt = $fp->prepare($sql);
+
+            // Vincular los parámetros
+            $stmt->bindParam(':dni', $dni, PDO::PARAM_STR, 9);
+            // Ejecutamos sql
+            $stmt->execute();
+
+            // Validamos
+            if ($stmt->rowCount() > 0) {
+                return FALSE;
+            }
+
+            return TRUE;
+
+        } catch(PDOException $e) {
+            // Manejo del error
+            $this->handleError($e);
+        }
+    }
+
+    /*
+        Método: validate_curso_exists($curso_id)
+        Descripción: valida que el curso_id exista en la tabla cursos
+        Parámeterros:
+            - $curso_id
+        Devuelve:
+            - Falso - curso_id no existe
+            - Verdadero - curso_id existe
+    */
+    public function validate_curso_exists($curso_id) {
+        try {
+            // Gemeramos select
+            $sql = 'SELECT id FROM cursos WHERE id = :curso_id';
+
+            // Conectar con la base de datos
+            $fp = $this->db->connect();
+
+            // Preparar la consulta obteniendo el objeto PDOStatement
+            $stmt = $fp->prepare($sql);
+
+            // Vincular los parámetros
+            $stmt->bindParam(':curso_id', $curso_id, PDO::PARAM_INT);
+            // Ejecutamos sql
+            $stmt->execute();
+
+            // Validamos
+            if ($stmt->rowCount() == 0) {
                 return FALSE;
             }
 

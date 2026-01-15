@@ -45,7 +45,7 @@
                     <tbody>
                         <!-- $alumnos es un objeto mysqli_result, se puede usar foreach directamente  -->
                         <!-- solo cuando cada iteración devuelve un array asociativo -->
-                        <?php while ($alumno = $this->alumnos->fetch()): ?>
+                        <?php foreach ($this->alumnos as $alumno): ?>
                             <tr class="">
                                 <td><?= $alumno['id'] ?></td>
                                 <td><?= $alumno['alumno'] ?></td>
@@ -76,11 +76,11 @@
 
 
                             </tr>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4">Total Alumnos: <?= $this->alumnos->rowCount() ?></td>
+                            <td colspan="4">Total Alumnos: <?= count($this->alumnos)?></td>
                         </tr>
                     </tfoot>
                 </table>
