@@ -1,5 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary primary">
     <div class="container-fluid">
+        <i class="bi bi-book"></i>
         <a class="navbar-brand" href="<?= URL ?>autor">Autores</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -14,12 +15,12 @@
                         Ordenar por
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/1">Id</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/2">Nombre</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/3">Nacionalidad</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/4">Fecha nacimiento</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/5">Email</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/6">Premios</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>autor/order/1">Id</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>autor/order/2">Nombre</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>autor/order/3">Nacionalidad</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>autor/order/4">Fecha nacimiento</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>autor/order/5">Email</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>autor/order/6">Premios</a></li>
                        
                         <li>
                             <hr class="dropdown-divider">

@@ -53,7 +53,8 @@
                                 <td><?= $libro['editorial'] ?></td>
                                 <td><?= $libro['generos'] ?></td>
                                 <td class="text-end"><?= $libro['stock'] ?></td>
-                                <td class="text-end"><?= $libro['precio']  ?></td>
+                                <!-- usamos el formato en euros -->
+                                <td class="text-end"><?= number_format($libro['precio'], 2, ',', '.') ?> €</td>
 
                                 <!-- botones de acción -->
                                 <td>

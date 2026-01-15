@@ -7,88 +7,85 @@
 </head>
 
 <body>
-    <!-- Menú fijo superior -->
     <?php require_once("template/partials/menu.partial.php") ?>
 
-    <!-- Capa Principal -->
     <div class="container">
         <br><br><br><br>
 
-        <!-- capa de mensajes -->
         <?php require_once("template/partials/mensaje.partial.php") ?>
 
-        <!-- capa de errores -->
         <?php require_once("template/partials/error.partial.php") ?>
 
-        <!-- Mostrar tabla de  libros -->
-        <!-- contenido principal -->
         <main>
-            <legend>Formulario Nuevo Libro</legend>
-            <!-- Formulario para crear un nuevo libro -->
+            <legend><?= $this->title ?></legend>
             <form action="<?= URL ?>libro/create" method="POST">
 
-                <!-- Se exculyen los campos id, poblacion, provincia y dirección por simplicidad -->
-
-                <!-- campo titulo -->
                 <div class="mb-3">
                     <label for="titulo" class="form-label">Título:</label>
                     <input type="text" class="form-control" name="titulo" required>
                 </div>
 
-                <!-- campo autor -->
                 <div class="mb-3">
-                    <label for="autor" class="form-label">Autor:</label>
-                    <input type="text" class="form-control" name="autor" required>
-                </div>
+                    <label for="autor_id" class="form-label">Autor:</label>
+                    <select class="form-select" name="autor_id" required>
+                        <option selected disabled value="">Seleccione Autor</option>
 
-                <!-- campo editorial -->
-                <div class="mb-3">
-                    <label for="editorial" class="form-label">Editorial:</label>
-                    <input type="text" class="form-control" name="editorial" required>
-                </div>
-
-                <!-- campo generos -->
-                <div class="mb-3">
-                    <label for="generos" class="form-label">Generos:</label>
-                    <input type="text" class="form-control" name="generos" required>
-                </div>
-
-                <!-- campo Stock -->
-                <div class="mb-3">
-                    <label for="stock" class="form-label">Stock:</label>
-                    <input type="number" class="form-control" name="stock" required>
-                </div>
-
-                <!-- campo precio -->
-                <div class="mb-3">
-                    <label for="precio" class="form-label">Precio:</label>
-                    <input type="number" class="form-control" name="precio" required>
-                </div>
-
-                <!-- campo fecha nacimiento -->
-                <div class="mb-3">
-                    <label for="fecha_nac" class="form-label">Fecha Nacimiento:</label>
-                    <input type="date" class="form-control" name="fecha_nac" required>
-                </div>
-
-                <!-- Select Dinámico Cursos -->
-                <div class="mb-3">
-                    <label for="curso" class="form-label">Cursos:</label>
-                    <select class="form-select" name="curso_id" required>
-                        <option selected disabled>Seleccione Curso</option>
-                        <!-- mostrar lista marcas -->
-                        <?php foreach ($this->cursos as $indice => $curso): ?>
+                        <?php foreach ($this->autores as $indice => $autor): ?>
                             <option value="<?= $indice ?>">
-                                <?= $curso ?>
+                                <?= $autor ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
-                <!-- botones de acción -->
-                <a class="btn btn-secondary" href="<?=  URL ?>libro" role="button"
-                    onclick="return confirm('Confimar cancelación artículo')">Cancelar</a>
-                <button type="reset" class="btn btn-secondary" onclick="return confirm('Confimar reseteo artículo')">Limpiar</button>
+                <div class="mb-3">
+                    <label for="editorial_id" class="form-label">Editorial:</label>
+                    <select class="form-select" name="editorial_id" required>
+                        <option selected disabled value="">Seleccione Editorial</option>
+                        
+                        <?php foreach ($this->editoriales as $indice => $editorial): ?>
+                            <option value="<?= $indice ?>">
+                                <?= $editorial ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="precio_venta" class="form-label">Precio:</label>
+                    <input type="number" step="0.01" class="form-control" name="precio_venta" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Stock:</label>
+                    <input type="number" class="form-control" name="stock" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Géneros:</label>
+                    <div class="form-check"> 
+
+                        <?php
+                        // Solo necesitamos los géneros (que se cargan en el controlador new())
+                        $generos = $this->generos;
+                        // Eliminada la línea de $temas_asignados = $this->temas_libros;
+                        ?>
+
+                        <?php foreach ($generos as $indice => $genero): ?>
+                            <div>
+                                <input class="form-check-input" type="checkbox" name="genero[]" value="<?= $indice ?>" id="tema_<?= $indice ?>">
+                                <label class="form-check-label" for="tema_<?= $indice ?>">
+                                    <?= $genero ?>
+                                </label>
+                            </div>
+                        <?php endforeach; ?>
+
+                    </div>
+                </div>
+
+                <a class="btn btn-secondary" href="<?= URL ?>libro" role="button"
+                    onclick="return confirm('Confimar cancelación libro')">Cancelar</a>
+                <button type="reset" class="btn btn-secondary" onclick="return confirm('Confimar reseteo libro')">Limpiar</button>
                 <button type="submit" class="btn btn-primary">Guardar libro</button>
             </form>
 
@@ -96,8 +93,6 @@
         </main>
 
     </div>
-
-    <!-- /.container -->
 
     <?php require_once("template/partials/footer.partial.php") ?>
     <?php require_once("template/layouts/javascript.layout.php") ?>

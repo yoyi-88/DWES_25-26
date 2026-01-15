@@ -194,7 +194,7 @@ class autorModel extends Model {
             - true si la actualización fue exitosa
             - false en caso de error
     */
-    public function update($autor) {
+    public function update($autor , int $id) {
 
         try {
         // Consulta SQL para actualizar un autor
@@ -218,6 +218,7 @@ class autorModel extends Model {
         $stmt->bindParam(':fecha_nac', $autor->fecha_nac, PDO::PARAM_STR, 10);
         $stmt->bindParam(':email', $autor->email, PDO::PARAM_STR, 9);
         $stmt->bindParam(':premios', $autor->premios, PDO::PARAM_STR, 100);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         // Ejecutar la consulta
         return $stmt->execute();
@@ -275,28 +276,21 @@ class autorModel extends Model {
         try {
         // Consulta SQL para buscar autores
         $sql = "SELECT 
-                    autores.id,
-                    concat_ws(', ', autores.apellidos, autores.nombre) as autor,
-                    autores.email,
-                    autores.nacionalidad,
-                    autores.dni,
-                    timestampdiff(YEAR,  autores.fecha_nac, now()) as edad,
-                    cursos.nombreCorto as curso
-                FROM autores INNER JOIN cursos
-                ON autores.curso_id = cursos.id
-                WHERE concat_ws(' ',
-                    autores.nombre,  
-                    autores.apellidos,  
-                    autores.email,
-                    autores.nacionalidad, 
-                    autores.dni,
-                    autores.fecha_nac,
-                    timestampdiff(YEAR,  autores.fecha_nac, now()),
-                    cursos.nombreCorto,
-                    cursos.nombre
+                    id, 
+                    nombre, 
+                    nacionalidad, 
+                    date_format(fecha_nac, '%d/%m/%Y') as fecha_nac, 
+                    email, 
+                    premios 
+                FROM autores
+                WHERE 
+                    concat_ws(' ',
+                        nombre, 
+                        nacionalidad, 
+                        email, 
+                        premios
                     ) LIKE :term
-                ORDER BY 1
-                ";
+                ORDER BY 1";
 
         // Conectar con la base de datos
         $geslibros = $this->db->connect();
@@ -345,15 +339,13 @@ class autorModel extends Model {
 
         // Consulta SQL para ordenar autores
         $sql = "SELECT 
-                    autores.id,
-                    concat_ws(', ', autores.apellidos, autores.nombre) as autor,
-                    autores.email,
-                    autores.nacionalidad,
-                    autores.dni,
-                    timestampdiff(YEAR,  autores.fecha_nac, now()) as edad,
-                    cursos.nombreCorto as curso
-                FROM autores INNER JOIN cursos
-                ON autores.curso_id = cursos.id
+                    id,
+                    nombre,
+                    nacionalidad,
+                    date_format(fecha_nac, '%d/%m/%Y') as fecha_nac,
+                    email,
+                    premios
+                FROM autores
                 ORDER BY :criterio";
 
         // Conectar con la base de datos

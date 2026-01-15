@@ -34,7 +34,7 @@
                             <th scope="col">Id</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Nacionalidad</th>
-                            <th scope="col">Fecha Nacimiento</th>
+                            <th scope="col" class="text-end">Fecha Nacimiento</th>
                             <th scope="col">Email</th>
                             <th scope="col">Premios</th>
                             <th scope="col">Acciones</th>
@@ -49,7 +49,7 @@
                                 <td><?= $autor['id'] ?></td>
                                 <td><?= $autor['nombre'] ?></td>
                                 <td><?= $autor['nacionalidad'] ?></td>
-                                <td><?= $autor['fecha_nac'] ?></td>
+                                <td class="text-end"><?= $autor['fecha_nac'] ?></td>
                                 <td><?= $autor['email'] ?></td>
                                 <td><?= $autor['premios'] ?></td>
 
