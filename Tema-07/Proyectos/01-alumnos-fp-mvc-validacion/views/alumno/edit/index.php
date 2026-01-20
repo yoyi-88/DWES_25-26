@@ -29,57 +29,76 @@
 
                 <!-- Se exculyen los campos id, poblacion, provincia y dirección por simplicidad -->
 
+                <!-- protección CSRF -->
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
                 <!-- campo nombre -->
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre:</label>
-                    <input type="text" class="form-control" name="nombre" value="<?= $this->alumno->nombre ?>" required>
+                    <input type="text" class="form-control 
+                    <?= isset($this->errors['nombre']) ? 'is-invalid' : null ?>" 
+                    name="nombre" 
+                    value="<?= htmlspecialchars($this->alumno->nombre) ?>"
+                    required>
+                    <!-- Mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                        <?= $this->errors['nombre'] ??= null ?>
+                    </span>
                 </div>
 
                 <!-- campo apellidos -->
                 <div class="mb-3">
                     <label for="apellidos" class="form-label">Apellidos:</label>
-                    <input type="text" class="form-control" name="apellidos" value="<?= $this->alumno->apellidos ?>" required>
+                    <input type="text" class="form-control
+                    <?= isset($this->errors['apellidos']) ? 'is-invalid' : null ?>" name="apellidos" 
+                    value="<?= htmlspecialchars($this->alumno->apellidos) ?>" 
+                    required>
+
+                    <span class="form-text text-danger" role="alert">
+                        <?= $this->errors['apellidos'] ??= null ?>
+                    </span>
                 </div>
 
                 <!-- campo email -->
                 <div class="mb-3">
                     <label for="email" class="form-label">Email:</label>
-                    <input type="email" class="form-control" name="email" value="<?= $this->alumno->email ?>" required>
+                    <input type="email" class="form-control" name="email" required>
                 </div>
 
                 <!-- campo dni -->
                 <div class="mb-3">
                     <label for="email" class="form-label">DNI:</label>
-                    <input type="text" class="form-control" name="dni" value="<?= $this->alumno->dni ?>" required>
+                    <input type="text" class="form-control" name="dni" required>
                 </div>
 
                 <!-- campo teléfono -->
                 <div class="mb-3">
                     <label for="telefono" class="form-label">Teléfono:</label>
-                    <input type="tel" class="form-control" name="telefono" value="<?= $this->alumno->telefono ?>" required>
+                    <input type="tel" class="form-control" name="telefono" required>
                 </div>
 
                 <!-- campo nacionalidad -->
                 <div class="mb-3">
                     <label for="email" class="form-label">Nacionalidad:</label>
-                    <input type="text" class="form-control" name="nacionalidad" value="<?= $this->alumno->nacionalidad ?>" required>
+                    <input type="text" class="form-control" name="nacionalidad" required>
                 </div>
 
                 <!-- campo fecha nacimiento -->
                 <div class="mb-3">
                     <label for="fecha_nac" class="form-label">Fecha Nacimiento:</label>
-                    <input type="date" class="form-control" name="fecha_nac" value="<?= $this->alumno->fecha_nac ?>" required>
+                    <input type="date" class="form-control" name="fecha_nac" required>
                 </div>
 
                 <!-- Select Dinámico Cursos -->
                 <div class="mb-3">
                     <label for="curso" class="form-label">Cursos:</label>
                     <select class="form-select" name="curso_id" required>
-                        <option value="" selected disabled>Seleccione Curso</option>
+                        <option selected disabled>Seleccione Curso</option>
                         <!-- mostrar lista marcas -->
                         <?php foreach ($this->cursos as $indice => $curso): ?>
                             <option value="<?= $indice ?>"
-                                <?= ($this->alumno->curso_id == $indice) ? 'selected':null ?>>
+                                <?= ($this->alumno->curso_id == $indice) ? 'selected' : null ?>
+                            >
                                 <?= $curso ?>
                             </option>
                         <?php endforeach; ?>
