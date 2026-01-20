@@ -45,7 +45,7 @@
                     <tbody>
                         <!-- $alumnos es un objeto mysqli_result, se puede usar foreach directamente  -->
                         <!-- solo cuando cada iteración devuelve un array asociativo -->
-                        <?php foreach ($this->alumnos as $alumno): ?>
+                        <?php while ($alumno = $this->alumnos->fetch()): ?>
                             <tr class="">
                                 <td><?= $alumno['id'] ?></td>
                                 <td><?= $alumno['alumno'] ?></td>
@@ -60,7 +60,7 @@
                                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                         <!-- boton eliminar -->
                                         <a href="<?=  URL ?>alumno/delete/<?= $alumno['id'] ?>" class="btn btn-danger btn-sm" title="Eliminar"
-                                            onclick="return confirm('Confimar elimación del artículo')">
+                                            onclick="return confirm('Confimar elimación del alumno <?= $alumno['alumno'] ?>')">
                                             <i class="bi bi-trash3"></i>
                                         </a>
                                         <!-- boton editar -->
@@ -76,11 +76,11 @@
 
 
                             </tr>
-                        <?php endforeach; ?>
+                        <?php endwhile; ?>
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4">Total Alumnos: <?= count($this->alumnos)?></td>
+                            <td colspan="4">Total Alumnos: <?= $this->alumnos->rowCount() ?></td>
                         </tr>
                     </tfoot>
                 </table>

@@ -1,11 +1,5 @@
 <?php
 
-/*
-    clase: class_alumno
-    descripción: clase con propieades extraidas de las columnas de la tabla alumnos de fp
-
-*/
-
 class class_alumno {
     public $id;
     public $nombre;
@@ -53,6 +47,5 @@ class class_alumno {
         return $edad->y; // Devuelve solo los años
     }
 }
-
 
 ?>

@@ -24,26 +24,25 @@
         <!-- contenido principal -->
         <main>
             <legend>Formulario Nuevo Alumno</legend>
-            
             <!-- Formulario para crear un nuevo alumno -->
-            <form action="<?=  URL ?>alumno/create" method="POST">
+            <form action="<?= URL ?>alumno/create" method="POST">
 
                 <!-- Se exculyen los campos id, poblacion, provincia y dirección por simplicidad -->
 
-                <!-- protección CSRF -->
+                <!-- proetección CSRF -->
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
+                
                 <!-- campo nombre -->
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre:</label>
                     <input type="text" class="form-control 
-                    <?= isset($this->errors['nombre']) ? 'is-invalid' : null ?>" 
+                    <?=  (isset($this->errors['nombre'])) ? 'is-invalid': null ?>"
                     name="nombre" 
-                    value="<?= htmlspecialchars($this->alumno->nombre) ?>"
+                    value="<?= htmlspecialchars($this->alumno->nombre)?>"
                     required>
-                    <!-- Mostrar posibles errores de validación -->
+                    <!-- mostrar posibles errores de validación -->
                     <span class="form-text text-danger" role="alert">
-                        <?= $this->errors['nombre'] ??= null ?>
+                            <?= $this->errors['nombre'] ??= null ?>
                     </span>
                 </div>
 
@@ -51,43 +50,84 @@
                 <div class="mb-3">
                     <label for="apellidos" class="form-label">Apellidos:</label>
                     <input type="text" class="form-control
-                    <?= isset($this->errors['apellidos']) ? 'is-invalid' : null ?>" name="apellidos" 
-                    value="<?= htmlspecialchars($this->alumno->apellidos) ?>" 
+                     <?=  (isset($this->errors['apellidos'])) ? 'is-invalid': null ?>"
+                    name="apellidos" 
+                     value="<?= htmlspecialchars($this->alumno->apellidos)?>"
                     required>
-
+                     <!-- mostrar posibles errores de validación -->
                     <span class="form-text text-danger" role="alert">
-                        <?= $this->errors['apellidos'] ??= null ?>
+                            <?= $this->errors['apellidos'] ??= null ?>
                     </span>
                 </div>
 
                 <!-- campo email -->
                 <div class="mb-3">
                     <label for="email" class="form-label">Email:</label>
-                    <input type="email" class="form-control" name="email" required>
+                    <input type="email" class="form-control
+                    <?=  (isset($this->errors['email'])) ? 'is-invalid': null ?>"
+                    name="email" 
+                    value="<?= htmlspecialchars($this->alumno->email)?>"
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                            <?= $this->errors['email'] ??= null ?>      
+                    </span>
                 </div>
 
                 <!-- campo dni -->
                 <div class="mb-3">
                     <label for="email" class="form-label">DNI:</label>
-                    <input type="text" class="form-control" name="dni" required>
+                    <input type="text" class="form-control
+                    <?=  (isset($this->errors['dni'])) ? 'is-invalid': null ?>"
+                    name="dni" 
+                    value="<?= htmlspecialchars($this->alumno->dni)?>"
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                            <?= $this->errors['dni'] ??= null ?>    
+                    </span>
                 </div>
 
                 <!-- campo teléfono -->
                 <div class="mb-3">
                     <label for="telefono" class="form-label">Teléfono:</label>
-                    <input type="tel" class="form-control" name="telefono" required>
+                    <input type="tel" class="form-control
+                    <?=  (isset($this->errors['telefono'])) ? 'is-invalid': null ?>"
+                    name="telefono" 
+                    value="<?= htmlspecialchars($this->alumno->telefono)?>"
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                        <?= $this->errors['telefono'] ??= null ?>
+                    </span>
                 </div>
 
                 <!-- campo nacionalidad -->
                 <div class="mb-3">
                     <label for="email" class="form-label">Nacionalidad:</label>
-                    <input type="text" class="form-control" name="nacionalidad" required>
+                    <input type="text" class="form-control
+                    <?=  (isset($this->errors['nacionalidad'])) ? 'is-invalid': null ?>"
+                    name="nacionalidad" 
+                    value="<?= htmlspecialchars($this->alumno->nacionalidad)?>"
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                        <?= $this->errors['nacionalidad'] ??= null ?>   
+                    </span>
                 </div>
 
                 <!-- campo fecha nacimiento -->
                 <div class="mb-3">
                     <label for="fecha_nac" class="form-label">Fecha Nacimiento:</label>
-                    <input type="date" class="form-control" name="fecha_nac" required>
+                    <input type="date" class="form-control
+                    <?=  (isset($this->errors['fecha_nac'])) ? 'is-invalid': null ?>"
+                    name="fecha_nac" 
+                    value="<?= htmlspecialchars($this->alumno->fecha_nac) ?>"
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                        <?= $this->errors['fecha_nac'] ??= null ?>
+                    </span>
                 </div>
 
                 <!-- Select Dinámico Cursos -->
@@ -98,12 +138,16 @@
                         <!-- mostrar lista marcas -->
                         <?php foreach ($this->cursos as $indice => $curso): ?>
                             <option value="<?= $indice ?>"
-                                <?= ($this->alumno->curso_id == $indice) ? 'selected' : null ?>
+                                <?= ($this->alumno->curso_id == $indice) ? 'selected' : '' ?>
                             >
                                 <?= $curso ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                        <?= $this->errors['curso_id'] ??= null ?>   
+                    </span>
                 </div>
 
                 <!-- botones de acción -->

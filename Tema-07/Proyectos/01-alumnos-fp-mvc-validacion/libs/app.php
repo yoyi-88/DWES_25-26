@@ -29,7 +29,8 @@ class App {
 
                 // Validar que el método exista
                 if (method_exists($controller, $methodName)) {
-                    call_user_func_array([$controller, $methodName], $params);
+                    $controller->$methodName($params);
+                    // call_user_func_array([$controller, $methodName], (array) $params);
                 } else {
                     throw new Exception("El método '{$methodName}' no existe en el controlador '{$controllerName}'.");
                 }

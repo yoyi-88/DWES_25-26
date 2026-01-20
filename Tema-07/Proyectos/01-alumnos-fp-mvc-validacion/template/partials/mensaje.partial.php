@@ -1,8 +1,6 @@
-<?php if (isset($this->notify)):?>
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>Mensaje </strong> <?= $this->notify; ?>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>   
+<?php if (isset($this->notify)): ?>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>MENSAJE: </strong> <?= $this->notify; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-<?php endif;?>
+<?php endif; ?>
