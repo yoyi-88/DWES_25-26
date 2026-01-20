@@ -61,7 +61,7 @@
                                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                         <!-- boton eliminar -->
                                         <a href="<?=  URL ?>libro/delete/<?= $libro['id'] ?>" class="btn btn-danger btn-sm" title="Eliminar"
-                                            onclick="return confirm('Confimar elimación del libro <?= $libros['libro'] ?>')">
+                                            onclick="return confirm('Confimar elimación del libro <?= htmlspecialchars($libro['titulo']) ?>')">
                                             <i class="bi bi-trash3"></i>
                                         </a>
                                         <!-- boton editar -->

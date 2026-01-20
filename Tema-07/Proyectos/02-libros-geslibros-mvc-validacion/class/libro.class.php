@@ -7,6 +7,8 @@ class class_libro {
     public $editorial_id;
     public $precio_venta;
     public $stock;
+    public $fecha_edicion;
+    public $isbn;
     public $temas; 
 
 
@@ -17,6 +19,8 @@ class class_libro {
         $editorial_id = null,
         $precio_venta = null,
         $stock = null,
+        $fecha_edicion = null,
+        $isbn = null,
         $temas = null 
     )
     {
@@ -26,6 +30,8 @@ class class_libro {
         $this->editorial_id = $editorial_id;
         $this->precio_venta = $precio_venta;
         $this->stock = $stock;
+        $this->fecha_edicion = $fecha_edicion;
+        $this->isbn = $isbn;
         $this->temas = $temas; 
     }
 

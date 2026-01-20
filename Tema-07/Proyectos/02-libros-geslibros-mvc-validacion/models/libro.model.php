@@ -183,45 +183,41 @@ class libroModel extends Model {
             - falso en caso de error
     */
     public function create($libro) {
-
         try {
-        // Consulta SQL para insertar en la tabla 'libros' (OK)
-        $sql = "INSERT INTO libros 
-                    (titulo, autor_id, editorial_id, stock, precio_venta) 
+            // Consulta SQL actualizada con ISBN y Fecha Edición
+            $sql = "INSERT INTO libros 
+                    (titulo, autor_id, editorial_id, stock, precio_venta, fecha_edicion, isbn) 
                     VALUES 
-                    (:titulo, :autor_id, :editorial_id, :stock, :precio_venta)";
+                    (:titulo, :autor_id, :editorial_id, :stock, :precio_venta, :fecha_edicion, :isbn)";
 
-        // Conectar con la base de datos
-        $geslibros = $this->db->connect();
-        $stmt = $geslibros->prepare($sql);
+            $geslibros = $this->db->connect();
+            $stmt = $geslibros->prepare($sql);
 
-        // Vincular los parámetros
-        $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR, 80);
-        $stmt->bindParam(':autor_id', $libro->autor_id, PDO::PARAM_INT);
-        $stmt->bindParam(':editorial_id', $libro->editorial_id, PDO::PARAM_INT);
-        $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
-        $stmt->bindParam(':precio_venta', $libro->precio_venta, PDO::PARAM_STR);
+            // Vincular los parámetros existentes
+            $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR, 80);
+            $stmt->bindParam(':autor_id', $libro->autor_id, PDO::PARAM_INT);
+            $stmt->bindParam(':editorial_id', $libro->editorial_id, PDO::PARAM_INT);
+            $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
+            $stmt->bindParam(':precio_venta', $libro->precio_venta, PDO::PARAM_STR);
+            $stmt->bindParam(':fecha_edicion', $libro->fecha_edicion, PDO::PARAM_STR);
+            $stmt->bindParam(':isbn', $libro->isbn, PDO::PARAM_STR, 13);
 
-        // Ejecutar la consulta
-        $stmt->execute();
-        
-        // 1. Obtener el ID del libro recién insertado
-        $libro_id = $geslibros->lastInsertId(); // <-- CLAVE
+            $stmt->execute();
+            
+            $libro_id = $geslibros->lastInsertId();
 
-        // 2. Insertar la relación N:M (temas)
-        if (!empty($libro->temas)) {
-            // Llama al método auxiliar que maneja la inserción en libros_temas
-            $this->insert_temas_libro($libro_id, $libro->temas); 
-        }
+            // Insertar géneros (relación N:M)
+            if (!empty($libro->temas)) {
+                $this->insert_temas_libro($libro_id, $libro->temas); 
+            }
 
-        // Devuelvo el id del nuevo libro insertado
-        return $libro_id;
+            return $libro_id;
 
         } catch (PDOException $e) {
-
-            // Manejo del error
             $this->handleError($e); 
         }
+
+        
     }
 
     /*
@@ -237,9 +233,16 @@ class libroModel extends Model {
         try {
 
             $sql = "SELECT 
-                    id, titulo, autor_id, editorial_id, null, stock, precio_venta
-                    FROM libros WHERE id = :id
-                    ";
+                    id, 
+                    titulo, 
+                    autor_id, 
+                    editorial_id, 
+                    fecha_edicion, 
+                    isbn, 
+                    stock, 
+                    precio_venta
+                FROM libros 
+                WHERE id = :id";
             
             // conectamos con la base de datos
             $geslibros = $this->db->connect();
@@ -585,7 +588,37 @@ class libroModel extends Model {
         }
     }
 
-       
+    // Valida si el autor existe en la tabla autores
+    public function validateAutor($id) {
+        $sql = "SELECT id FROM autores WHERE id = :id LIMIT 1";
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        return $stmt->rowCount() > 0;
+    }
+
+    // Valida si la editorial existe
+    public function validateEditorial($id) {
+        $sql = "SELECT id FROM editoriales WHERE id = :id LIMIT 1";
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        return $stmt->rowCount() > 0;
+    }
+
+    // Valida si el ISBN es único
+    public function validateUniqueIsbn($isbn) {
+        $sql = "SELECT id FROM libros WHERE isbn = :isbn LIMIT 1";
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute(['isbn' => $isbn]);
+        return $stmt->rowCount() == 0; // True si no existe
+    }
+
+    // valida si el isbn es unico para edición (excluyendo el libro actual)
+    public function validateUniqueIsbnUpdate($isbn, $id) {
+        $sql = "SELECT id FROM libros WHERE isbn = :isbn AND id != :id LIMIT 1";
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->execute(['isbn' => $isbn, 'id' => $id]);
+        return $stmt->rowCount() == 0; // True si no existe
+    }
 
 
     /*
