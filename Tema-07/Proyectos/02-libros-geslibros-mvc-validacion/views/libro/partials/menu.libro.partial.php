@@ -15,24 +15,20 @@
                         Ordenar por
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/1">Id</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/2">Título</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/3">Autor</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/4">Editorial</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/5">Géneros</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/6">Stock</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/7">Precio</a></li>
-                       
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/1/<?= $_SESSION['csrf_token'] ?>">Id</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/2/<?= $_SESSION['csrf_token'] ?>">Título</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/3/<?= $_SESSION['csrf_token'] ?>">Autor</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/4/<?= $_SESSION['csrf_token'] ?>">Editorial</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/5/<?= $_SESSION['csrf_token'] ?>">Géneros</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/6/<?= $_SESSION['csrf_token'] ?>">Stock</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/7/<?= $_SESSION['csrf_token'] ?>">Precio</a></li>
                     </ul>
                 </li>
                
             </ul>
             <form class="d-flex" method="GET" action="<?=  URL ?>libro/search">
                 <input class="form-control me-2" type="search" placeholder="buscar..." aria-label="Search" name="term">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 <button class="btn btn-outline-secondary" type="submit">Buscar</button>
             </form>
         </div>

@@ -14,13 +14,13 @@
                         Ordenar por
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/1">Id</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/2">Alumno</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/3">Email</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/4">Nacionalidad</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/5">DNI</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/6">Edad</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/7">Curso</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/1/<?= $_SESSION['csrf_token'] ?>">Id</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/2/<?= $_SESSION['csrf_token'] ?>">Alumno</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/3/<?= $_SESSION['csrf_token'] ?>">Email</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/4/<?= $_SESSION['csrf_token'] ?>">Nacionalidad</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/5/<?= $_SESSION['csrf_token'] ?>">DNI</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/6/<?= $_SESSION['csrf_token'] ?>">Edad</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>alumno/order/7/<?= $_SESSION['csrf_token'] ?>">Curso</a></li>
                        
                         <li>
                             <hr class="dropdown-divider">
@@ -32,6 +32,7 @@
             </ul>
             <form class="d-flex" method="GET" action="<?=  URL ?>alumno/search">
                 <input class="form-control me-2" type="search" placeholder="buscar..." aria-label="Search" name="term">
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 <button class="btn btn-outline-secondary" type="submit">Buscar</button>
             </form>
         </div>

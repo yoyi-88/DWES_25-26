@@ -23,7 +23,7 @@ class Libro extends Controller
     function render()
     {
         // Iniciar sesión para leer el mensaje
-        if (session_status() == PHP_SESSION_NONE) session_start();
+        session_start();
         
         // 1. Recuperar el mensaje de éxito si existe
         $this->view->mensaje = $_SESSION['mensaje'] ?? null;
@@ -44,7 +44,7 @@ class Libro extends Controller
             Carga de datos: lista de cursos para la lista dinámica del select
         */
     function new() {
-        if (session_status() == PHP_SESSION_NONE) session_start();
+        session_start();
 
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -84,7 +84,7 @@ class Libro extends Controller
     {
 
         // Iniciar sesión para manejar errores y persistencia (si no está iniciada)
-        if (session_status() == PHP_SESSION_NONE) session_start();
+        session_start();
 
         // Validar el token CSRF
         if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
@@ -186,7 +186,7 @@ class Libro extends Controller
     public function edit($params)
     {
         // iniciamos o continuamos la sesión
-        if (session_status() == PHP_SESSION_NONE) session_start();
+        session_start();
 
 
         // Obtener el id del libro que voy a editar
@@ -250,7 +250,7 @@ class Libro extends Controller
     public function update($params)
     {
         // iniciamos o continuamos la sesión
-        if (session_status() == PHP_SESSION_NONE) session_start();
+        session_start();
 
         // Obtener el id del libro que voy a actualizar
         $id = (int) htmlspecialchars($params[0]);
@@ -401,11 +401,31 @@ class Libro extends Controller
     */
     public function show($params)
     {
+        // inicio o continúo sesión
+        session_start();
 
         // Obtener el id del libro que voy a mostrar
         // libro/show/4 -> voy a mostrar el libro con id=4
         // $param es un array en la posición 0 está el id
-        $id = (int) $params[0];
+        $id = (int) htmlspecialchars($params[0]);
+
+        // Obtener el token CSRF desde la vista principal main/index.php
+        // alumno/show/4/token_csrf
+        $csrf_token = $params[1];
+
+        // Validación CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            $this->handleError();
+        }
+
+        // Validar id del libro que voy a mostrar
+        if (!$this->model->validate_id_libro_exists($id)) {
+            // Generar un mensaje de error
+            $_SESSION['error'] = "El libro que intentas ver no existe";
+            // Redirigir a la lista de libros si el id no es válido
+            header('Location: ' . URL . 'libro');
+            exit();
+        }
 
         // Obtener el objeto de la class_libro con los detalles de este libro
         $this->view->libro = $this->model->read_show($id);
@@ -428,17 +448,36 @@ class Libro extends Controller
     */
     public function delete($params)
     {
+        // iniciamos o continuamos la sesión
+        session_start();
+
+        // obtengo el token CSRF url
+        $csrf_token = $params[1];
+
+        // verificar el token CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            $this->handleError();
+        }
 
         // Obtener el id del libro que voy a eliminar
         // libro/delete/4 -> voy a eliminar el libro con id=4
         // $param es un array en la posición 0 está el id
         $id = (int) $params[0];
-
-        // Creo la propiedad  title para la vista
-        $this->view->notify = "Libro eliminado correctamente";
+        
+        // validar id del libro que voy a eliminar
+        if (!$this->model->validate_id_libro_exists($id)) {
+            // Generar un mensaje de error
+            $_SESSION['error'] = "El libro que intentas eliminar no existe";
+            // Redirigir a la lista de libros si el id no es válido
+            header('Location: ' . URL . 'libro');
+            exit();
+        }
 
         // Llamar al modelo para eliminar el libro
         $this->model->delete($id);
+
+        // Generar un mensaje de éxito
+        $_SESSION['mensaje'] = "Libro eliminado correctamente";
 
         // Redirigir a la lista de libros
         header('Location: ' . URL . 'libro');
@@ -451,9 +490,23 @@ class Libro extends Controller
     */
     public function search()
     {
+        // Inicio o continúo la sesión
+        session_start();
 
         // Obtengo el término de búsqueda del formulario
-        $term = $_GET['term'] ?? '';
+        $term = filter_var($_GET['term'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
+
+        // obtener el token CSRF desde el formulario
+        $csrf_token = $_GET['csrf_token'] ??= '';
+
+
+        // verificar el token CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            $this->handleError();
+        }
+
+        // Creo la propiedad  title para la vista
+        $this->view->mensaje = "Resultados de la búsqueda: " . $term;
 
         // Llamar al modelo para buscar los libros
         $this->view->libros = $this->model->search($term);
@@ -478,15 +531,38 @@ class Libro extends Controller
     */
     public function order($params)
     {
+        // Inicio o continúo la sesión
+        session_start();
+
+        // obtengo  el token CSRF desde la url
+        $csrf_token = $params[1];
+        // verificar el token CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            $this->handleError();
+        }
 
         // Obtengo el criterio de ordenación
-        $criteria = (int) $params[0];
+        $criterio = (int) $params[0];
+
+        // Mapeo de criterios a columnas de la base de datos
+        $columnas = [
+            1 => 'id',
+            2 => 'titulo',
+            3 => 'autor',
+            4 => 'editorial',
+            5 => 'generos',
+            6 => 'stock',
+            7 => 'precio_venta'
+        ];
 
         // Creo la propiedad  title para la vista
-        $this->view->title = "Tabla Libros de GesLibros";
+        $this->view->title = "Libros ordenados por " . ($columnas[$criterio] ?? 'Id');  
+
+        // Creo la propiedad  notify para la vista
+        $this->view->mensaje = "Libros ordenados por " . ($columnas[$criterio] ?? 'Id');
 
         // Llamar al modelo para ordenar los libros
-        $this->view->libros = $this->model->order($criteria);
+        $this->view->libros = $this->model->order($criterio);
 
         // Llama a la vista para renderizar la página
         $this->view->render('libro/main/index');

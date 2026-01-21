@@ -620,6 +620,42 @@ class libroModel extends Model {
         return $stmt->rowCount() == 0; // True si no existe
     }
 
+    /*
+        metodo: validate_id_libro_exists($id)
+        Descripción: valida que el libro exista en la tabla libros
+        Parámetros: 
+            - $libro_id
+        Devuelve:
+            - Falso - libro no existente
+            - Verdadero - libro existente
+    */
+    public function validate_id_libro_exists($libro_id) {
+        try {
+        // Generamos select 
+        $sql = "SELECT id FROM libros WHERE id = :libro_id";
+        // Conectar con la base de datos
+        $fp = $this->db->connect();
+        // Preparar la consulta obteniendo el objeto PDOStatement
+        $stmt = $fp->prepare($sql);
+        // Vincular los parámetros
+        $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
+        // Ejecutamos sql
+        $stmt->execute();
+
+        // Validamos
+        if ($stmt->rowCount() > 0) {
+            return TRUE;
+        }
+
+        return FALSE; 
+
+        } catch (PDOException $e) {
+            // Manejo del error
+            $this->handleError($e); 
+
+        }
+    }
+
 
     /*
         Método: handleError

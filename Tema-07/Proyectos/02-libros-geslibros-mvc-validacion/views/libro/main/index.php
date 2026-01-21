@@ -60,7 +60,7 @@
                                 <td>
                                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                         <!-- boton eliminar -->
-                                        <a href="<?=  URL ?>libro/delete/<?= $libro['id'] ?>" class="btn btn-danger btn-sm" title="Eliminar"
+                                        <a href="<?=  URL ?>libro/delete/<?= $libro['id'] ?>/<?= $_SESSION['csrf_token'] ?>" class="btn btn-danger btn-sm" title="Eliminar"
                                             onclick="return confirm('Confimar elimación del libro <?= htmlspecialchars($libro['titulo']) ?>')">
                                             <i class="bi bi-trash3"></i>
                                         </a>
@@ -69,7 +69,7 @@
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <!-- boton ver -->
-                                        <a href="<?=  URL ?>libro/show/<?= $libro['id'] ?>" class="btn btn-primary btn-sm" title="Ver">
+                                        <a href="<?=  URL ?>libro/show/<?= $libro['id'] ?>/<?= $_SESSION['csrf_token'] ?>" class="btn btn-primary btn-sm" title="Ver">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </div>

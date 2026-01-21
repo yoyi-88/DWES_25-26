@@ -24,6 +24,11 @@
             // iniciar o continuar sesión
             session_start();
 
+            // Crear un token CSRF para los formularios
+            if (empty($_SESSION['csrf_token'])) {
+                $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            }
+
             // Comprobar si hay mensajes en la sesión y pasarlos a la vista
             if (isset($_SESSION['notify'])) {
                 $this->view->notify = $_SESSION['notify'];
@@ -425,7 +430,7 @@
 
         // Validación curso_id
         // Reglas: obligatorio, entero, clave ajena
-        if ($curso_id =! $alumno->curso_id) {
+        if ($curso_id != $alumno->curso_id) {
             $cambios = true;
             if (empty($curso_id)) {
                 $errors['curso_id'] = 'El curso es obligatorio';
@@ -485,10 +490,31 @@
     */
     public function show($params) {
 
+        // inicio o continúo sesión
+        session_start(); 
+
         // Obtener el id del alumno que voy a mostrar
         // alumno/show/4 -> voy a mostrar el alumno con id=4
         // $param es un array en la posición 0 está el id
-        $id = (int) $params[0];
+        $id = (int) htmlspecialchars($params[0]);
+
+        // Obtener el token CSRF desde la vista principal main/index.php
+        // alumno/show/4/token_csrf
+        $csrf_token = $params[1];
+
+        // Validación CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            $this->handleError();
+        }
+
+        // Validar id del alumno que voy a mostrar
+        if (!$this->model->validate_id_alumno_exists($id)) {
+            // Generar un mensaje de error
+            $_SESSION['error'] = "El alumno que intentas ver no existe";
+            // Redirigir a la lista de alumnos si el id no es válido
+            header('Location: ' . URL . 'alumno');
+            exit();
+        }
         
         // Obtener el objeto de la class_alumno con los detalles de este alumno
         $this->view->alumno = $this->model->read_show($id);
@@ -510,14 +536,36 @@
             - id: alumno a eliminar
     */
     public function delete($params) {
+        // inicio o continúo sesión
+        session_start();
+
+        // obtengo el token CSRF url
+        $csrf_token = $params[1];
+
+        // verificar el token CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            $this->handleError();
+        }
 
         // Obtener el id del alumno que voy a eliminar
         // alumno/delete/4 -> voy a eliminar el alumno con id=4
         // $param es un array en la posición 0 está el id
         $id = (int) $params[0];
+
+        // validar id del alumno que voy a eliminar
+        if (!$this->model->validate_id_alumno_exists($id)) {
+            // Generar un mensaje de error
+            $_SESSION['error'] = "El alumno que intentas eliminar no existe";
+            // Redirigir a la lista de alumnos si el id no es válido
+            header('Location: ' . URL . 'alumno');
+            exit();
+        }
         
         // Llamar al modelo para eliminar el alumno
         $this->model->delete($id);
+
+        // Generar un mensaje de éxito
+        $_SESSION['notify'] = "Alumno eliminado correctamente";
 
         // Redirigir a la lista de alumnos
         header('Location: ' . URL . 'alumno');
@@ -530,11 +578,23 @@
     */
     public function search() {
 
-        // Obtengo el término de búsqueda del formulario
-        $term = $_GET['term'] ?? '';
+        // inicio o continúo sesión
+        session_start();
+
+        // obtengo  la expresión de búsqueda desde el formulario
+        $term = filter_var($_GET['term'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+
+        // obtener el token CSRF desde el formulario
+        $csrf_token = $_GET['csrf_token'] ??= '';
+
+
+        // verificar el token CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            $this->handleError();
+        }
 
         // Creo la propiedad  title para la vista
-        $this->view->notify = "Resultados de la búsqueda";
+        $this->view->notify = "Resultados de la búsqueda: " . $term;
 
         // Llamar al modelo para buscar los alumnos
         $this->view->alumnos = $this->model->search($term);
@@ -559,7 +619,16 @@
                 7: curso
     */
     public function order($params) {
-
+        
+        // inicio o continúo sesión
+        session_start();
+        // obtengo  el token CSRF desde la url
+        $csrf_token = $params[1];
+        // verificar el token CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            $this->handleError();
+        }
+        
         // Obtener el criterio de ordenación
         $criterio = (int) $params[0];
 

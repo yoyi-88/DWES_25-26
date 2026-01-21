@@ -561,6 +561,43 @@ class alumnoModel extends Model {
         }
     }
 
+    /*
+        metodo: validate_id_alumno_exists($id)
+        Descripción: valida que el alumno exista en la tabla cursos
+        Parámetros: 
+            - $alumno_id
+        Devuelve:
+            - Falso - alumno no existente
+            - Verdadero - alumno existente
+    */
+    public function validate_id_alumno_exists($alumno_id) {
+        try {
+        // Generamos select 
+        $sql = "SELECT id FROM alumnos WHERE id = :alumno_id";
+        // Conectar con la base de datos
+        $fp = $this->db->connect();
+        // Preparar la consulta obteniendo el objeto PDOStatement
+        $stmt = $fp->prepare($sql);
+        // Vincular los parámetros
+        $stmt->bindParam(':alumno_id', $alumno_id, PDO::PARAM_INT);
+        // Ejecutamos sql
+        $stmt->execute();
+
+        // Validamos
+        if ($stmt->rowCount() > 0) {
+            return TRUE;
+        }
+
+        return FALSE; 
+
+        } catch (PDOException $e) {
+            // Manejo del error
+            $this->handleError($e); 
+
+        }
+    }
+
+    
    }
 
 ?>

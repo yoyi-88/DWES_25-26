@@ -2,7 +2,7 @@
 # Configuración básica aplicación MVC
 
 # Ruta absoluta del proyecto
-define('URL', 'https://localhost/DWES/Tema-07/Proyectos/01-alumnos-fp-mvc-validacion-JCR/');
+define('URL', 'https://localhost/DWES/Tema-07/Proyectos/01-alumnos-fp-mvc-validacion-final/');
 
 
 # Constantes de configuración de la aplicación
