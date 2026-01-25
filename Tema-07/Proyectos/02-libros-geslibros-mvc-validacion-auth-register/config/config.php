@@ -2,7 +2,7 @@
 # Configuración básica aplicación MVC
 
 # Ruta absoluta del proyecto
-define('URL', 'https://localhost/DWES/Tema-07/Proyectos/02-libros-geslibros-mvc-validacion/');
+define('URL', 'https://localhost/DWES/Tema-07/Proyectos/02-libros-geslibros-mvc-validacion-auth-register/');
 
 
 # Constantes de configuración de la aplicación
