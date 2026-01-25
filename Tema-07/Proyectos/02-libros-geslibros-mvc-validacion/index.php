@@ -7,6 +7,8 @@ require_once 'libs/view.php';
 require_once 'libs/app.php';
 require_once 'class/autor.class.php';
 require_once 'class/libro.class.php';
+require_once 'functions/session_seg.php';
+
 
 $app = new App();
 
