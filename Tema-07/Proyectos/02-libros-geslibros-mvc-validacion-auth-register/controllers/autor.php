@@ -9,6 +9,15 @@
         function __construct() {
 
             parent ::__construct(); 
+            sec_session_start();
+
+            // 2. Control de acceso
+        if (!isset($_SESSION['user_id'])) {
+            // Si no está logueado, lo mandamos al login con un mensaje
+            $_SESSION['notify'] = "Debe iniciar sesión para acceder a la gestión.";
+            header('location:' . URL . 'auth/login');
+            exit();
+        }
             
         }
 

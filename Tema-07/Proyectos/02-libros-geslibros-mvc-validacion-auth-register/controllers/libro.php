@@ -11,6 +11,15 @@ class Libro extends Controller
     {
 
         parent::__construct();
+        sec_session_start();
+
+        // 2. Control de acceso
+        if (!isset($_SESSION['user_id'])) {
+            // Si no está logueado, lo mandamos al login con un mensaje
+            $_SESSION['notify'] = "Debe iniciar sesión para acceder a la gestión.";
+            header('location:' . URL . 'auth/login');
+            exit();
+        }
     }
 
     /*
@@ -22,8 +31,7 @@ class Libro extends Controller
 
     function render()
     {
-        // Iniciar sesión para leer el mensaje
-        session_start();
+
         
         // 1. Recuperar el mensaje de éxito si existe
         $this->view->mensaje = $_SESSION['mensaje'] ?? null;
@@ -44,7 +52,6 @@ class Libro extends Controller
             Carga de datos: lista de cursos para la lista dinámica del select
         */
     function new() {
-        session_start();
 
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -83,8 +90,7 @@ class Libro extends Controller
     public function create()
     {
 
-        // Iniciar sesión para manejar errores y persistencia (si no está iniciada)
-        session_start();
+
 
         // Validar el token CSRF
         if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
@@ -185,8 +191,7 @@ class Libro extends Controller
     */
     public function edit($params)
     {
-        // iniciamos o continuamos la sesión
-        session_start();
+
 
 
         // Obtener el id del libro que voy a editar
@@ -211,8 +216,8 @@ class Libro extends Controller
             $this->view->errors = $_SESSION['errores'];
             unset($_SESSION['errores']);
 
-            // Creo la propiedad alumno en la vista con los datos del formulario
-            $this->view->alumno = $_SESSION['libro'];
+            // Creo la propiedad libro en la vista con los datos del formulario
+            $this->view->libro = $_SESSION['libro'];
             unset($_SESSION['libro']);
 
             // Creo la propiead error para la vista
@@ -249,8 +254,7 @@ class Libro extends Controller
     */
     public function update($params)
     {
-        // iniciamos o continuamos la sesión
-        session_start();
+ 
 
         // Obtener el id del libro que voy a actualizar
         $id = (int) htmlspecialchars($params[0]);
@@ -401,8 +405,7 @@ class Libro extends Controller
     */
     public function show($params)
     {
-        // inicio o continúo sesión
-        session_start();
+  
 
         // Obtener el id del libro que voy a mostrar
         // libro/show/4 -> voy a mostrar el libro con id=4
@@ -410,7 +413,7 @@ class Libro extends Controller
         $id = (int) htmlspecialchars($params[0]);
 
         // Obtener el token CSRF desde la vista principal main/index.php
-        // alumno/show/4/token_csrf
+        // libro/show/4/token_csrf
         $csrf_token = $params[1];
 
         // Validación CSRF
@@ -448,8 +451,7 @@ class Libro extends Controller
     */
     public function delete($params)
     {
-        // iniciamos o continuamos la sesión
-        session_start();
+
 
         // obtengo el token CSRF url
         $csrf_token = $params[1];
@@ -490,8 +492,7 @@ class Libro extends Controller
     */
     public function search()
     {
-        // Inicio o continúo la sesión
-        session_start();
+
 
         // Obtengo el término de búsqueda del formulario
         $term = filter_var($_GET['term'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -531,8 +532,7 @@ class Libro extends Controller
     */
     public function order($params)
     {
-        // Inicio o continúo la sesión
-        session_start();
+
 
         // obtengo  el token CSRF desde la url
         $csrf_token = $params[1];

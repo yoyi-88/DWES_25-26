@@ -80,6 +80,7 @@ class authModel extends Model {
 
             // Devuelvo el id del rol
             return $stmt->fetch()->role_id;
+            
 
         } catch (PDOException $e) {
 
@@ -168,6 +169,102 @@ class authModel extends Model {
 
         }
     }
+
+    /*
+        Método: create($name, $email, $password)
+        Descripción: Registra un nuevo usuario y le asigna el rol de usuario (ID 3)
+        Parámetros: $name, $email, $password (ya hasheado)
+    */
+    public function create($name, $email, $password) {
+        try {
+            $geslibros = $this->db->connect();
+
+            // Iniciamos una transacción
+            $geslibros->beginTransaction();
+
+            // Insertar el usuario en la tabla 'users'
+            $sql = "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)";
+            $stmt = $geslibros->prepare($sql);
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR, 50);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
+            $stmt->bindParam(':password', $password, PDO::PARAM_STR, 60);
+            $stmt->execute();
+
+            // Obtenemos el ID del usuario recién insertado
+            $last_id = $geslibros->lastInsertId();
+
+            // Asignar rol por defecto (suponiendo que ID 3 es 'usuario')
+            // Puedes cambiar el 3 por el ID que corresponda en tu tabla 'roles'
+            $role_id = 3; 
+            $sql_role = "INSERT INTO roles_users (user_id, role_id) VALUES (:user_id, :role_id)";
+            $stmt_role = $geslibros->prepare($sql_role);
+            $stmt_role->bindParam(':user_id', $last_id, PDO::PARAM_INT);
+            $stmt_role->bindParam(':role_id', $role_id, PDO::PARAM_INT);
+            $stmt_role->execute();
+
+            // Si todo ha ido bien, confirmamos los cambios
+            $geslibros->commit();
+
+            return TRUE;
+
+        } catch (PDOException $e) {
+            // Si algo falla, revertimos los cambios para no dejar datos inconsistentes
+            $geslibros->rollBack();
+            $this->handleError($e);
+        }
+    }
+
+    public function get_user_id($id) {
+        try {
+            $sql = "SELECT id, name, email FROM users WHERE id = :id LIMIT 1";
+            $geslibros = $this->db->connect();
+            $stmt = $geslibros->prepare($sql);
+            $stmt->setFetchMode(PDO::FETCH_OBJ);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetch();
+        } catch (PDOException $e) {
+            $this->handleError($e);
+        }
+    }
+
+    // Verifica si un email ya existe excluyendo al usuario actual (para edición)
+    public function validate_unique_email($id, $email) {
+        $sql = "SELECT id FROM users WHERE email = :email AND id <> :id";
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public function update_profile($id, $name, $email) {
+        $sql = "UPDATE users SET name = :name, email = :email WHERE id = :id";
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function get_password_by_id($id) {
+        $sql = "SELECT password FROM users WHERE id = :id";
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->setFetchMode(PDO::FETCH_OBJ);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+
+    public function update_password($id, $password) {
+        $sql = "UPDATE users SET password = :password WHERE id = :id";
+        $stmt = $this->db->connect()->prepare($sql);
+        $stmt->bindParam(':password', $password, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    
 
     public function handleError(PDOException $e) {
         // Incluir y cargar el controlador de errores
