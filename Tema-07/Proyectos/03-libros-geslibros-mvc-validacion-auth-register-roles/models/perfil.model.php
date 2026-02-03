@@ -22,7 +22,6 @@ class perfilModel extends Model {
         try {
             $conexion = $this->db->connect();
             // Al borrar el usuario, la tabla roles_users debería borrarlo en cascada 
-            // si configuraste bien la FK en MySQL, si no, borra primero en roles_users.
             $sql = "DELETE FROM users WHERE id = :id";
             $stmt = $conexion->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -91,5 +90,4 @@ class perfilModel extends Model {
         }
     }
     
-    // Aquí irían update_user() y update_password()...
 }
