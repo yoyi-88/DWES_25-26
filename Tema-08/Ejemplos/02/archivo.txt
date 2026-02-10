@@ -1,0 +1,4 @@
+Hola, este es un archivo de texto plano.
+Este archivo fue creado utilizando PHP.
+¡PHP es genial para manejar archivos!
+Este es un nuevo contenido agregado al archivo.
