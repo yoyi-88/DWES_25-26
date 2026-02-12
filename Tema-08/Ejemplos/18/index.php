@@ -1,7 +1,7 @@
 <?php
 /*
     Ejemplo 19
-    Descripcion: Descomprimir archivo zip en carpeta del servidor
+    Descripcion: Descomprimir archivo zip en carpeta del servidor y descargar
 */
 
 // Nombre del archivo zip a descomprimir
@@ -14,6 +14,8 @@ $zip = new ZipArchive;
 if ($zip->open($archivo_Zip) === FALSE) {
     die("Error al abrir el archivo zip");
 }
+
+
 
 // Extraer el contenido del archivo zip a la carpeta 'pdf'
 
