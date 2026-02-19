@@ -13,18 +13,20 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="<?= URL ?>index">Home</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="<?= URL ?>libro">Libros</a>
+<li class="nav-item">
+          <a class="nav-link active" href="<?= URL ?>alumno">Alumnos</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="<?= URL ?>autor">Autores</a>
-        </li>
-        <!-- Definimos el enlace a usuarios para que solo puedan entrar administradores -->
         <?php if (in_array($_SESSION['role_id'], [1])): ?>
-          <li class="nav-item">
-            <a class="nav-link active" href="<?= URL ?>user">Usuarios</a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="<?= URL ?>user">Usuarios</a>
+        </li>
         <?php endif; ?>
+        <!-- <li class="nav-item">
+          <a class="nav-link" href="<?= URL ?>asignatura">Asignaturas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Link</a>
+        </li> -->
       </ul>
       <div class="d-flex">
         <div class="collapse navbar-collapse" id="exCollapsingNavbar">

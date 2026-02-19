@@ -37,9 +37,9 @@ class Auth extends Controller
         $this->view->pass = null;
 
         // Comprobar si existe alguna notificación o mensaje
-        if (isset($_SESSION['mensaje'])) {
-            $this->view->mensaje = $_SESSION['mensaje'];
-            unset($_SESSION['mensaje']);
+        if (isset($_SESSION['notify'])) {
+            $this->view->notify = $_SESSION['notify'];
+            unset($_SESSION['notify']);
         }
 
         // Verificar si existe algún error
@@ -74,7 +74,7 @@ class Auth extends Controller
             Descripción: Recibe los datos de autenticación para validarla: emial, pass
                 - Validar usuario mediante email y pass
                 - En caso de error de valiación. Restroalimenta el formulario y muestra errores
-                - En caso de validación. Inicia sesión segura y redirecciona a la página de libro
+                - En caso de validación. Inicia sesión segura y redirecciona a la página de alumno
 
             url asociada: auth/validate_login
 
@@ -164,7 +164,7 @@ class Auth extends Controller
         session_regenerate_id(true);
 
         // - Almaceno los datos del usuario en la sesión
-        // - Redirecciono al panel de control de libros
+        // - Redirecciono al panel de control de alumnos
 
         // Almaceno los datos del usuario en la sesión
         $_SESSION['user_id'] = $user->id;
@@ -176,10 +176,10 @@ class Auth extends Controller
         $_SESSION['role_name'] = $this->model->get_name_role_user($_SESSION['role_id']);
 
          // Generar mensaje de inicio de sesión
-        $_SESSION['mensaje'] = "Usuario ". $user->name. " ha iniciado sesión.";
+        $_SESSION['notify'] = "Usuario ". $user->name. " ha iniciado sesión.";
 
         // redirección al panel de control
-        header("location:". URL. "libro");
+        header("location:". URL. "alumno");
         exit();
     }
 
@@ -221,7 +221,7 @@ class Auth extends Controller
             // Elimino la variable de sesión errors
             unset($_SESSION['errors']);
 
-            // Elimino la variable de sesión libro
+            // Elimino la variable de sesión alumno
             unset($_SESSION['name']);
             unset($_SESSION['email']);
             unset($_SESSION['password']);
@@ -336,7 +336,7 @@ class Auth extends Controller
         $id = $this->model->create($name, $email, $password);
 
         // Genero mensaje de éxito
-        $_SESSION['mensaje'] = 'Usuario registrado correctamente';
+        $_SESSION['notify'] = 'Usuario registrado correctamente';
 
         // Redireciona al formulario de login
         header('location:' . URL . 'auth/login');

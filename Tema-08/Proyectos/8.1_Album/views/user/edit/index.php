@@ -3,84 +3,111 @@
 
 <head>
     <?php require_once 'template/layouts/head.layout.php'; ?>
-    <title><?= htmlspecialchars($this->title) ?> </title>
+    <title><?= $this->title ?> </title>
 </head>
 
 <body>
-    <?php require_once("template/partials/menu.partial.php") ?>
+    <!-- Menú fijo superior -->
+    <?php require_once("template/partials/menu.auth.partial.php") ?>
 
+    <!-- Capa Principal -->
     <div class="container">
         <br><br><br><br>
 
+        <!-- capa de mensajes -->
         <?php require_once("template/partials/mensaje.partial.php") ?>
+
+        <!-- capa de errores -->
         <?php require_once("template/partials/error.partial.php") ?>
 
+        <!-- Mostrar formulario de editar usuario -->
+        <!-- contenido principal -->
         <main>
-            <legend><?= htmlspecialchars($this->title) ?></legend>
-            
-            <form action="<?= URL ?>user/update/<?= htmlspecialchars($this->id) ?>" method="POST">
+            <legend><?= $this->title ?></legend>
+            <!-- Formulario para editar un usuario -->
+            <form action="<?= URL ?>user/update/<?= $this->id ?>" method="POST">
 
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token'] ?? '') ?>">
-
+                <!-- protección CSRF -->
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                 
+                <!-- campo nombre -->
                 <div class="mb-3">
-                    <label for="name" class="form-label">Nombre</label>
-                    <input type="text" class="form-control <?= isset($this->errors['name']) ? 'is-invalid' : '' ?>"
-                        name="name" id="name" 
-                        value="<?= htmlspecialchars($this->user->name ?? '') ?>" required>
-                    <?php if (isset($this->errors['name'])): ?>
-                        <div class="invalid-feedback"><?= htmlspecialchars($this->errors['name']) ?></div>
-                    <?php endif; ?>
+                    <label for="name" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control 
+                    <?=  (isset($this->errors['name'])) ? 'is-invalid': null ?>"
+                    name="name" 
+                    value="<?= htmlspecialchars($this->user->name)?>"
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                            <?= $this->errors['name'] ??= null ?>
+                    </span>
                 </div>
 
+                <!-- campo email -->
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control <?= isset($this->errors['email']) ? 'is-invalid' : '' ?>"
-                        name="email" id="email" 
-                        value="<?= htmlspecialchars($this->user->email ?? '') ?>" required>
-                    <?php if (isset($this->errors['email'])): ?>
-                        <div class="invalid-feedback"><?= htmlspecialchars($this->errors['email']) ?></div>
-                    <?php endif; ?>
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" class="form-control
+                    <?=  (isset($this->errors['email'])) ? 'is-invalid': null ?>"
+                    name="email" 
+                    value="<?= htmlspecialchars($this->user->email)?>"
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                            <?= $this->errors['email'] ??= null ?>      
+                    </span>
                 </div>
 
+                <!-- Select Dinámico Roles -->
                 <div class="mb-3">
-                    <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" class="form-control <?= isset($this->errors['password']) ? 'is-invalid' : '' ?>"
-                        name="password" id="password" 
-                        placeholder="Dejar en blanco para mantener la actual">
-                    <div class="form-text">Solo rellene este campo si desea cambiar la contraseña del usuario.</div>
-                    <?php if (isset($this->errors['password'])): ?>
-                        <div class="invalid-feedback"><?= htmlspecialchars($this->errors['password']) ?></div>
-                    <?php endif; ?>
-                </div>
-
-                <div class="mb-3">
-                    <label for="role_id" class="form-label">Perfil / Rol</label>
-                    <select class="form-select <?= isset($this->errors['role_id']) ? 'is-invalid' : '' ?>"
-                        name="role_id" id="role_id">
-                        <?php foreach ($this->roles as $id => $role): ?>
-                            <option value="<?= htmlspecialchars($id) ?>" 
-                                <?= ($this->user->role_id == $id) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($role) ?>
+                    <label for="role" class="form-label">Rol:</label>
+                    <select class="form-select" name="role_id" required>
+                        <option selected disabled>Seleccione Rol</option>
+                        <!-- mostrar lista roles -->
+                        <?php foreach ($this->roles as $role): ?>
+                            <option value="<?= $role->id ?>"
+                                <?= ($this->user->role_id == $role->id) ? 'selected' : '' ?>
+                            >
+                                <?= htmlspecialchars($role->name) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <?php if (isset($this->errors['role_id'])): ?>
-                        <div class="invalid-feedback"><?= htmlspecialchars($this->errors['role_id']) ?></div>
-                    <?php endif; ?>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                        <?= $this->errors['role_id'] ??= null ?>   
+                    </span>
                 </div>
 
-                <hr>
+                <!-- campo password (opcional) -->
                 <div class="mb-3">
-                    <a class="btn btn-secondary" href="<?= URL ?>user" role="button">Cancelar</a>
-                    <button type="submit" class="btn btn-primary">Actualizar Usuario</button>
+                    <label for="password" class="form-label">Nueva Contraseña (dejar en blanco para no cambiar):</label>
+                    <input type="password" class="form-control
+                    <?=  (isset($this->errors['password'])) ? 'is-invalid': null ?>"
+                    name="password" 
+                    placeholder="Mínimo 7 caracteres">
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                            <?= $this->errors['password'] ??= null ?>      
+                    </span>
                 </div>
+
+                <!-- botones de acción -->
+                <a class="btn btn-secondary" href="<?=  URL ?>user" role="button"
+                    onclick="return confirm('Confirmar cancelación')">Cancelar</a>
+                <button type="reset" class="btn btn-secondary" onclick="return confirm('Confirmar reseteo formulario')">Limpiar</button>
+                <button type="submit" class="btn btn-primary">Actualizar Usuario</button>
             </form>
+
+            <br><br><br>
         </main>
 
     </div>
+
+    <!-- /.container -->
 
     <?php require_once("template/partials/footer.partial.php") ?>
     <?php require_once("template/layouts/javascript.layout.php") ?>
 
 </body>
+
 </html>

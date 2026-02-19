@@ -7,78 +7,118 @@
 </head>
 
 <body>
-    <?php require_once("template/partials/menu.partial.php") ?>
+    <!-- Menú fijo superior -->
+    <?php require_once("template/partials/menu.auth.partial.php") ?>
 
+    <!-- Capa Principal -->
     <div class="container">
         <br><br><br><br>
 
+        <!-- capa de mensajes -->
         <?php require_once("template/partials/mensaje.partial.php") ?>
+
+        <!-- capa de errores -->
         <?php require_once("template/partials/error.partial.php") ?>
 
+        <!-- Mostrar formulario de nuevo usuario -->
+        <!-- contenido principal -->
         <main>
-            <legend><?= $this->title ?></legend>
+            <legend>Formulario Nuevo Usuario</legend>
+            <!-- Formulario para crear un nuevo usuario -->
             <form action="<?= URL ?>user/create" method="POST">
 
-                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
-
+                <!-- protección CSRF -->
+                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                 
+                <!-- campo nombre -->
                 <div class="mb-3">
-                    <label for="name" class="form-label">Nombre de Usuario</label>
-                    <input type="text" class="form-control <?= isset($this->errors['name']) ? 'is-invalid' : '' ?>"
-                        name="name" id="name" placeholder="Ej: Juan Perez"
-                        value="<?= htmlspecialchars($this->user->name ?? '') ?>" required>
-                    <?php if (isset($this->errors['name'])): ?>
-                        <div class="invalid-feedback"><?= $this->errors['name'] ?></div>
-                    <?php endif; ?>
+                    <label for="name" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control 
+                    <?=  (isset($this->errors['name'])) ? 'is-invalid': null ?>"
+                    name="name" 
+                    value="<?= htmlspecialchars($this->user->name)?>"
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                            <?= $this->errors['name'] ??= null ?>
+                    </span>
                 </div>
 
+                <!-- campo email -->
                 <div class="mb-3">
-                    <label for="email" class="form-label">Correo Electrónico</label>
-                    <input type="email" class="form-control <?= isset($this->errors['email']) ? 'is-invalid' : '' ?>"
-                        name="email" id="email" placeholder="ejemplo@email.com"
-                        value="<?= htmlspecialchars($this->user->email ?? '') ?>" required>
-                    <?php if (isset($this->errors['email'])): ?>
-                        <div class="invalid-feedback"><?= $this->errors['email'] ?></div>
-                    <?php endif; ?>
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" class="form-control
+                    <?=  (isset($this->errors['email'])) ? 'is-invalid': null ?>"
+                    name="email" 
+                    value="<?= htmlspecialchars($this->user->email)?>"
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                            <?= $this->errors['email'] ??= null ?>      
+                    </span>
                 </div>
 
+                <!-- Select Dinámico Roles -->
                 <div class="mb-3">
-                    <label for="password" class="form-label">Contraseña</label>
-                    <input type="password" class="form-control <?= isset($this->errors['password']) ? 'is-invalid' : '' ?>"
-                        name="password" id="password" required>
-                    <?php if (isset($this->errors['password'])): ?>
-                        <div class="invalid-feedback"><?= $this->errors['password'] ?></div>
-                    <?php endif; ?>
-                </div>
-
-                <div class="mb-3">
-                    <label for="role_id" class="form-label">Perfil / Rol</label>
-                    <select class="form-select <?= isset($this->errors['role_id']) ? 'is-invalid' : '' ?>"
-                        name="role_id" id="role_id" required>
-                        <option selected disabled value="">Seleccione un Rol</option>
-                        <?php foreach ($this->roles as $id => $role): ?>
-                            <option value="<?= $id ?>" <?= (isset($this->user->role_id) && $this->user->role_id == $id) ? 'selected' : '' ?>>
-                                <?= $role ?>
+                    <label for="role" class="form-label">Rol:</label>
+                    <select class="form-select" name="role_id" required>
+                        <option selected disabled>Seleccione Rol</option>
+                        <!-- mostrar lista roles -->
+                        <?php foreach ($this->roles as $role): ?>
+                            <option value="<?= $role->id ?>"
+                                <?= ($this->user->role_id == $role->id) ? 'selected' : '' ?>
+                            >
+                                <?= htmlspecialchars($role->name) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <?php if (isset($this->errors['role_id'])): ?>
-                        <div class="invalid-feedback"><?= $this->errors['role_id'] ?></div>
-                    <?php endif; ?>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                        <?= $this->errors['role_id'] ??= null ?>   
+                    </span>
                 </div>
 
-                <hr>
+                <!-- campo password -->
                 <div class="mb-3">
-                    <a class="btn btn-secondary" href="<?= URL ?>user" role="button"
-                        onclick="return confirm('¿Seguro que desea cancelar?')">Cancelar</a>
-                    <button type="reset" class="btn btn-warning">Limpiar</button>
-                    <button type="submit" class="btn btn-primary">Crear Usuario</button>
+                    <label for="password" class="form-label">Contraseña:</label>
+                    <input type="password" class="form-control
+                    <?=  (isset($this->errors['password'])) ? 'is-invalid': null ?>"
+                    name="password" 
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                            <?= $this->errors['password'] ??= null ?>      
+                    </span>
                 </div>
+
+                <!-- campo confirmar password -->
+                <div class="mb-3">
+                    <label for="password_confirm" class="form-label">Confirmar Contraseña:</label>
+                    <input type="password" class="form-control
+                    <?=  (isset($this->errors['password'])) ? 'is-invalid': null ?>"
+                    name="password_confirm" 
+                    required>
+                </div>
+
+                
+
+                <!-- botones de acción -->
+                <a class="btn btn-secondary" href="<?=  URL ?>user" role="button"
+                    onclick="return confirm('Confirmar cancelación')">Cancelar</a>
+                <button type="reset" class="btn btn-secondary" onclick="return confirm('Confirmar reseteo formulario')">Limpiar</button>
+                <button type="submit" class="btn btn-primary">Guardar Usuario</button>
             </form>
+
+            <br><br><br>
         </main>
+
     </div>
+
+    <!-- /.container -->
 
     <?php require_once("template/partials/footer.partial.php") ?>
     <?php require_once("template/layouts/javascript.layout.php") ?>
 
 </body>
+
 </html>

@@ -4,12 +4,12 @@
         Definimos los privilegios de la aplicación
 
         Recordamos los perfiles:
-        - 1: Administrador
-        - 2: Editor
-        - 3: Registrado
+        - ADMIN: Administrador
+        - EDITOR: Editor
+        - REGISTRADO: Registrado
 
         Recordamos los controladores o recursos:
-        - 1: Libro
+        - 1: Alumno
 
         Los privilegios son:
         - 1: render
@@ -24,16 +24,31 @@
         donde la clave principal se corresponde con el controlador 
         la clave secundaria con el  método.
 
-        $GLOBALS['libro']['main] = [1, 2, 3];
+        $GLOBALS['alumno']['main] = [ADMIN, EDITOR, REGISTRADO];
 
-        Se asignan los perfiles que tienen acceso a un determinado método del controlador libro.
+        Se asignan los perfiles que tienen acceso a un determinado método del controlador alumno.
 
     */ 
-    $GLOBALS['libro']['render'] = [1, 2, 3];
-    $GLOBALS['libro']['new'] = [1, 2];
-    $GLOBALS['libro']['edit'] = [1, 2];
-    $GLOBALS['libro']['delete'] = [1];
-    $GLOBALS['libro']['show'] = [1, 2, 3];
-    $GLOBALS['libro']['search'] = [1, 2, 3];
-    $GLOBALS['libro']['order'] = [1, 2, 3];
-?>
+
+    // Definimos constantes para los perfiles
+    define('ADMIN', 1);
+    define('EDITOR', 2);
+    define('REGISTRADO', 3);
+    
+    // Privilegios para el controlador Alumno
+    $GLOBALS['alumno']['render'] = [ADMIN, EDITOR, REGISTRADO];
+    $GLOBALS['alumno']['new'] = [ADMIN, EDITOR];
+    $GLOBALS['alumno']['edit'] = [ADMIN, EDITOR];
+    $GLOBALS['alumno']['delete'] = [ADMIN];
+    $GLOBALS['alumno']['show'] = [ADMIN, EDITOR, REGISTRADO];
+    $GLOBALS['alumno']['search'] = [ADMIN, EDITOR, REGISTRADO];
+    $GLOBALS['alumno']['order'] = [ADMIN, EDITOR, REGISTRADO];
+
+    // Privilegios para el controlador User
+    $GLOBALS['user']['render'] = [ADMIN];
+    $GLOBALS['user']['new'] = [ADMIN];
+    $GLOBALS['user']['edit'] = [ADMIN];
+    $GLOBALS['user']['delete'] = [ADMIN];
+    $GLOBALS['user']['show'] = [ADMIN];
+    $GLOBALS['user']['search'] = [ADMIN];
+    $GLOBALS['user']['order'] = [ADMIN];

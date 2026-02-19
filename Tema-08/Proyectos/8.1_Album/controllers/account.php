@@ -30,13 +30,13 @@ class Account extends Controller
         }
 
         // Compruebo si hay mensaje de éxito
-        if (isset($_SESSION['mensaje'])) {
+        if (isset($_SESSION['notify'])) {
 
             // Creo la propiedad mensaje en la vista
-            $this->view->mensaje = $_SESSION['mensaje'];
+            $this->view->notify = $_SESSION['notify'];
 
             // Elimino la variable de sesión mensaje
-            unset($_SESSION['mensaje']);
+            unset($_SESSION['notify']);
         }
 
         // Compruebo si hay mensaje de error
@@ -83,13 +83,13 @@ class Account extends Controller
         }
 
         // Compruebo si hay mensaje de éxito
-        if (isset($_SESSION['mensaje'])) {
+        if (isset($_SESSION['notify'])) {
 
             // Creo la propiedad mensaje en la vista
-            $this->view->mensaje = $_SESSION['mensaje'];
+            $this->view->mensaje = $_SESSION['notify'];
 
             // Elimino la variable de sesión mensaje
-            unset($_SESSION['mensaje']);
+            unset($_SESSION['notify']);
         }
 
         // Compruebo si hay mensaje de error
@@ -216,7 +216,7 @@ class Account extends Controller
         $_SESSION['user_name'] = $name;
 
         // Genero mensaje de éxito
-        $_SESSION['mensaje'] = 'Cuenta actualizada correctamente';
+        $_SESSION['notify'] = 'Cuenta actualizada correctamente';
 
         // Redirecciono a la vista principal de perfil
         header('location:' . URL . 'account');
@@ -234,21 +234,21 @@ class Account extends Controller
         // inicio o continuo la sesión
         sec_session_start();
 
+        // Comprobar si hay un usuario logueado
+        $this->requireLogin();
+
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
 
-        // Comprobar si hay un usuario logueado
-        $this->requireLogin();
-
         // Compruebo si hay mensaje de éxito
-        if (isset($_SESSION['mensaje'])) {
+        if (isset($_SESSION['notify'])) {
 
             // Creo la propiedad mensaje en la vista
-            $this->view->mensaje = $_SESSION['mensaje'];
+            $this->view->mensaje = $_SESSION['notify'];
 
             // Elimino la variable de sesión mensaje
-            unset($_SESSION['mensaje']);
+            unset($_SESSION['notify']);
         }
 
         // Compruebo si hay mensaje de error
@@ -301,7 +301,6 @@ class Account extends Controller
         $this->requireLogin();
 
         // Validación toekn CSRF
-         // Verificar el token CSRF
         if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
             $this->handleError();
         }
@@ -347,7 +346,7 @@ class Account extends Controller
         $this->model->updatePass($new_password, $_SESSION['user_id']);
 
         // Genero mensaje de éxito
-        $_SESSION['mensaje'] = 'Password actualizado correctamente';
+        $_SESSION['notify'] = 'Password actualizado correctamente';
 
         // Redirecciono a la vista principal de perfil
         header('location:' . URL . 'account');
@@ -415,7 +414,7 @@ class Account extends Controller
         sec_session_start();
 
         // Genero mensaje de éxito
-        $_SESSION['mensaje'] = 'Cuenta usuario eliminada correctamente';
+        $_SESSION['notify'] = 'Cuenta usuario eliminada correctamente';
 
         // Redirecciono a la vista principal de perfil
         header('location:' . URL . 'auth/login');
@@ -429,7 +428,7 @@ class Account extends Controller
     private function requireLogin()
     {
         if (!isset($_SESSION['user_id'])) {
-            $_SESSION['mensaje'] = "Debes iniciar sesión para acceder al sistema";
+            $_SESSION['notify'] = "Debes iniciar sesión para acceder al sistema";
             header('Location: ' . URL . 'auth/login');
             exit();
         }

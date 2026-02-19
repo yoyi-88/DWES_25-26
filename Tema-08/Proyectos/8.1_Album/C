@@ -1,0 +1,185 @@
+# Calificacion - Proyecto GesLibros (Joel)
+
+Proyecto corregido (base): `C:\xampp\htdocs\dwes_2526\tema-07\proyectos\05-alumnos-fp-mvc-panel-usuarios`
+
+Proyecto evaluado: `C:\xampp\htdocs\correcciones\02-gomez-benitez-joel\tema-07\proyectos\07\07-crud-crud-usuarios`
+
+Correccion de referencia: `C:\xampp\htdocs\correcciones\02-gomez-benitez-joel\tema-07\proyectos\07\correccion.md`
+
+Escala: 0 a 10 por etapa. (La nota de etapa se calcula con la rubrica indicada en cada apartado.)
+
+---
+
+## 1. Validacion nuevo usuario (0-10)
+
+### Rubrica
+- Seguridad formulario (CSRF): 0-2
+- Saneamiento / XSS (inputs): 0-2
+- Reglas de validacion (name/email/password/role): 0-4
+- Sticky form + feedback (errores/mensajes/UX): 0-2
+
+### Evidencias
+- `07-crud-crud-usuarios/controllers/user.php`
+- `07-crud-crud-usuarios/models/user.model.php`
+- `07-crud-crud-usuarios/views/user/new/index.php`
+
+### Evaluacion
+- CSRF: 2/2 (se verifica token en `user/create`)
+- XSS: 2/2 (saneamiento con `filter_var` y salida escapada en vista)
+- Reglas: 2.5/4 (obligatorios y email unico OK; falta validar unicidad de name; role_id no se valida como entero con `FILTER_VALIDATE_INT`; estilo de validacion mejorable: una condicion por regla)
+- Sticky/feedback: 2/2 (retroalimentacion, `is-invalid`, errores por campo, cancelar)
+
+Nota etapa 1: 8.5/10
+
+---
+
+## 2. Validacion editar usuario (0-10)
+
+### Rubrica
+- Deteccion de cambios y validacion condicional: 0-3
+- CSRF en update: 0-2
+- Reglas de validacion (name/email/password/role): 0-3
+- Feedback (errores/mensajes + persistencia): 0-2
+
+### Evidencias
+- `07-crud-crud-usuarios/controllers/user.php`
+- `07-crud-crud-usuarios/models/user.model.php`
+- `07-crud-crud-usuarios/views/user/edit/index.php`
+
+### Evaluacion
+- Cambios: 2.5/3 (se valida si hay modificacion y se informa "No hubo cambios")
+- CSRF: 0/2 (en `user/update` falta la verificacion; solo hay comentario "Validar CSRF...")
+- Reglas: 1.5/3 (email unico si cambia OK; falta validar formato email en update; role_id se marca como cambio pero no se valida; password opcional OK)
+- Feedback: 2/2 (errores por campo y persistencia via session)
+
+Nota etapa 2: 6.0/10
+
+---
+
+## 3. Validacion completa (0-10)
+
+Alcance: validaciones y seguridad en las acciones complementarias del modulo (listar, show, delete, order, search).
+
+### Rubrica
+- Listado + show (existencia, saneamiento salida): 0-2
+- Delete (existencia, CSRF, reglas negocio): 0-4
+- Order/search (saneamiento, seguridad coherente con GET): 0-2
+- Consistencia general (sesion segura, token CSRF, mensajes): 0-2
+
+### Evidencias
+- `07-crud-crud-usuarios/controllers/user.php`
+- `07-crud-crud-usuarios/views/user/main/index.php`
+- `07-crud-crud-usuarios/views/user/show/index.php`
+
+### Evaluacion
+- Listado/show: 1.5/2 (salida escapada en listado; show muestra datos sin `htmlspecialchars` en name/email)
+- Delete: 2/4 (valida existencia y evita auto-borrado; falta verificacion CSRF en `user/delete` aunque la vista lo envia por POST)
+- Order/search: 2/2 (acciones GET, sin CSRF; funciona)
+- Consistencia: 0.5/2 (sesion segura en constructor de `User`; token CSRF se regenera siempre en render/new en vez de solo si falta)
+
+Nota etapa 3: 6.0/10
+
+---
+
+## 4. Autenticacion y registro (0-10)
+
+### Rubrica
+- Login (validaciones, sesiones, password_verify): 0-4
+- Registro (validaciones, unicidad, password_hash, rol registrado): 0-4
+- CSRF + XSS + feedback: 0-2
+
+### Evidencias
+- `07-crud-crud-usuarios/controllers/auth.php`
+- `07-crud-crud-usuarios/models/auth.model.php`
+- `07-crud-crud-usuarios/views/auth/login/index.php`
+- `07-crud-crud-usuarios/views/auth/register/index.php`
+
+### Evaluacion
+- Login: 3.5/4 (validacion correcta, `password_verify`, `session_regenerate_id(true)`, carga rol)
+- Registro: 3/4 (validacion y unicidad OK; asigna rol 3 en transaccion; detalle a corregir: validacion longitud name usa `and` en vez de `or` y no se cumple nunca)
+- CSRF/XSS/feedback: 2/2 (tokens, saneamiento y errores por campo)
+
+Nota etapa 4: 8.5/10
+
+---
+
+## 5. RBAC (0-10)
+
+### Rubrica
+- Definicion de privilegios (config): 0-3
+- Enforcement en controladores (centralizado, consistente): 0-4
+- Enforcement en vistas (ocultar/mostrar acciones segun rol): 0-3
+
+### Evidencias
+- `07-crud-crud-usuarios/config/privileges.php`
+- `07-crud-crud-usuarios/controllers/libro.php`
+- `07-crud-crud-usuarios/template/partials/menu.partial.php`
+- `07-crud-crud-usuarios/controllers/user.php`
+
+### Evaluacion
+- Config: 2/3 (bien estructurado para `libro`, pero no cubre otros recursos como `user`/`autor`)
+- Controladores: 2.5/4 (en `libro` se aplica `requirePrivilege`; en `user` se usa check hardcoded `requireAdmin` sin matriz de privilegios)
+- Vistas: 2.5/3 (menu oculta "Usuarios" a no-admin; pendientes puntuales en vistas de libro segun correccion)
+
+Nota etapa 5: 7.0/10
+
+---
+
+## 6. Cuenta de usuario (account) (0-10)
+
+### Rubrica
+- Seguridad (sesion, requireLogin, CSRF): 0-4
+- Validaciones (editar datos, cambiar password, eliminar cuenta): 0-4
+- UX (errores, mensajes, persistencia): 0-2
+
+### Evidencias
+- `07-crud-crud-usuarios/controllers/account.php`
+- `07-crud-crud-usuarios/models/account.model.php`
+- `07-crud-crud-usuarios/views/account/edit/index.php`
+
+### Evaluacion
+- Seguridad: 4/4 (capas aplicadas de forma consistente)
+- Validaciones: 3/4 (bien planteadas; detalle a corregir: en `account/update` hay un typo `$error['name']` en vez de `$errors['name']` en una rama)
+- UX: 2/2 (mensajes/errores y reintento)
+
+Nota etapa 6: 9.0/10
+
+---
+
+## 7. Gestion de usuarios (0-10)
+
+Incluye: panel/listado, CRUD, restricciones (no auto-eliminar), modelo (CRUD + roles), y consistencia de seguridad.
+
+### Rubrica
+- Controlador (sesion, CSRF, validaciones, flujo): 0-4
+- Modelo (CRUD + roles, transacciones, validaciones): 0-4
+- Vistas (CSRF, feedback, control UI, accesibilidad): 0-2
+
+### Evidencias
+- `07-crud-crud-usuarios/controllers/user.php`
+- `07-crud-crud-usuarios/models/user.model.php`
+- `07-crud-crud-usuarios/views/user/main/index.php`
+- `07-crud-crud-usuarios/views/user/new/index.php`
+- `07-crud-crud-usuarios/views/user/edit/index.php`
+
+### Evaluacion
+- Controlador: 2/4 (buenas capas requireLogin/requireAdmin; pendientes: CSRF en update/delete, sesion segura en constructor, generacion token siempre, validacion mejorable por reglas)
+- Modelo: 2/4 (CRUD funciona; pendientes: create/update deberian ser transaccion por afectar `users` y `roles_users`; metodos de validacion sin try/catch segun correccion)
+- Vistas: 2/2 (CSRF en formularios, feedback por campo, deshabilita borrar a si mismo)
+
+Nota etapa 7: 6.0/10
+
+---
+
+## Nota final
+
+Notas por etapa:
+- Etapa 1: 8.5
+- Etapa 2: 6.0
+- Etapa 3: 6.0
+- Etapa 4: 8.5
+- Etapa 5: 7.0
+- Etapa 6: 9.0
+- Etapa 7: 6.0
+
+Media: 7.3/10

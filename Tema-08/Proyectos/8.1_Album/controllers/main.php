@@ -5,7 +5,6 @@
         function __construct() {
 
             parent ::__construct(); 
-            sec_session_start();
             
             
         }

@@ -2,13 +2,13 @@
 # Configuración básica aplicación MVC
 
 # Ruta absoluta del proyecto
-define('URL', 'https://localhost/DWES/Tema-08/Proyectos/8.1_Album/');
+define('URL', 'https://localhost/DWES/tema-08/Proyectos/8.1_Album/');
 
 
 # Constantes de configuración de la aplicación
-define('APP_NAME', 'Gestión Libros - GesLibros');
+define('APP_NAME', 'Gestión Alumnos FP');
 define('APP_VERSION', '1.0.0');
-define('APP_AUTHOR', 'Yoël Gómez Benítez');
+define('APP_AUTHOR', 'Juan Carlos Moreno');
 
 # Rutas de los componentes MVC
 define('CONTROLLER_PATH', 'controllers/');
@@ -19,7 +19,7 @@ define('ERROR_CONTROLLER', 'error');
 
 # Constante de la Base de Datos
 define('HOST', 'localhost');
-define('DB', 'geslibros');
+define('DB', 'fp');
 define('USER', 'root');
 define('PASSWORD', '');
 define('CHARSET', 'utf8mb4');

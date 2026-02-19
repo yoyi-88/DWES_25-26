@@ -5,9 +5,6 @@ class class_user {
     public $name;
     public $email;
     public $password;
-    public $role_id;
-    public $role_name;
-
 
     public function __construct(
         $id = null,
@@ -25,7 +22,6 @@ class class_user {
         $this->role_id = $role_id;
         $this->role_name = $role_name;
     }
-
 }
 
 ?>

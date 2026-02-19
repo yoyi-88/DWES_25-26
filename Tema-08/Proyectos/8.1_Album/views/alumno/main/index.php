@@ -20,64 +20,61 @@
         <!-- capa de errores -->
         <?php require_once("template/partials/error.partial.php") ?>
 
-        <!-- Mostrar tabla de  libro$libros -->
+        <!-- Mostrar tabla de  alumnos -->
         <!-- contenido principal -->
         <main>
-            <legend>Tabla de Libros - GesLibros</legend>
-            <!-- Menú principal de gestión de libro$libros de FP -->
-            <?php require_once("views/libro/partials/menu.libro.partial.php") ?>
+            <legend>Tabla de Alumnos</legend>
+            <!-- Menú principal de gestión de alumnos de FP -->
+            <?php require_once("views/alumno/partials/menu.alumno.partial.php") ?>
             <div class="table-responsive">
                 <table class="table table-hover">
-                    <!-- cabecera tabla libro$libros -->
+                    <!-- cabecera tabla alumnos -->
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
-                            <th scope="col">Título</th>
-                            <th scope="col">Autor</th>
-                            <th scope="col">Editorial</th>
-                            <th scope="col">Géneros</th>
-                            <th scope="col" class="text-end">Stock</th>
-                            <th scope="col" class="text-end">Precio</th>
+                            <th scope="col">Alumno</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Nacionalidad</th>
+                            <th scope="col">DNI</th>
+                            <th scope="col" class="text-end">Edad</th>
+                            <th>Curso</th>
                             <th scope="col">Acciones</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- $libros es un objeto mysqli_result, se puede usar foreach directamente  -->
+                        <!-- $alumnos es un objeto mysqli_result, se puede usar foreach directamente  -->
                         <!-- solo cuando cada iteración devuelve un array asociativo -->
-                        <?php while ($libro = $this->libros->fetch()): ?>
+                        <?php while ($alumno = $this->alumnos->fetch()): ?>
                             <tr class="">
-                                <td><?= $libro['id'] ?></td>
-                                <td><?= $libro['titulo'] ?></td>
-                                <td><?= $libro['autor'] ?></td>
-                                <td><?= $libro['editorial'] ?></td>
-                                <td><?= $libro['generos'] ?></td>
-                                <td class="text-end"><?= $libro['stock'] ?></td>
-                                <!-- usamos el formato en euros -->
-                                <td class="text-end"><?= number_format($libro['precio'], 2, ',', '.') ?> €</td>
+                                <td><?= $alumno['id'] ?></td>
+                                <td><?= $alumno['alumno'] ?></td>
+                                <td><?= $alumno['email'] ?></td>
+                                <td><?= $alumno['nacionalidad'] ?></td>
+                                <td><?= $alumno['dni'] ?></td>
+                                <td class="text-end"><?= $alumno['edad'] ?></td>
+                                <td><?= $alumno['curso']  ?></td>
 
                                 <!-- botones de acción -->
                                 <td>
                                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                         <!-- boton eliminar -->
-                                        <form method="POST" action="<?= URL ?>libro/delete/<?= $libro['id'] ?>" style="display:inline;">
+                                        <form method="POST" action="<?= URL ?>alumno/delete/<?= $alumno['id'] ?>" style="display:inline;">
                                             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                             <button type="submit" class="btn btn-danger btn-sm 
-                                            <?= !in_array($_SESSION['role_id'], $GLOBALS['libro']['delete'])? 'disabled':null ?>"
-                                            title="Eliminar" onclick="return confirm('Confirmar eliminación del libro <?= $libro['titulo'] ?>')">
+                                            <?= !in_array($_SESSION['role_id'], $GLOBALS['alumno']['delete'])? 'disabled':null ?>"
+                                            title="Eliminar" onclick="return confirm('Confirmar eliminación del alumno <?= $alumno['alumno'] ?>')">
                                                 <i class="bi bi-trash3"></i>
                                             </button>
                                         </form>
-
                                         <!-- boton editar -->
-                                        <a href="<?=  URL ?>libro/edit/<?= $libro['id'] ?>" class="btn btn-warning btn-sm
-                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['libro']['edit'])? 'disabled':null ?>" title="Editar">
+                                        <a href="<?=  URL ?>alumno/edit/<?= $alumno['id'] ?>" class="btn btn-warning btn-sm
+                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['alumno']['edit'])? 'disabled':null ?>" title="Editar">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-
                                         <!-- boton ver -->
-                                        <a href="<?=  URL ?>libro/show/<?= $libro['id'] ?>" class="btn btn-primary btn-sm
-                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['libro']['show'])? 'disabled':null ?>" title="Ver">
+                                        <a href="<?=  URL ?>alumno/show/<?= $alumno['id'] ?>" class="btn btn-primary btn-sm
+                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['alumno']['show'])? 'disabled':null ?>" title="Ver">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </div>
@@ -89,7 +86,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4">Total libros: <?= $this->libros->rowCount() ?></td>
+                            <td colspan="4">Total Alumnos: <?= $this->alumnos->rowCount() ?></td>
                         </tr>
                     </tfoot>
                 </table>

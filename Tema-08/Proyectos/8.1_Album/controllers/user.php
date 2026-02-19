@@ -1,242 +1,558 @@
 <?php
 
-class User extends Controller {
+class User extends Controller
+{
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
-        sec_session_start();
     }
 
-    function render() {
-        $this->requireLogin();
-        // Solo Admin puede ver esto. Asumimos que tienes una config de privilegios
-        $this->requireAdmin(); 
+    /*
+        Método: render()
+        Descripción: Muestra la tabla principal de usuarios con sus roles asignados
+    */
+    function render()
+    {
+        // iniciar o continuar sesión
+        sec_session_start();
 
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        
-        if (isset($_SESSION['mensaje'])) {
-            $this->view->mensaje = $_SESSION['mensaje'];
-            unset($_SESSION['mensaje']);
+        // Capa Login
+        $this->requireLogin();
+
+        // Capa gestión rol de usuario
+        $this->requirePrivilege($GLOBALS['user']['render']);
+
+        // Crear un token CSRF para los formularios
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
-        if (isset($_SESSION['error'])) { // Corrección para mostrar errores en rojo si tienes estilo
-            $this->view->error = $_SESSION['error'];
+
+        // Comprobar si hay mensajes en la sesión y pasarlos a la vista
+        if (isset($_SESSION['notify'])) {
+            $this->view->notify = $_SESSION['notify'];
+            unset($_SESSION['notify']);
+        }
+
+        // Comprobar si hay mensajes de error en la sesión y pasarlos a la vista
+        if (isset($_SESSION['error'])) {
+            $this->view->notify = $_SESSION['error'];
             unset($_SESSION['error']);
         }
 
-        $this->view->title = "Gestión de Usuarios";
+        // Crear la propiedad title para la vista
+        $this->view->title = "Tabla de Usuarios";
+
+        // Obtener los datos del modelo con roles
         $this->view->users = $this->model->get();
+
+        // Llama a la vista para renderizar la página
         $this->view->render('user/main/index');
     }
 
-    function new() {
+    /*
+        Método: new()
+        Descripción: Muestra el formulario para crear un nuevo usuario
+    */
+    function new()
+    {
+        // iniciar o continuar sesión
+        sec_session_start();
+
+        // Capa Login
         $this->requireLogin();
-        $this->requireAdmin();
 
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-        $this->view->user = new class_user();
+        // Capa gestión rol de usuario
+        $this->requirePrivilege($GLOBALS['user']['new']);
 
-        if (isset($_SESSION['errores'])) {
-            $this->view->errors = $_SESSION['errores'];
-            unset($_SESSION['errores']);
-            if (isset($_SESSION['user'])) {
-                $this->view->user = $_SESSION['user'];
-                unset($_SESSION['user']);
-            }
+        // Crear un token CSRF para el formulario
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
 
+        // Crear un objeto de la clase user vacío para el formulario
+        $this->view->user = new class_user();
+
+        // Comprobar validación previa
+        if (isset($_SESSION['errors'])) {
+            $this->view->errors = $_SESSION['errors'];
+            unset($_SESSION['errors']);
+
+            $this->view->user = $_SESSION['user'];
+            unset($_SESSION['user']);
+
+            $this->view->error = "Errores en el formulario";
+        }
+
+        // Crear la propiedad title para la vista
         $this->view->title = "Nuevo Usuario";
-        $this->view->roles = $this->model->get_roles(); // Cargar roles para el select
+
+        // Obtener los roles disponibles
+        $this->view->roles = $this->model->get_roles();
+
+        // Llama a la vista para renderizar la página
         $this->view->render('user/new/index');
     }
 
-    public function create() {
-        $this->requireLogin();
-        $this->requireAdmin();
+    /*
+        Método: create()
+        Descripción: Recibe los datos del formulario para crear un nuevo usuario
+    */
+    public function create()
+    {
+        // inicio o continúo sesión
+        sec_session_start();
 
+        // Capa autenticación
+        $this->requireLogin();
+
+        // Capa gestión rol de usuario
+        $this->requirePrivilege($GLOBALS['user']['new']);
+
+        // Verificar el token CSRF
         if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-            header('location:' . URL . 'error'); exit();
+            $this->handleError();
         }
 
-        $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
-        $password = $_POST['password'] ?? '';
-        $role_id = filter_var($_POST['role_id'] ?? '', FILTER_SANITIZE_NUMBER_INT);
+        // Recoger los datos del formulario saneados
+        $name = filter_var($_POST['name'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
+        $password = filter_var($_POST['password'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $password_confirm = filter_var($_POST['password_confirm'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $role_id = filter_var($_POST['role_id'] ??= '', FILTER_SANITIZE_NUMBER_INT);
 
-        $user = new class_user(null, $name, $email, $password, $role_id);
-        $errores = [];
+        // Crear un objeto de la clase User
+        $user = new class_user(
+            null,
+            $name,
+            $email,
+            $password,
+            $role_id
+        );
 
-        // Validaciones
-        if (empty($name)) $errores['name'] = "El nombre es obligatorio.";
-        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errores['email'] = "Email inválido.";
-        elseif (!$this->model->validateUniqueEmail($email)) $errores['email'] = "Email ya registrado.";
-        
-        if (empty($password) || strlen($password) < 5) $errores['password'] = "La contraseña debe tener al menos 5 caracteres.";
-        
-        if (empty($role_id) || !$this->model->validateRole($role_id)) $errores['role_id'] = "Rol inválido.";
+        // Validar los campos del formulario
+        $errors = [];
 
-        if (!empty($errores)) {
-            $_SESSION['errores'] = $errores;
+        // Validación del nombre
+        if (empty($name)) {
+            $errors['name'] = "El campo nombre es obligatorio";
+        } else if (strlen($name) < 5) {
+            $errors['name'] = "El nombre debe tener al menos 5 caracteres";
+        } else if (strlen($name) > 50) {
+            $errors['name'] = "El nombre no puede superar 50 caracteres";
+        } else if ($this->model->validate_unique_name($name)) {
+            $errors['name'] = "El nombre ya ha sido registrado";
+        }
+
+        // Validación del email
+        if (empty($email)) {
+            $errors['email'] = "El campo email es obligatorio";
+        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors['email'] = "El formato email no es correcto";
+        } else if ($this->model->validate_unique_email($email)) {
+            $errors['email'] = "El email ya ha sido registrado";
+        }
+
+        // Validación de la contraseña
+        if (empty($password)) {
+            $errors['password'] = "El campo contraseña es obligatorio";
+        } else if (strlen($password) < 7) {
+            $errors['password'] = "La contraseña debe tener al menos 7 caracteres";
+        } else if (strcmp($password, $password_confirm) !== 0) {
+            $errors['password'] = "Las contraseñas no coinciden";
+        }
+
+        // Validación del rol
+        if (empty($role_id)) {
+            $errors['role_id'] = "El campo rol es obligatorio";
+        } else if (!filter_var($role_id, FILTER_VALIDATE_INT)) {
+            $errors['role_id'] = "El formato del rol no es correcto";
+        } else if (!$this->model->validate_role_exists($role_id)) {
+            $errors['role_id'] = "El rol seleccionado no existe";
+        }
+
+        // Si hay errores vuelvo al formulario mostrando los errores
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
             $_SESSION['user'] = $user;
             header('Location: ' . URL . 'user/new');
             exit();
         }
 
-        // Hashing de contraseña antes de guardar
-        $user->password = password_hash($password, PASSWORD_DEFAULT);
+        // Llamar al modelo para insertar el nuevo usuario
+        $this->model->create($user, $role_id);
 
-        $this->model->create($user);
-        $_SESSION['mensaje'] = "Usuario creado correctamente.";
+        // Generar un mensaje de éxito
+        $_SESSION['notify'] = "Usuario creado correctamente";
+
+        // Redirigir a la lista de usuarios
         header('Location: ' . URL . 'user');
         exit();
     }
 
-    public function edit($params) {
-        $this->requireLogin();
-        $this->requireAdmin();
-        
-        $id = (int)$params[0];
-        $this->view->user = $this->model->read($id);
-        $this->view->id = $id;
-        $this->view->roles = $this->model->get_roles();
-        $this->view->title = "Editar Usuario";
+    /*
+        Método: edit()
+        Descripción: Permite cargar los datos necesarios para editar un usuario
+    */
+    public function edit($params)
+    {
+        // inicio o continúo sesión
+        sec_session_start();
 
-        // Manejo de errores de validación al rebotar del update
-        if (isset($_SESSION['errores'])) {
-            $this->view->errors = $_SESSION['errores'];
-            unset($_SESSION['errores']);
-            // Sobreescribir con datos del form fallido
-            $this->view->user = $_SESSION['user'];
-            unset($_SESSION['user']);
+        // Capa autenticación
+        $this->requireLogin();
+
+        // Capa gestión rol de usuario
+        $this->requirePrivilege($GLOBALS['user']['edit']);
+
+        // Obtener el id del usuario que voy a editar
+        $id = (int) $params[0];
+
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
 
+        // Obtener el objeto con los detalles del usuario
+        $this->view->user = $this->model->read($id);
+
+        // Crear la propiedad id en la vista
+        $this->view->id = $id;
+
+        // Comprobar validación previa
+        if (isset($_SESSION['errors'])) {
+            $this->view->errors = $_SESSION['errors'];
+            unset($_SESSION['errors']);
+
+            $this->view->user = $_SESSION['user'];
+            unset($_SESSION['user']);
+
+            $this->view->error = "Errores en el formulario";
+        }
+
+        // Crear el título para la vista
+        $this->view->title = "Editar Usuario ( ID: " . $id . ")";
+
+        // Cargar los roles disponibles
+        $this->view->roles = $this->model->get_roles();
+
+        // Cargar la vista
         $this->view->render('user/edit/index');
     }
 
-    public function update($params) {
+    /*
+        Método: update()
+        Descripción: Recibe los datos del formulario para actualizar un usuario
+    */
+    public function update($params)
+    {
+        // inicio o continúo sesión
+        sec_session_start();
+
+        // Capa autenticación
         $this->requireLogin();
-        $this->requireAdmin();
 
-        $id = (int)$params[0];
-        // Validar CSRF...
+        // Capa gestión rol de usuario
+        $this->requirePrivilege($GLOBALS['user']['edit']);
 
-        $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
-        $password = $_POST['password'] ?? ''; // Puede estar vacío si no se cambia
-        $role_id = filter_var($_POST['role_id'] ?? '', FILTER_SANITIZE_NUMBER_INT);
+        // Obtener el id del usuario que voy a actualizar
+        $id = (int) $params[0];
 
-        $user_act = new class_user($id, $name, $email, $password, $role_id);
-        $user_db = $this->model->read($id); // Obtener datos actuales
+        // Verificar el token CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            $this->handleError();
+        }
 
-        $errores = [];
+        // Obtener los datos del formulario saneados
+        $name = filter_var($_POST['name'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
+        $password = filter_var($_POST['password'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $role_id = filter_var($_POST['role_id'] ??= '', FILTER_SANITIZE_NUMBER_INT);
+
+        // Obtener los detalles del usuario antes de la actualización
+        $user = $this->model->read($id);
+
+        // Array para almacenar errores de validación
+        $errors = [];
         $cambios = false;
 
-        // Comprobación de cambios y validaciones
-        if ($name != $user_db->name) { $cambios = true; if(empty($name)) $errores['name'] = "Nombre obligatorio."; }
-        
-        if ($email != $user_db->email) { 
-            $cambios = true; 
-            if(empty($email)) $errores['email'] = "Email obligatorio.";
-            elseif(!$this->model->validateUniqueEmail($email, $id)) $errores['email'] = "Email ya existe.";
+        // Validación del nombre
+        if (strcmp($name, $user->name) != 0) {
+            $cambios = true;
+            if (empty($name)) {
+                $errors['name'] = 'El campo nombre es obligatorio';
+            } else if (strlen($name) < 5) {
+                $errors['name'] = 'El nombre debe tener al menos 5 caracteres';
+            } else if (strlen($name) > 50) {
+                $errors['name'] = 'El nombre no puede superar 50 caracteres';
+            } else if ($this->model->validate_unique_name($name)) {
+                $errors['name'] = 'El nombre ya ha sido registrado';
+            }
         }
 
-        if ($role_id != $user_db->role_id) { $cambios = true; }
+        // Validación del email
+        if (strcmp($email, $user->email) != 0) {
+            $cambios = true;
+            if (empty($email)) {
+                $errors['email'] = 'El campo email es obligatorio';
+            } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors['email'] = 'El formato del email no es correcto';
+            } else if ($this->model->validate_unique_email($email)) {
+                $errors['email'] = 'El email ya ha sido registrado';
+            }
+        }
 
-        // Si password no está vacío, significa que quiere cambiarlo
+        // Validación de la contraseña (solo si se proporciona)
         if (!empty($password)) {
             $cambios = true;
-            if(strlen($password) < 5) $errores['password'] = "La contraseña debe tener 5+ caracteres.";
-            // Hashear nueva contraseña
-            $user_act->password = password_hash($password, PASSWORD_DEFAULT);
-        } else {
-            $user_act->password = null; // Indicar al modelo que no toque la contraseña
+            if (strlen($password) < 7) {
+                $errors['password'] = 'La contraseña debe tener al menos 7 caracteres';
+            }
         }
 
-        if (!empty($errores)) {
-            $_SESSION['errores'] = $errores;
-            $_SESSION['user'] = $user_act;
+        // Validación del rol
+        if ($role_id != $this->model->get_user_role($id)) {
+            $cambios = true;
+            if (empty($role_id)) {
+                $errors['role_id'] = 'El campo rol es obligatorio';
+            } else if (!filter_var($role_id, FILTER_VALIDATE_INT)) {
+                $errors['role_id'] = 'El formato del rol no es correcto';
+            } else if (!$this->model->validate_role_exists($role_id)) {
+                $errors['role_id'] = 'El rol no existe';
+            }
+        }
+
+        // Si hay errores vuelvo al formulario mostrando los errores
+        if (!empty($errors)) {
+            $_SESSION['errors'] = $errors;
+            $_SESSION['user'] = (object) [
+                'id' => $id,
+                'name' => $name,
+                'email' => $email,
+                'role_id' => $role_id
+            ];
             header('Location: ' . URL . 'user/edit/' . $id);
             exit();
         }
 
-        if ($cambios) {
-            $this->model->update($user_act);
-            $_SESSION['mensaje'] = "Usuario actualizado.";
-        } else {
-            $_SESSION['mensaje'] = "No hubo cambios.";
+        // Si no hay cambios redirijo a la lista de usuarios
+        if (!$cambios) {
+            $_SESSION['notify'] = "No se han realizado cambios en el usuario";
+            header('Location: ' . URL . 'user');
+            exit();
         }
 
+        // Crear un objeto de la clase User con los datos actualizados
+        $user_act = new class_user(
+            $id,
+            $name,
+            $email,
+            $password
+        );
+
+        // Llamar al modelo para actualizar el usuario
+        $this->model->update($user_act, $id, $role_id);
+
+        // Generar un mensaje de éxito
+        $_SESSION['notify'] = "Usuario actualizado correctamente";
+
+        // Redirigir a la lista de usuarios
         header('Location: ' . URL . 'user');
         exit();
     }
 
-    public function delete($params) {
+    /*
+        Método: show()
+        Descripción: Muestra los detalles de un usuario
+    */
+    public function show($params)
+    {
+        // Iniciar o continuar sesión
+        sec_session_start();
+
+        // Capa autenticación
         $this->requireLogin();
-        $this->requireAdmin();
-        // Validar CSRF...
-        
-        $id = (int)$params[0];
-        if (!$this->model->validateIdUser($id)) {
-            $_SESSION['error'] = "Usuario no existe.";
-            header('Location: ' . URL . 'user'); exit();
+
+        // Capa gestión rol de usuario
+        $this->requirePrivilege($GLOBALS['user']['show']);
+
+        // Obtener el id del usuario que voy a mostrar
+        $id = (int) htmlspecialchars($params[0]);
+
+        // Validar id del usuario
+        if (!$this->model->validate_id_user_exists($id)) {
+            $_SESSION['error'] = "El usuario que intentas ver no existe";
+            header('Location: ' . URL . 'user');
+            exit();
         }
 
-        // Evitar que el admin se borre a sí mismo
-        if ($id == $_SESSION['user_id']) {
-            $_SESSION['error'] = "No puedes eliminar tu propia cuenta.";
-            header('Location: ' . URL . 'user'); exit();
-        }
+        // Obtener el objeto con los detalles del usuario
+        $this->view->user = $this->model->read_show($id);
 
-        $this->model->delete($id);
-        $_SESSION['mensaje'] = "Usuario eliminado.";
-        header('Location: ' . URL . 'user');
-    }
+        // Crear la propiedad id en la vista
+        $this->view->id = $id;
 
-    public function show($params) {
-        $this->requireLogin();
-        $this->requireAdmin();
-        $id = (int)$params[0];
-        $this->view->user = $this->model->read($id); // Ojo: create un read_show si quieres unir tablas para mostrar nombre de rol en vez de ID
-        
-        // Pequeño parche para mostrar nombre del rol en show
-        $roles = $this->model->get_roles();
-        $this->view->role_name = $roles[$this->view->user->role_id] ?? 'Sin Rol';
+        // Crear el título para la vista
+        $this->view->title = "Detalles del Usuario";
 
-        $this->view->title = "Detalles Usuario";
+        // Cargar la vista
         $this->view->render('user/show/index');
     }
 
-    public function order($params) {
+    /*
+        Método: delete()
+        Descripción: Elimina un usuario de la base de datos
+    */
+    public function delete($params)
+    {
+        // inicio o continúo sesión
+        sec_session_start();
+
+        // Capa autenticación
         $this->requireLogin();
-        $this->requireAdmin();
-        $criterio = (int)$params[0];
-        $this->view->users = $this->model->order($criterio);
-        $this->view->title = "Usuarios Ordenados";
-        $this->view->render('user/main/index');
+
+        // Capa gestión rol de usuario
+        $this->requirePrivilege($GLOBALS['user']['delete']);
+
+        // Obtener token CSRF
+        $csrf_token = $_POST['csrf_token'] ??= '';
+
+        // Verificar el token CSRF
+        if (!hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+            $this->handleError();
+        }
+
+        // Obtener el id del usuario que voy a eliminar
+        $id = (int) $params[0];
+
+        // Validar id del usuario
+        if (!$this->model->validate_id_user_exists($id)) {
+            $_SESSION['error'] = "El usuario que intentas eliminar no existe";
+            header('Location: ' . URL . 'user');
+            exit();
+        }
+
+        // Llamar al modelo para eliminar el usuario
+        $this->model->delete($id);
+
+        // Generar un mensaje de éxito
+        $_SESSION['notify'] = "Usuario eliminado correctamente";
+
+        // Redirigir a la lista de usuarios
+        header('Location: ' . URL . 'user');
     }
 
-    public function search() {
+    /*
+        Método: search()
+        Descripción: Busca usuarios a partir de una expresión
+    */
+    public function search()
+    {
+        // iniciar o continuar sesión
+        sec_session_start();
+
+        // Capa autenticación
         $this->requireLogin();
-        $this->requireAdmin();
-        $term = $_GET['term'] ?? '';
+
+        // Capa gestión rol de usuario
+        $this->requirePrivilege($GLOBALS['user']['search']);
+
+        // Obtener la expresión de búsqueda desde el formulario
+        $term = filter_var($_GET['term'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+
+        // Crear la propiedad title para la vista
+        $this->view->notify = "Resultados de la búsqueda: " . $term;
+
+        // Llamar al modelo para buscar los usuarios
         $this->view->users = $this->model->search($term);
-        $this->view->title = "Búsqueda: $term";
+
+        // Llama a la vista para renderizar la página
         $this->view->render('user/main/index');
     }
 
-    // Helpers de seguridad
-    private function requireLogin() {
-        if (!isset($_SESSION['user_id'])) {
-            header('Location: ' . URL . 'auth/login'); exit();
+    /*
+        Método: order()
+        Descripción: Ordena la lista de usuarios por un criterio
+    */
+    public function order($params)
+    {
+        // iniciar o continuar sesión
+        sec_session_start();
+
+        // Capa autenticación
+        $this->requireLogin();
+
+        // Capa gestión rol de usuario
+        $this->requirePrivilege($GLOBALS['user']['order']);
+
+        // Obtener el criterio de ordenación
+        $criterio = (int) $params[0];
+
+        // Mapeo de criterios a columnas de la base de datos
+        $columnas = [
+            1 => 'Id',
+            2 => 'Name',
+            3 => 'Email',
+            4 => 'Role'
+        ];
+
+        // Crear la propiedad title para la vista
+        $this->view->title = "Usuarios ordenados por " . ($columnas[$criterio] ?? 'Id');
+
+        // Crear la propiedad notify para la vista
+        $this->view->notify = "Usuarios ordenados por " . ($columnas[$criterio] ?? 'Id');
+
+        // Llamar al modelo para ordenar los usuarios
+        $this->view->users = $this->model->order($criterio);
+
+        // Llama a la vista para renderizar la página
+        $this->view->render('user/main/index');
+    }
+
+    /*
+        Método: requirePrivilege
+        Descripción: Verifica que el usuario tiene privilegios para acceder a la funcionalidad
+    */
+    private function requirePrivilege($allowedRoles)
+    {
+        if (!in_array($_SESSION['role_id'], $allowedRoles)) {
+            $_SESSION['error'] = 'Acceso denegado. No tiene permisos suficientes';
+            header('Location: ' . URL . 'user');
+            exit();
         }
     }
 
-    private function requireAdmin() {
-        // Validación estricta: Solo rol ID 1 (Admin) pasa
-        if ($_SESSION['role_id'] != 1) { 
-            $_SESSION['error'] = "Acceso denegado. Área exclusiva de Administradores.";
-            header('Location: ' . URL . 'libro'); // O a home
+    /*
+        Método: requireLogin
+        Descripción: Verifica que el usuario ha iniciado sesión
+    */
+    private function requireLogin()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $_SESSION['notify'] = "Debes iniciar sesión para acceder al sistema";
+            header('Location: ' . URL . 'auth/login');
+            exit();
+        }
+    }
+
+    /*
+        Método: handleError
+        Descripción: Maneja los errores de la base de datos
+    */
+    private function handleError()
+    {
+        // Incluir y cargar el controlador de errores
+        $errorControllerFile = CONTROLLER_PATH . ERROR_CONTROLLER . '.php';
+
+        if (file_exists($errorControllerFile)) {
+            require_once $errorControllerFile;
+            $mensaje = "Error de validación de seguridad del formulario. Intenta acceder de nuevo desde la página principal";
+            $controller = new Errores('403', 'Mensaje de Error: ', $mensaje);
+        } else {
+            // Fallback en caso de que el controlador de errores no exista
+            echo "Error crítico: " . "No se pudo cargar el controlador de errores.";
             exit();
         }
     }
 }
+
 ?>

@@ -36,7 +36,7 @@
                                         class="form-control <?= (isset($this->errors['name'])) ? 'is-invalid' : null ?>"
                                         name="name" value="<?= htmlspecialchars($this->account->name); ?>" required
                                         autocomplete="name" autofocus>
-                                    <!-- control de errores --> 
+                                    <!-- control de errores -->
                                     <span class="form-text text-danger" role="alert">
                                         <?= $this->errors['name'] ??= '' ?>
                                     </span>
