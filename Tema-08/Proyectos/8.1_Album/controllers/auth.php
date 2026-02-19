@@ -179,7 +179,7 @@ class Auth extends Controller
         $_SESSION['notify'] = "Usuario ". $user->name. " ha iniciado sesión.";
 
         // redirección al panel de control
-        header("location:". URL. "alumno");
+        header("location:". URL. "album");
         exit();
     }
 

@@ -5,7 +5,7 @@
 */
    
 
-class alumnoModel extends Model {
+class AlbumModel extends Model {
 
     
     /*
@@ -18,17 +18,8 @@ class alumnoModel extends Model {
         try {
         // Consulta SQL para obtener todos los alumnos
         $sql = "
-            select 
-                    alumnos.id,
-                    concat_ws(', ', alumnos.apellidos, alumnos.nombre) as alumno,
-                    alumnos.email,
-                    alumnos.nacionalidad,
-                    alumnos.dni,
-                    timestampdiff(YEAR,  alumnos.fecha_nac, now()) as edad,
-                    cursos.nombreCorto as curso
-            FROM alumnos INNER JOIN cursos
-            ON alumnos.curso_id = cursos.id
-            ORDER BY 1
+            SELECT id, titulo, autor, fecha, etiquetas, num_fotos, num_visitas
+            FROM albumes ORDER BY 1;
         ";
 
         // Conectar con la base de datos

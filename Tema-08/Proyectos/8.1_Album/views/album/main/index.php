@@ -23,58 +23,57 @@
         <!-- Mostrar tabla de  alumnos -->
         <!-- contenido principal -->
         <main>
-            <legend>Tabla de Alumnos</legend>
+            <legend>Colección de Albumes</legend>
             <!-- Menú principal de gestión de alumnos de FP -->
-            <?php require_once("views/alumno/partials/menu.alumno.partial.php") ?>
+            <?php require_once("views/album/partials/menu.album.partial.php") ?>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <!-- cabecera tabla alumnos -->
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
-                            <th scope="col">Alumno</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Nacionalidad</th>
-                            <th scope="col">DNI</th>
-                            <th scope="col" class="text-end">Edad</th>
-                            <th>Curso</th>
-                            <th scope="col">Acciones</th>
+                            <th scope="col">Título</th>
+                            <th scope="col">Autor</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Etiquetas</th>
+                            <th scope="col" class="text-end">Imágenes</th>
+                            <th scope="col" class="text-end">Visitas</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- $alumnos es un objeto mysqli_result, se puede usar foreach directamente  -->
+                        <!-- $albumes es un objeto mysqli_result, se puede usar foreach directamente  -->
                         <!-- solo cuando cada iteración devuelve un array asociativo -->
-                        <?php while ($alumno = $this->alumnos->fetch()): ?>
+                        <?php while ($album = $this->albumes->fetch()): ?>
                             <tr class="">
-                                <td><?= $alumno['id'] ?></td>
-                                <td><?= $alumno['alumno'] ?></td>
-                                <td><?= $alumno['email'] ?></td>
-                                <td><?= $alumno['nacionalidad'] ?></td>
-                                <td><?= $alumno['dni'] ?></td>
-                                <td class="text-end"><?= $alumno['edad'] ?></td>
-                                <td><?= $alumno['curso']  ?></td>
+                                <td><?= $album['id'] ?></td>
+                                <td><?= $album['titulo'] ?></td>
+                                <td><?= $album['autor'] ?></td>
+                                <td><?= $album['fecha'] ?></td>
+                                <td><?= $album['etiquetas'] ?></td>
+                                <td class="text-end"><?= $album['num_fotos'] ?></td>
+                                <td class="text-end"><?= $album['num_visitas']  ?></td>
 
                                 <!-- botones de acción -->
                                 <td>
                                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                         <!-- boton eliminar -->
-                                        <form method="POST" action="<?= URL ?>alumno/delete/<?= $alumno['id'] ?>" style="display:inline;">
+                                        <form method="POST" action="<?= URL ?>alumno/delete/<?= $album['id'] ?>" style="display:inline;">
                                             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                             <button type="submit" class="btn btn-danger btn-sm 
-                                            <?= !in_array($_SESSION['role_id'], $GLOBALS['alumno']['delete'])? 'disabled':null ?>"
-                                            title="Eliminar" onclick="return confirm('Confirmar eliminación del alumno <?= $alumno['alumno'] ?>')">
+                                            <?= !in_array($_SESSION['role_id'], $GLOBALS['album']['delete'])? 'disabled':null ?>"
+                                            title="Eliminar" onclick="return confirm('Confirmar eliminación del album <?= $album['titulo'] ?>')">
                                                 <i class="bi bi-trash3"></i>
                                             </button>
                                         </form>
                                         <!-- boton editar -->
-                                        <a href="<?=  URL ?>alumno/edit/<?= $alumno['id'] ?>" class="btn btn-warning btn-sm
-                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['alumno']['edit'])? 'disabled':null ?>" title="Editar">
+                                        <a href="<?=  URL ?>alumno/edit/<?= $album['id'] ?>" class="btn btn-warning btn-sm
+                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['album']['edit'])? 'disabled':null ?>" title="Editar">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <!-- boton ver -->
-                                        <a href="<?=  URL ?>alumno/show/<?= $alumno['id'] ?>" class="btn btn-primary btn-sm
-                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['alumno']['show'])? 'disabled':null ?>" title="Ver">
+                                        <a href="<?=  URL ?>alumno/show/<?= $album['id'] ?>" class="btn btn-primary btn-sm
+                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['album']['show'])? 'disabled':null ?>" title="Ver">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </div>
@@ -86,7 +85,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="4">Total Alumnos: <?= $this->alumnos->rowCount() ?></td>
+                            <td colspan="4">Total Álbumes: <?= $this->albumes->rowCount() ?></td>
                         </tr>
                     </tfoot>
                 </table>

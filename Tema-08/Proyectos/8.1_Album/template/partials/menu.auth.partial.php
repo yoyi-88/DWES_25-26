@@ -3,7 +3,7 @@
 
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">MVC - Gestión FP</a>
+    <a class="navbar-brand" href="#">MVC - Album Web</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
       aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -14,7 +14,7 @@
           <a class="nav-link active" aria-current="page" href="<?= URL ?>index">Home</a>
         </li>
 <li class="nav-item">
-          <a class="nav-link active" href="<?= URL ?>alumno">Alumnos</a>
+          <a class="nav-link active" href="<?= URL ?>album">Album</a>
         </li>
         <?php if (in_array($_SESSION['role_id'], [1])): ?>
         <li class="nav-item">

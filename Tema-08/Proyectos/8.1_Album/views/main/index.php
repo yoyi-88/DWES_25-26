@@ -3,7 +3,7 @@
 
 <head>
 	<?php require_once 'template/layouts/head.layout.php'; ?>
-	<title>Hola mundo - MVC </title>
+	<title><?= APP_NAME ?></title>
 </head>
 
 <body>
@@ -20,13 +20,13 @@
 		<!-- Estilo card de bootstrap -->
 		<div class="card">
 			<div class="card-header">
-				MVC
+				GESTION DE ALBUM DE FOTOS
 			</div>
 			<div class="card-body">
 				<?php require_once("template/partials/cabecera.partial.php") ?>
 			</div>
 			<div class="card-footer">
-				Curso 24/25
+				Curso 25/26 - <?= APP_AUTHOR ?> - v<?= APP_VERSION ?>
 			</div>
 		</div>
 

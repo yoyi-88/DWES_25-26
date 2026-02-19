@@ -57,7 +57,7 @@
                             <!-- botones acción -->
                             <div class="mb-3 row mb-0">
                                 <div class="col-md-8 offset-md-4">
-                                    <a class="btn btn-secondary" href="<?= URL ?>alumno"
+                                    <a class="btn btn-secondary" href="<?= URL ?>album"
                                         role="button">Salir</a>
                                 </div>
                             </div>

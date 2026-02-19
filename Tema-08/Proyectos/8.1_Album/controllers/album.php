@@ -1,6 +1,6 @@
 <?php
 
-class Alumno extends Controller
+class Album extends Controller
 {
 
     // Crea una instancia del controlador Alumno
@@ -31,7 +31,7 @@ class Alumno extends Controller
 
         // Capa gestión rol de usuario
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad
-        $this->requirePrivilege($GLOBALS['alumno']['render']);
+        $this->requirePrivilege($GLOBALS['album']['render']);
 
         // Crear un token CSRF para los formularios
         // Por si el usuario abre dos pestañas simultáneas del mismo formulario
@@ -54,13 +54,13 @@ class Alumno extends Controller
         // Obtengo los datos del  modelo para mostrar en la vista
 
         // Creo la propiedad  title para la vista
-        $this->view->title = "Tabla Alumnos de FP";
+        $this->view->title = "Colección de Álbumes";
 
         // Obtengo los datos del modelo
-        $this->view->alumnos = $this->model->get();
+        $this->view->albumes = $this->model->get();
 
         // Llama a la vista para renderizar la página
-        $this->view->render('alumno/main/index');
+        $this->view->render('album/main/index');
     }
 
     /*
