@@ -3,10 +3,10 @@
 class Album extends Controller
 {
 
-    // Crea una instancia del controlador Alumno
+    // Crea una instancia del controlador album
     // Llama al constructor de la clase padre Controller
-    // Crea una vista para el controlador Alumno
-    // Carga el modelo si existe alumno.model.php
+    // Crea una vista para el controlador album
+    // Carga el modelo si existe album.model.php
     function __construct()
     {
 
@@ -15,9 +15,9 @@ class Album extends Controller
 
     /*
             Método:  render
-            Descripción: Renderiza la vista del alumno
+            Descripción: Renderiza la vista del album
 
-            views/alumno/index.php
+            views/album/index.php
         */
 
     function render()
@@ -65,7 +65,7 @@ class Album extends Controller
 
     /*
             Método:new
-            Descripción: Muestra el formulario para crear un nuevo alumno
+            Descripción: Muestra el formulario para crear un nuevo album
 
             Carga de datos: lista de cursos para la lista dinámica del select
         */
@@ -80,15 +80,15 @@ class Album extends Controller
 
         // Capa gestión rol de usuario
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad
-        $this->requirePrivilege($GLOBALS['alumno']['new']);
+        $this->requirePrivilege($GLOBALS['album']['new']);
 
         // Creo un token CSRF para el formulario
         if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
 
-        // Crear un objeto de la clase alumno vacío para el formulario
-        $this->view->alumno = new class_alumno();
+        // Crear un objeto de la clase album vacío para el formulario
+        $this->view->album = new class_album();
 
         // Comprobar no validación previa
         if (isset($_SESSION['errors'])) {
@@ -96,28 +96,25 @@ class Album extends Controller
             $this->view->errors = $_SESSION['errors'];
             unset($_SESSION['errors']);
 
-            // Creo la propiedad alumno en la vista con los datos del formulario
-            $this->view->alumno = $_SESSION['alumno'];
-            unset($_SESSION['alumno']);
+            // Creo la propiedad album en la vista con los datos del formulario
+            $this->view->album = $_SESSION['album'];
+            unset($_SESSION['album']);
 
             // Creo la propiead error para la vista
             $this->view->error = "Errores en el formulario ";
         }
 
         // Creo la propiedad  title para la vista
-        $this->view->title = "Nuevo Alumno";
-
-        // Obtengo los datos del modelo de cursos
-        $this->view->cursos = $this->model->get_cursos();
+        $this->view->title = "Nuevo Álbum";
 
         // Llama a la vista para renderizar la página
-        $this->view->render('alumno/new/index');
+        $this->view->render('album/new/index');
     }
 
     /*
             Método: create
-            Descripción: Recibe los datos del formulario para crear un nuevo alumno
-            url asociada: alumno/create
+            Descripción: Recibe los datos del formulario para crear un nuevo album
+            url asociada: album/create
        */
     public function create()
     {
@@ -130,7 +127,7 @@ class Album extends Controller
 
         // Capa gestión rol de usuario
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad
-        $this->requirePrivilege($GLOBALS['alumno']['new']);
+        $this->requirePrivilege($GLOBALS['album']['new']);
 
         // Verificar el token CSRF
         if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
@@ -139,26 +136,26 @@ class Album extends Controller
 
         // Recogemos los datos del formulario saneados
         // Prevenir ataques XSS
-        $nombre = filter_var($_POST['nombre'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $apellidos = filter_var($_POST['apellidos'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $email = filter_var($_POST['email'] ??= '', FILTER_SANITIZE_EMAIL);
-        $dni = filter_var($_POST['dni'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $telefono = filter_var($_POST['telefono'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $nacionalidad = filter_var($_POST['nacionalidad'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $fecha_nac = filter_var($_POST['fecha_nac'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
-        $curso_id = filter_var($_POST['curso_id'] ??= '', FILTER_SANITIZE_NUMBER_INT);
+        $titulo = filter_var($_POST['titulo'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $autor = filter_var($_POST['autor'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $fecha = filter_var($_POST['fecha'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
+        $etiquetas = filter_var($_POST['etiquetas'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
 
-        // Crear un objeto de la clase Alumno
-        $alumno = new class_alumno(
+        // Crear un objeto de la clase album
+        $album = new class_album(
             null,
-            $nombre,
-            $apellidos,
-            $email,
-            $telefono,
-            $nacionalidad,
-            $dni,
-            $fecha_nac,
-            $curso_id
+            $titulo,
+            null,
+            $autor,
+            $fecha,
+            null,
+            null,
+            $etiquetas,
+            null,
+            null,
+            null,
+            null,
+            null
         );
 
         // Validamos los campos del formulario
@@ -168,68 +165,35 @@ class Album extends Controller
 
         $errors = [];
 
-        // Validamos el nombre
+        // Validamos el título
+        // Regla validación: título obligatorio y menor que 100
+        if (empty($titulo)) {
+            $errors['titulo'] = "El campo título es obligatorio";
+        } else if (strlen($titulo) >= 100) {
+            $errors['titulo'] = "El campo título no puede tener más de 100 caracteres";
+        }
+
+        // Validación del autor
         // Regla validación: obligatorio
-        if (empty($nombre)) {
-            $errors['nombre'] = "El campo nombre es obligatorio";
+        if (empty($autor)) {
+            $errors['autor'] = "El campo autor es obligatorio";
         }
 
-        // Validación de los apellidos
-        // Regla validación: obligatorio
-        if (empty($apellidos)) {
-            $errors['apellidos'] = "El campo apelllidos es obligatorio";
-        }
-
-        // Vallidación email
-        // Reglas de validación: obligatorio, formato email y clave secundaria
-        if (empty($email)) {
-            $errors['email'] = "El campo email es obligatorio";
-        } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = "El formato email no es correcto";
-        } else if (!$this->model->validate_unique_email($email)) {
-            $errors['email'] = "El email ya ha sido registrado";
-        }
-
-        // Validación del DNI
-        // Reglas de validación: obligatorio, formato DNI y clave secundaria
-        if (empty($dni)) {
-            $errors['dni'] = "El campo DNI es obligatorio";
-        } else if (!preg_match('/^[0-9]{8}[A-Za-z]$/', $dni)) {
-            $errors['dni'] = "El formato del DNI no es correcto";
-        } else if (!$this->model->validate_unique_dni($dni)) {
-            $errors['dni'] = "El DNI ya ha sido registrado";
-        }
-
-        // Validación del teléfono
-        // Regla validación teléfono: obligatorio, formato teléfono
-        if (empty($telefono)) {
-            $errors['telefono'] = "El teléfono es un campo obligatorio";
-        } else if (!preg_match('/^\d{9}$/', $telefono)) {
-            $errors['telefono'] = "El formato del teléfono no es correcto";
-        }
-
-        // Validación de la fecha de nacimiento
+        // Vallidación fecha
         // Reglas de validación: obligatorio, formato fecha
-        if (empty($fecha_nac)) {
-            $errors['fecha_nac'] = "El campo fecha de nacimiento es obligatorio";
+        if (empty($fecha)) {
+            $errors['fecha'] = "El campo fecha es obligatorio";
         } else {
-            $fecha = DateTime::createFromFormat('Y-m-d', $fecha_nac);
-            if (!$fecha) {
-                $errors['fecha_nac'] = 'El formato de la fecha de nacimiento no es correcto';
+            $fecha_obj = DateTime::createFromFormat('Y-m-d', $fecha);
+            if (!$fecha_obj) {
+                $errors['fecha'] = "El formato de la fecha no es correcto";
             }
         }
-
-        // Validación de la nacionalidad
-        // Regla validaci´n de la nacinalidad: opcional
-
-        // Validación de curso_id
-        // Regla validación curso_id: obligatorio, debe ser un entero, debe existir en la tabla cursos
-        if (empty($curso_id)) {
-            $errors['curso_id'] = "El campo curso es obligatorio";
-        } else if (!filter_var($curso_id, FILTER_VALIDATE_INT)) {
-            $errors['curso_id'] = "El formato del curso no es correcto";
-        } else if (!$this->model->validate_curso_exists($curso_id)) {
-            $errors['curso_id'] = "El curso seleccionado no existe";
+        
+        // Validación Etiquetas
+        // Reglas de validación: obligatorio
+        if (empty($etiquetas)) {
+            $errors['etiquetas'] = "El campo etiquetas es obligatorio";
         }
 
         // Fin Validación
@@ -241,31 +205,31 @@ class Album extends Controller
             $_SESSION['errors'] = $errors;
 
             // Almaceno los datos del formulario en la sesión para rellenar el formulario
-            $_SESSION['alumno'] = $alumno;
+            $_SESSION['album'] = $album;
 
             // Redirijo al formulario
-            header('Location: ' . URL . 'alumno/new');
+            header('Location: ' . URL . 'album/new');
             exit();
         }
 
-        // Llamar al modelo para insertar el nuevo alumno
-        $this->model->create($alumno);
+        // Llamar al modelo para insertar el nuevo album
+        $this->model->create($album);
 
         // Generar un mensaje de éxito
-        $_SESSION['notify'] = "Alumno creado correctamente";
+        $_SESSION['notify'] = "album creado correctamente";
 
-        // Redirigir a la lista de alumnos
-        header('Location: ' . URL . 'alumno');
+        // Redirigir a la lista de albums
+        header('Location: ' . URL . 'album');
         exit();
     }
 
     /*
         Método: edit()
         Descripción: permite cargar los datos necesarios para editar los detalles
-        de un alumno.
+        de un album.
 
         Parámetros:
-            - id: alumno a editar
+            - id: album a editar
     */
     public function edit($params)
     {
@@ -278,10 +242,10 @@ class Album extends Controller
 
         // Capa gestión rol de usuario
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad
-        $this->requirePrivilege($GLOBALS['alumno']['edit']);
+        $this->requirePrivilege($GLOBALS['album']['edit']);
 
-        // Obtener el id del alumno que voy a editar
-        // alumno/edit/4 -> voy a editar el alumno con id=4
+        // Obtener el id del album que voy a editar
+        // album/edit/4 -> voy a editar el album con id=4
         // $param es un array en la posición 0 está el id
         $id = (int) $params[0];
 
@@ -289,8 +253,8 @@ class Album extends Controller
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
 
-        // Obtener el objeto de la class_alumno con los detalles de este alumno
-        $this->view->alumno = $this->model->read($id);
+        // Obtener el objeto de la class_album con los detalles de este album
+        $this->view->album = $this->model->read($id);
 
         // Creo la propiedad id en la vista
         $this->view->id = $id;
@@ -301,31 +265,31 @@ class Album extends Controller
             $this->view->errors = $_SESSION['errors'];
             unset($_SESSION['errors']);
 
-            // Creo la propiedad alumno en la vista con los datos del formulario
-            $this->view->alumno = $_SESSION['alumno'];
-            unset($_SESSION['alumno']);
+            // Creo la propiedad album en la vista con los datos del formulario
+            $this->view->album = $_SESSION['album'];
+            unset($_SESSION['album']);
 
             // Creo la propiead error para la vista
             $this->view->error = "Errores en el formulario ";
         }
 
         // Creo el titulo para la  vista
-        $this->view->title = "Formulario Editar Alumno";
+        $this->view->title = "Formulario Editar album";
 
         // Cargamos los cursos
         $this->view->cursos = $this->model->get_cursos();
 
         // Cargo la vista
-        $this->view->render('alumno/edit/index');
+        $this->view->render('album/edit/index');
     }
 
     /*
         Método: update()
-        Descripción: Recibe los datos del formulario para actualizar un alumno
-        url asociada: alumno/update/id
+        Descripción: Recibe los datos del formulario para actualizar un album
+        url asociada: album/update/id
 
         Parámetros:
-            - id (GET): alumno a actualizar
+            - id (GET): album a actualizar
             - datos del formulario (POST)
     */
     public function update($params)
@@ -339,9 +303,9 @@ class Album extends Controller
 
         // Capa gestión rol de usuario
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad
-        $this->requirePrivilege($GLOBALS['alumno']['edit']);
+        $this->requirePrivilege($GLOBALS['album']['edit']);
 
-        // Obtener el id del alumno que voy a actualizar
+        // Obtener el id del album que voy a actualizar
         $id = (int) htmlspecialchars($params[0]);;
 
         // Verificar el token CSRF
@@ -363,8 +327,8 @@ class Album extends Controller
 
         // Validar los datos, se omite en este ejemplo
 
-        // Crear un objeto de la clase Alumno con los datos actualizados
-        $alumno_act = new class_alumno(
+        // Crear un objeto de la clase album con los datos actualizados
+        $album_act = new class_album(
             $id,
             $nombre,
             $apellidos,
@@ -376,8 +340,8 @@ class Album extends Controller
             (int) $curso_id
         );
 
-        // Obtengo los detalles del alumno antes de la actualización
-        $alumno = $this->model->read($id);
+        // Obtengo los detalles del album antes de la actualización
+        $album = $this->model->read($id);
 
         // Valido sólo los campos que han cambiado
 
@@ -389,7 +353,7 @@ class Album extends Controller
 
         // Validación del nombre
         // Reglas: obligatorio
-        if (strcmp($nombre, $alumno->nombre) != 0) {
+        if (strcmp($nombre, $album->nombre) != 0) {
             $cambios = true;
             if (empty($nombre)) {
                 $errors['nombre'] = 'El campo nombre es obligatorio';
@@ -398,7 +362,7 @@ class Album extends Controller
 
         // Validación de los apellidos
         // Reglas: obligatorio
-        if (strcmp($apellidos, $alumno->apellidos) != 0) {
+        if (strcmp($apellidos, $album->apellidos) != 0) {
             $cambios = true;
             if (empty($apellidos)) {
                 $errors['apellidos'] = 'El campo apellidos es obligatorios';
@@ -407,7 +371,7 @@ class Album extends Controller
 
         // Validación de la fecha de nacimiento
         // Reglas: obligatorio, formato fecha
-        if (strcmp($fecha_nac, $alumno->fecha_nac) != 0) {
+        if (strcmp($fecha_nac, $album->fecha_nac) != 0) {
             $cambios = true;
             if (empty($fecha_nac)) {
                 $errors['fecha_nac'] = 'El  campo fecha de nacimiento es obligatorio';
@@ -422,7 +386,7 @@ class Album extends Controller
 
         // Validación del DNI
         // Reglas: obligatorio, formato DNI y clave secundaria
-        if (strcmp($dni, $alumno->dni) != 0) {
+        if (strcmp($dni, $album->dni) != 0) {
             $cambios = true;
             // Expresión regular para validar el DNI
             // 8 números seguidos de una letra
@@ -443,7 +407,7 @@ class Album extends Controller
 
         // Validación del email
         // Reglas: obligatorio, formato email y clave secundaria
-        if (strcmp($email, $alumno->email) != 0) {
+        if (strcmp($email, $album->email) != 0) {
             $cambios = true;
             if (empty($email)) {
                 $errors['email'] = 'El campo email es obligatorio';
@@ -456,7 +420,7 @@ class Album extends Controller
 
         // Validación del teléfono
         // Reglas: obligatorio, formato teléfono
-        if (strcmp($telefono, $alumno->telefono) != 0) {
+        if (strcmp($telefono, $album->telefono) != 0) {
             $cambios = true;
             if (empty($telefono)) {
                 $errors['telefono'] = 'El campo teléfono es obligatorio';
@@ -468,13 +432,13 @@ class Album extends Controller
         // Validación de la nacionalidad
         // Reglas: No obligatorio
 
-        if (strcmp($nacionalidad, $alumno->nacionalidad) != 0) {
+        if (strcmp($nacionalidad, $album->nacionalidad) != 0) {
             $cambios = true;
         }
 
         // Validación curso_id
         // Reglas: obligatorio, entero, clave ajena
-        if ($curso_id != $alumno->curso_id) {
+        if ($curso_id != $album->curso_id) {
             $cambios = true;
             if (empty($curso_id)) {
                 $errors['curso_id'] = 'El curso es obligatorio';
@@ -494,41 +458,41 @@ class Album extends Controller
             $_SESSION['errors'] = $errors;
 
             // Almaceno los datos del formulario en la sesión para rellenar el formulario
-            $_SESSION['alumno'] = $alumno_act;
+            $_SESSION['album'] = $album_act;
 
             // Redirijo al formulario
-            header('Location: ' . URL . 'alumno/edit/' . $id);
+            header('Location: ' . URL . 'album/edit/' . $id);
             exit();
         }
 
-        // Si no hay cambios redirijo a la lista de alumnos
+        // Si no hay cambios redirijo a la lista de albums
         if (!$cambios) {
             // Genero mensaje de notificación sin cambios
-            $_SESSION['notify'] = "No se han realizado cambios en el alumno";
+            $_SESSION['notify'] = "No se han realizado cambios en el album";
 
-            // Redirigir a la lista de alumnos
-            header('Location: ' . URL . 'alumno');
+            // Redirigir a la lista de albums
+            header('Location: ' . URL . 'album');
             exit();
         }
 
 
-        // Llamar al modelo para actualizar el alumno
-        $this->model->update($alumno_act, $id);
+        // Llamar al modelo para actualizar el album
+        $this->model->update($album_act, $id);
 
         // Generar un mensaje de éxito
-        $_SESSION['notify'] = "Alumno actualizado correctamente";
+        $_SESSION['notify'] = "album actualizado correctamente";
 
-        // Redirigir a la lista de alumnos
-        header('Location: ' . URL . 'alumno');
+        // Redirigir a la lista de albums
+        header('Location: ' . URL . 'album');
         exit();
     }
 
     /*
         Método: show()
-        Descripción: Muestra los detalles de un alumno
-        Los detalles del alumno se mostran en un formulario de solo lectura
+        Descripción: Muestra los detalles de un album
+        Los detalles del album se mostran en un formulario de solo lectura
         Parámetros:
-            - id: alumno a mostrar
+            - id: album a mostrar
     */
     public function show($params)
     {
@@ -541,44 +505,44 @@ class Album extends Controller
 
         // Capa gestión rol de usuario
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad
-        $this->requirePrivilege($GLOBALS['alumno']['show']);
+        $this->requirePrivilege($GLOBALS['album']['show']);
 
-        // Obtener el id del alumno que voy a mostrar
-        // alumno/show/4 -> voy a mostrar el alumno con id=4
+        // Obtener el id del album que voy a mostrar
+        // album/show/4 -> voy a mostrar el album con id=4
         // $param es un array en la posición 0 está el id
         $id = (int) htmlspecialchars($params[0]);
 
         // No es necesario el token CSRF para mostrar datos        
 
-        // Validar id del alumno que voy a mostrar
-        if (!$this->model->validate_id_alumno_exists($id)) {
+        // Validar id del album que voy a mostrar
+        if (!$this->model->validate_id_album_exists($id)) {
             // Generar un mensaje de error
-            $_SESSION['error'] = "El alumno que intentas ver no existe";
+            $_SESSION['error'] = "El album que intentas ver no existe";
 
-            // Redirigir a la lista de alumnos si el id no es válido
-            header('Location: ' . URL . 'alumno');
+            // Redirigir a la lista de albums si el id no es válido
+            header('Location: ' . URL . 'album');
             exit();
         }
 
 
-        // Obtener el objeto de la class_alumno con los detalles de este alumno
-        $this->view->alumno = $this->model->read_show($id);
+        // Obtener el objeto de la class_album con los detalles de este album
+        $this->view->album = $this->model->read_show($id);
 
         // Creo la propiedad id en la vista
         $this->view->id = $id;
 
         // Creo el titulo para la  vista
-        $this->view->title = "Detalles del Alumno";
+        $this->view->title = "Detalles del album";
 
         // Cargo la vista
-        $this->view->render('alumno/show/index');
+        $this->view->render('album/show/index');
     }
 
     /*
         Método: delete()
-        Descripción: Elimina un alumno de la base de datos
+        Descripción: Elimina un album de la base de datos
         Parámetros:
-            - id: alumno a eliminar
+            - id: album a eliminar
     */
     public function delete($params)
     {
@@ -591,7 +555,7 @@ class Album extends Controller
 
         // Capa gestión rol de usuario
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad    
-        $this->requirePrivilege($GLOBALS['alumno']['delete']);
+        $this->requirePrivilege($GLOBALS['album']['delete']);
 
         // Obtener token CSRF url
         $csrf_token = $_POST['csrf_token'] ??= '';
@@ -601,35 +565,35 @@ class Album extends Controller
             $this->handleError();
         }
 
-        // Obtener el id del alumno que voy a eliminar
-        // alumno/delete/4 -> voy a eliminar el alumno con id=4
+        // Obtener el id del album que voy a eliminar
+        // album/delete/4 -> voy a eliminar el album con id=4
         // $param es un array en la posición 0 está el id
         $id = (int) $params[0];
 
-        // Validar id del alumno que voy a eliminar
-        if (!$this->model->validate_id_alumno_exists($id)) {
+        // Validar id del album que voy a eliminar
+        if (!$this->model->validate_id_album_exists($id)) {
             // Generar un mensaje de error
-            $_SESSION['error'] = "El alumno que intentas eliminar no existe";
+            $_SESSION['error'] = "El album que intentas eliminar no existe";
 
-            // Redirigir a la lista de alumnos si el id no es válido
-            header('Location: ' . URL . 'alumno');
+            // Redirigir a la lista de albums si el id no es válido
+            header('Location: ' . URL . 'album');
             exit();
         }
 
-        // Llamar al modelo para eliminar el alumno
+        // Llamar al modelo para eliminar el album
         $this->model->delete($id);
 
         // Generar un mensaje de éxito
-        $_SESSION['notify'] = "Alumno eliminado correctamente";
+        $_SESSION['notify'] = "album eliminado correctamente";
 
-        // Redirigir a la lista de alumnos
-        header('Location: ' . URL . 'alumno');
+        // Redirigir a la lista de albums
+        header('Location: ' . URL . 'album');
     }
 
     /*
         Método: search()
-        Descripción: Busca a partir de una expresión en todos los detalles de los alumnos
-        url asociada: alumno/search
+        Descripción: Busca a partir de una expresión en todos los detalles de los albums
+        url asociada: album/search
     */
     public function search()
     {
@@ -642,7 +606,7 @@ class Album extends Controller
 
         // Capa gestión rol de usuario
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad
-        $this->requirePrivilege($GLOBALS['alumno']['search']);
+        $this->requirePrivilege($GLOBALS['album']['search']);
 
         // Obtener la expresión de búsqueda desde el formulario
         $term = filter_var($_GET['term'] ??= '', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -652,17 +616,17 @@ class Album extends Controller
         // Creo la propiedad  title para la vista
         $this->view->notify = "Resultados de la búsqueda: " . $term;
 
-        // Llamar al modelo para buscar los alumnos
-        $this->view->alumnos = $this->model->search($term);
+        // Llamar al modelo para buscar los albums
+        $this->view->albums = $this->model->search($term);
 
         // Llama a la vista para renderizar la página
-        $this->view->render('alumno/main/index');
+        $this->view->render('album/main/index');
     }
 
     /*
         Método: order()
-        Descripción: Ordena la lista de alumnos por un criterio
-        url asociada: alumno/order/criterio
+        Descripción: Ordena la lista de albums por un criterio
+        url asociada: album/order/criterio
 
         Parámetros:
             - criterio: campo por el que se ordena la lista
@@ -685,7 +649,7 @@ class Album extends Controller
 
         // Capa gestión rol de usuario
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad
-        $this->requirePrivilege($GLOBALS['alumno']['order']);
+        $this->requirePrivilege($GLOBALS['album']['order']);
 
         // No es necesario verificar el token CSRF para ordenación GET
 
@@ -694,26 +658,26 @@ class Album extends Controller
 
         // Mapeo de criterios a columnas de la base de datos
         $columnas = [
-            1 => 'alumnos.id',
-            2 => 'alumno',
-            3 => 'alumnos.email',
-            4 => 'alumnos.nacionalidad',
-            5 => 'alumnos.dni',
+            1 => 'albums.id',
+            2 => 'album',
+            3 => 'albums.email',
+            4 => 'albums.nacionalidad',
+            5 => 'albums.dni',
             6 => 'edad',
             7 => 'curso'
         ];
 
         // Creo la propiedad  title para la vista
-        $this->view->title = "Alumnos ordenados por " . ($columnas[$criterio] ?? 'Id');
+        $this->view->title = "albums ordenados por " . ($columnas[$criterio] ?? 'Id');
 
         // Creo la propiedad  notify para la vista
-        $this->view->notify = "Alumnos ordenados por " . ($columnas[$criterio] ?? 'Id');
+        $this->view->notify = "albums ordenados por " . ($columnas[$criterio] ?? 'Id');
 
-        // Llamar al modelo para ordenar los alumnos
-        $this->view->alumnos = $this->model->order($criterio);
+        // Llamar al modelo para ordenar los albums
+        $this->view->albums = $this->model->order($criterio);
 
         // Llama a la vista para renderizar la página
-        $this->view->render('alumno/main/index');
+        $this->view->render('album/main/index');
     }
 
     /*
@@ -724,7 +688,7 @@ class Album extends Controller
     {
         if (!in_array($_SESSION['role_id'], $allowedRoles)) {
             $_SESSION['error'] = 'Acceso denegado. No tiene permisos suficientes';
-            header('Location: ' . URL . 'alumno');
+            header('Location: ' . URL . 'album');
             exit();
         }
     }

@@ -10,7 +10,7 @@ class AlbumModel extends Model {
     
     /*
         Método: get()
-        Descripción: Obtiene todos los alumnos de la base de datos fp
+        Descripción: Obtiene todos los alumnos de la base de datos bdAlbum
     */
 
     public function get() {
@@ -23,10 +23,10 @@ class AlbumModel extends Model {
         ";
 
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
 
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
 
         // Establecer modo de obtención de datos  fectch
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -47,7 +47,7 @@ class AlbumModel extends Model {
 
     /*
         Método: get_cursos()
-        Descripción: Obtiene todos los cursos de la base de datos fp
+        Descripción: Obtiene todos los cursos de la base de datos bdAlbum
     */
     public function get_cursos() {
 
@@ -56,10 +56,10 @@ class AlbumModel extends Model {
         $sql = "SELECT id, nombreCorto as curso FROM cursos ORDER BY 2";
 
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
 
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
 
          // Establecer modo de obtención de datos  fectch
         $stmt->setFetchMode(PDO::FETCH_KEY_PAIR);
@@ -83,7 +83,7 @@ class AlbumModel extends Model {
 
     /*
         Método: create($alumno)
-        Descripción: Inserta un nuevo alumno en la base de datos fp
+        Descripción: Inserta un nuevo alumno en la base de datos bdAlbum
         Parámetros: 
             - $alumno: objeto de la clase class_alumno con los datos del alumno a insertar
         Devuelve:
@@ -94,32 +94,29 @@ class AlbumModel extends Model {
 
         try {
         // Consulta SQL para insertar un nuevo alumno
-        $sql = "INSERT INTO alumnos 
-                (nombre, apellidos, email, dni, telefono, nacionalidad, fecha_nac, curso_id) 
-                VALUES 
-                (:nombre, :apellidos, :email, :dni, :telefono, :nacionalidad, :fecha_nac, :curso_id)";
+        $sql = "INSERT INTO album 
+                (titulo, autor, fecha, etiquetas)
+                (:titulo, :autor, :fecha, :etiquetas)";
 
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
 
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
+        var_dump($stmt);
+        exit();
 
         // Vincular los parámetros
-        $stmt->bindParam(':nombre', $alumno->nombre, PDO::PARAM_STR, 30);
-        $stmt->bindParam(':apellidos', $alumno->apellidos, PDO::PARAM_STR, 50);
-        $stmt->bindParam(':email', $alumno->email, PDO::PARAM_STR, 50);
-        $stmt->bindParam(':dni', $alumno->dni, PDO::PARAM_STR, 9);
-        $stmt->bindParam(':telefono', $alumno->telefono, PDO::PARAM_STR, 9);
-        $stmt->bindParam(':nacionalidad', $alumno->nacionalidad, PDO::PARAM_STR, 30);
-        $stmt->bindParam(':fecha_nac', $alumno->fecha_nac, PDO::PARAM_STR, 10);
-        $stmt->bindParam(':curso_id', $alumno->curso_id, PDO::PARAM_INT);
+        $stmt->bindParam(':titulo', $alumno->titulo, PDO::PARAM_STR, 30);
+        $stmt->bindParam(':autor', $alumno->autor, PDO::PARAM_STR, 50);
+        $stmt->bindParam(':fecha', $alumno->fecha, PDO::PARAM_STR, 10);
+        $stmt->bindParam(':etiquetas', $alumno->etiquetas, PDO::PARAM_STR, 100);
 
         // Ejecutar la consulta
         $stmt->execute();
 
         // Devuelvo el id del nuevo alumno insertado
-        return $fp->lastInsertId();
+        return $bdAlbum->lastInsertId();
 
         } catch (PDOException $e) {
 
@@ -146,10 +143,10 @@ class AlbumModel extends Model {
                     ";
             
             // conectamos con la base de datos
-            $fp = $this->db->connect();
+            $bdAlbum = $this->db->connect();
 
             // prepare
-            $stmt = $fp->prepare($sql);
+            $stmt = $bdAlbum->prepare($sql);
 
             // Vincular los parámetros del prepare
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -191,10 +188,10 @@ class AlbumModel extends Model {
                     ";
             
             // conectamos con la base de datos
-            $fp = $this->db->connect();
+            $bdAlbum = $this->db->connect();
 
             // prepare
-            $stmt = $fp->prepare($sql);
+            $stmt = $bdAlbum->prepare($sql);
 
             // Vincular los parámetros del prepare
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -217,7 +214,7 @@ class AlbumModel extends Model {
 
     /*
         Método: update($alumno)
-        Descripción: Actualiza los datos de un alumno en la base de datos fp
+        Descripción: Actualiza los datos de un alumno en la base de datos bdAlbum
         Parámetros: 
             - $alumno: objeto de la clase class_alumno con los datos del alumno a actualizar
             - $id: id del alumno a actualizar
@@ -241,10 +238,10 @@ class AlbumModel extends Model {
                 WHERE id = :id";
 
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
 
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
 
         // Vincular los parámetros
         $stmt->bindParam(':nombre', $alumno->nombre, PDO::PARAM_STR, 30);
@@ -269,7 +266,7 @@ class AlbumModel extends Model {
 
     /*
         Método: delete($id)
-        Descripción: Elimina un alumno de la base de datos fp
+        Descripción: Elimina un alumno de la base de datos bdAlbum
         Parámetros: 
             - $id: id del alumno a eliminar
         Devuelve:
@@ -282,10 +279,10 @@ class AlbumModel extends Model {
         $sql = "DELETE FROM alumnos WHERE id = :id LIMIT 1";
 
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
 
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
 
         // Vincular los parámetros
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -302,7 +299,7 @@ class AlbumModel extends Model {
 
     /*
         Método: search($term)
-        Descripción: Busca alumnos en la base de datos fp que coincidan con el término de búsqueda
+        Descripción: Busca alumnos en la base de datos bdAlbum que coincidan con el término de búsqueda
         Parámetros: 
             - $term: término de búsqueda
         Devuelve:
@@ -337,10 +334,10 @@ class AlbumModel extends Model {
                 ";
 
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
 
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
 
         // Vincular los parámetros
         $likeTerm = '%' . $term . '%';
@@ -395,10 +392,10 @@ class AlbumModel extends Model {
                 ORDER BY :criterio";
 
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
 
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
 
         // Vincular los parámetros
         $stmt->bindParam(':criterio', $criterio, PDO::PARAM_INT);
@@ -456,9 +453,9 @@ class AlbumModel extends Model {
         // Generamos select 
         $sql = "SELECT email FROM alumnos WHERE email = :email";
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
         // Vincular los parámetros
         $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
         // Ejecutamos sql
@@ -494,9 +491,9 @@ class AlbumModel extends Model {
         // Generamos select 
         $sql = "SELECT dni FROM alumnos WHERE dni = :dni";
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
         // Vincular los parámetros
         $stmt->bindParam(':dni', $dni, PDO::PARAM_STR, 9);
         // Ejecutamos sql
@@ -530,9 +527,9 @@ class AlbumModel extends Model {
         // Generamos select 
         $sql = "SELECT id FROM cursos WHERE id = :curso_id";
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
         // Vincular los parámetros
         $stmt->bindParam(':curso_id', $curso_id, PDO::PARAM_INT);
         // Ejecutamos sql
@@ -566,9 +563,9 @@ class AlbumModel extends Model {
         // Generamos select 
         $sql = "SELECT id FROM alumnos WHERE id = :alumno_id";
         // Conectar con la base de datos
-        $fp = $this->db->connect();
+        $bdAlbum = $this->db->connect();
         // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $fp->prepare($sql);
+        $stmt = $bdAlbum->prepare($sql);
         // Vincular los parámetros
         $stmt->bindParam(':alumno_id', $alumno_id, PDO::PARAM_INT);
         // Ejecutamos sql
