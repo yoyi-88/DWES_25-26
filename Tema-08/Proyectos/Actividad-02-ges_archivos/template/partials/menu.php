@@ -9,7 +9,7 @@
         <div class="collapse navbar-collapse" id="exCollapsingNavbar">
             <ul class="nav navbar-nav">
               <li class="nav-item <?= ($archivo == 'index.php')? ' active':null ?>">
-                <a class="nav-link" href="index.php">Inicio
+                <a class="nav-link" href="gestor.php">Gestor
                   <span class="sr-only">(current)</span>
                 </a>
               </li>
