@@ -20,10 +20,11 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="<?= URL ?>album/order/1">Id</a></li>
                         <li><a class="dropdown-item" href="<?= URL ?>album/order/2">Título</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>album/order/3">Fecha</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>album/order/4">Etiquetas</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>album/order/5">Nº Imágenes</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>album/order/6">Visitas</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>album/order/3">Autor</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>album/order/4">Fecha</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>album/order/5">Etiquetas</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>album/order/6">Nº Imágenes</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>album/order/7">Visitas</a></li>
                        
                         <li>
                             <hr class="dropdown-divider">

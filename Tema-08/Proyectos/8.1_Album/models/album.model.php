@@ -1,7 +1,7 @@
 <?php
 /*
-    Modelo:  alumnoModel
-    Descripción: Modelo para gestionar los datos de los alumnos
+    Modelo:  albumModel
+    Descripción: Modelo para gestionar los datos de los albumes
 */
    
 
@@ -10,13 +10,13 @@ class AlbumModel extends Model {
     
     /*
         Método: get()
-        Descripción: Obtiene todos los alumnos de la base de datos bdAlbum
+        Descripción: Obtiene todos los albumes de la base de datos bdAlbum
     */
 
     public function get() {
 
         try {
-        // Consulta SQL para obtener todos los alumnos
+        // Consulta SQL para obtener todos los albumes
         $sql = "
             SELECT id, titulo, autor, fecha, etiquetas, num_fotos, num_visitas
             FROM albumes ORDER BY 1;
@@ -53,7 +53,7 @@ class AlbumModel extends Model {
 
         try {
         // Consulta SQL para obtener todos los cursos
-        $sql = "SELECT id, nombreCorto as curso FROM cursos ORDER BY 2";
+        $sql = "SELECT id, tituloCorto as curso FROM cursos ORDER BY 2";
 
         // Conectar con la base de datos
         $bdAlbum = $this->db->connect();
@@ -82,40 +82,42 @@ class AlbumModel extends Model {
 
 
     /*
-        Método: create($alumno)
-        Descripción: Inserta un nuevo alumno en la base de datos bdAlbum
+        Método: create($album)
+        Descripción: Inserta un nuevo album en la base de datos bdAlbum
         Parámetros: 
-            - $alumno: objeto de la clase class_alumno con los datos del alumno a insertar
+            - $album: objeto de la clase class_album con los datos del album a insertar
         Devuelve:
-            - id del nuevo alumno insertado
+            - id del nuevo album insertado
             - falso en caso de error
     */
-    public function create($alumno) {
+    public function create($album) {
 
         try {
-        // Consulta SQL para insertar un nuevo alumno
-        $sql = "INSERT INTO album 
-                (titulo, autor, fecha, etiquetas)
-                (:titulo, :autor, :fecha, :etiquetas)";
+        // Consulta SQL para insertar un nuevo album
+        $sql = "INSERT INTO albumes 
+                (titulo, descripcion, autor, fecha, etiquetas, carpeta)
+                VALUES
+                (:titulo, :descripcion, :autor, :fecha, :etiquetas, :carpeta)";
 
         // Conectar con la base de datos
         $bdAlbum = $this->db->connect();
 
         // Preparar la consulta obteniendo el objeto PDOStatement
         $stmt = $bdAlbum->prepare($sql);
-        var_dump($stmt);
-        exit();
 
         // Vincular los parámetros
-        $stmt->bindParam(':titulo', $alumno->titulo, PDO::PARAM_STR, 30);
-        $stmt->bindParam(':autor', $alumno->autor, PDO::PARAM_STR, 50);
-        $stmt->bindParam(':fecha', $alumno->fecha, PDO::PARAM_STR, 10);
-        $stmt->bindParam(':etiquetas', $alumno->etiquetas, PDO::PARAM_STR, 100);
+        $stmt->bindParam(':titulo', $album->titulo, PDO::PARAM_STR, 100);
+        $stmt->bindParam(':descripcion', $album->descripcion, PDO::PARAM_STR);
+        $stmt->bindParam(':autor', $album->autor, PDO::PARAM_STR, 50);
+        $stmt->bindParam(':fecha', $album->fecha, PDO::PARAM_STR, 10);
+        $stmt->bindParam(':etiquetas', $album->etiquetas, PDO::PARAM_STR, 250);
+        $stmt->bindParam(':carpeta', $album->carpeta, PDO::PARAM_STR, 50);
+
 
         // Ejecutar la consulta
         $stmt->execute();
 
-        // Devuelvo el id del nuevo alumno insertado
+        // Devuelvo el id del nuevo album insertado
         return $bdAlbum->lastInsertId();
 
         } catch (PDOException $e) {
@@ -127,19 +129,19 @@ class AlbumModel extends Model {
 
     /*
         Método: read()
-        Descripción: obtiene los detalles de un alumno devolviendo un objeto de la clase  class_alumno
+        Descripción: obtiene los detalles de un album devolviendo un objeto de la clase  class_album
         Paráemtros: 
-            - $id: id del alumno
+            - $id: id del album
 
         Devuelve:
-            - $alumno: objeto de la clase class_alumno
+            - $album: objeto de la clase class_album
     */
     public function read(int $id){
         try {
 
             $sql = "SELECT 
-                    id, nombre, apellidos, email, telefono, nacionalidad, dni, fecha_nac, curso_id
-                    FROM alumnos WHERE id = :id
+                    id, titulo, descripcion, autor, fecha, etiquetas, num_fotos, num_visitas, carpeta
+                    FROM albumes WHERE id = :id
                     ";
             
             // conectamos con la base de datos
@@ -169,21 +171,20 @@ class AlbumModel extends Model {
 
     /*
         Método: read_show()
-        Descripción: obtiene los detalles de un alumno devolviendo un objeto con los detalles del alumno
-        incluido el nombre del curso
+        Descripción: obtiene los detalles de un album devolviendo un objeto con los detalles del album
+        incluido el titulo del curso
         Paráemtros: 
-            - $id: id del alumno
+            - $id: id del album
 
         Devuelve:
-            - $alumno: objeto de la clase alumno con los detalles del alumno
+            - $album: objeto de la clase album con los detalles del album
     */
     public function read_show(int $id){
         try {
 
             $sql = "SELECT 
-                    alumnos.id, alumnos.nombre, apellidos, email, telefono, nacionalidad, dni, fecha_nac, curso_id, cursos.nombre AS curso
-                    FROM alumnos INNER JOIN cursos
-                    ON alumnos.curso_id = cursos.id WHERE alumnos.id = :id
+                    albumes.id, albumes.titulo, albumes.descripcion, albumes.autor, albumes.fecha, albumes.etiquetas, albumes.num_fotos, albumes.num_visitas, albumes.carpeta
+                    FROM albumes WHERE albumes.id = :id
                     LIMIT 1
                     ";
             
@@ -213,28 +214,25 @@ class AlbumModel extends Model {
     }
 
     /*
-        Método: update($alumno)
-        Descripción: Actualiza los datos de un alumno en la base de datos bdAlbum
+        Método: update($album)
+        Descripción: Actualiza los datos de un album en la base de datos bdAlbum
         Parámetros: 
-            - $alumno: objeto de la clase class_alumno con los datos del alumno a actualizar
-            - $id: id del alumno a actualizar
+            - $album: objeto de la clase class_album con los datos del album a actualizar
+            - $id: id del album a actualizar
         Devuelve:
             - true si la actualización fue exitosa
             - false en caso de error
     */
-    public function update($alumno) {
+    public function update($album) {
 
         try {
-        // Consulta SQL para actualizar un alumno
-        $sql = "UPDATE alumnos SET 
-                    nombre = :nombre, 
-                    apellidos = :apellidos, 
-                    email = :email, 
-                    dni = :dni, 
-                    telefono = :telefono, 
-                    nacionalidad = :nacionalidad, 
-                    fecha_nac = :fecha_nac, 
-                    curso_id = :curso_id
+        // Consulta SQL para actualizar un album
+        $sql = "UPDATE albumes SET 
+                    titulo = :titulo,
+                    descripcion = :descripcion,
+                    autor = :autor,
+                    fecha = :fecha,
+                    etiquetas = :etiquetas
                 WHERE id = :id";
 
         // Conectar con la base de datos
@@ -244,15 +242,12 @@ class AlbumModel extends Model {
         $stmt = $bdAlbum->prepare($sql);
 
         // Vincular los parámetros
-        $stmt->bindParam(':nombre', $alumno->nombre, PDO::PARAM_STR, 30);
-        $stmt->bindParam(':apellidos', $alumno->apellidos, PDO::PARAM_STR, 50);
-        $stmt->bindParam(':email', $alumno->email, PDO::PARAM_STR, 50);
-        $stmt->bindParam(':dni', $alumno->dni, PDO::PARAM_STR, 9);
-        $stmt->bindParam(':telefono', $alumno->telefono, PDO::PARAM_STR, 9);
-        $stmt->bindParam(':nacionalidad', $alumno->nacionalidad, PDO::PARAM_STR, 30);
-        $stmt->bindParam(':fecha_nac', $alumno->fecha_nac, PDO::PARAM_STR, 10);
-        $stmt->bindParam(':curso_id', $alumno->curso_id, PDO::PARAM_INT);
-        $stmt->bindParam(':id', $alumno->id, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $album->id, PDO::PARAM_INT);
+        $stmt->bindParam(':titulo', $album->titulo, PDO::PARAM_STR, 30);
+        $stmt->bindParam(':descripcion', $album->descripcion, PDO::PARAM_STR, 255);
+        $stmt->bindParam(':autor', $album->autor, PDO::PARAM_STR, 50);
+        $stmt->bindParam(':fecha', $album->fecha, PDO::PARAM_STR, 10);
+        $stmt->bindParam(':etiquetas', $album->etiquetas, PDO::PARAM_STR, 255);
 
         // Ejecutar la consulta
         return $stmt->execute();
@@ -266,17 +261,17 @@ class AlbumModel extends Model {
 
     /*
         Método: delete($id)
-        Descripción: Elimina un alumno de la base de datos bdAlbum
+        Descripción: Elimina un album de la base de datos bdAlbum
         Parámetros: 
-            - $id: id del alumno a eliminar
+            - $id: id del album a eliminar
         Devuelve:
             - true si la eliminación fue exitosa
             - false en caso de error
     */
     public function delete(int $id) {
         try {
-        // Consulta SQL para eliminar un alumno
-        $sql = "DELETE FROM alumnos WHERE id = :id LIMIT 1";
+        // Consulta SQL para eliminar un album
+        $sql = "DELETE FROM albumes WHERE id = :id LIMIT 1";
 
         // Conectar con la base de datos
         $bdAlbum = $this->db->connect();
@@ -299,7 +294,7 @@ class AlbumModel extends Model {
 
     /*
         Método: search($term)
-        Descripción: Busca alumnos en la base de datos bdAlbum que coincidan con el término de búsqueda
+        Descripción: Busca albumes en la base de datos bdAlbum que coincidan con el término de búsqueda
         Parámetros: 
             - $term: término de búsqueda
         Devuelve:
@@ -308,29 +303,18 @@ class AlbumModel extends Model {
     public function search(string $term) {
 
         try {
-        // Consulta SQL para buscar alumnos
+        // Consulta SQL para buscar albumes
         $sql = "SELECT 
-                    alumnos.id,
-                    concat_ws(', ', alumnos.apellidos, alumnos.nombre) as alumno,
-                    alumnos.email,
-                    alumnos.nacionalidad,
-                    alumnos.dni,
-                    timestampdiff(YEAR,  alumnos.fecha_nac, now()) as edad,
-                    cursos.nombreCorto as curso
-                FROM alumnos INNER JOIN cursos
-                ON alumnos.curso_id = cursos.id
-                WHERE concat_ws(' ',
-                    alumnos.nombre,  
-                    alumnos.apellidos,  
-                    alumnos.email,
-                    alumnos.nacionalidad, 
-                    alumnos.dni,
-                    alumnos.fecha_nac,
-                    timestampdiff(YEAR,  alumnos.fecha_nac, now()),
-                    cursos.nombreCorto,
-                    cursos.nombre
-                    ) LIKE :term
-                ORDER BY 1
+                    id,
+                    titulo,
+                    autor,
+                    fecha,
+                    etiquetas,
+                    num_fotos,
+                    num_visitas
+                FROM albumes 
+                WHERE CONCAT_WS(' ', titulo, autor, descripcion, etiquetas) LIKE :term
+                ORDER BY id ASC
                 ";
 
         // Conectar con la base de datos
@@ -361,11 +345,11 @@ class AlbumModel extends Model {
 
     /*
         Método: order($criterio)
-        Descripción: Ordena la lista de alumnos por un criterio
+        Descripción: Ordena la lista de albumes por un criterio
         Parámetros:
             - $criterio: campo por el que se ordena la lista
                 1: id
-                2: nombre
+                2: titulo
                 3: email
                 4: nacionalidad
                 5: dni
@@ -378,17 +362,16 @@ class AlbumModel extends Model {
 
         try {
 
-        // Consulta SQL para ordenar alumnos
+        // Consulta SQL para ordenar albumes
         $sql = "SELECT 
-                    alumnos.id,
-                    concat_ws(', ', alumnos.apellidos, alumnos.nombre) as alumno,
-                    alumnos.email,
-                    alumnos.nacionalidad,
-                    alumnos.dni,
-                    timestampdiff(YEAR,  alumnos.fecha_nac, now()) as edad,
-                    cursos.nombreCorto as curso
-                FROM alumnos INNER JOIN cursos
-                ON alumnos.curso_id = cursos.id
+                    id,
+                    titulo,
+                    autor,
+                    fecha,
+                    etiquetas,
+                    num_fotos,
+                    num_visitas
+                FROM albumes 
                 ORDER BY :criterio";
 
         // Conectar con la base de datos
@@ -416,6 +399,76 @@ class AlbumModel extends Model {
         }
     }
 
+    /*
+        Método: validate_id_album_exists($album_id)
+        Descripción: valida que el album_id exista en la tabla cursos
+        Parámetros: 
+            - $album_id
+        Devuelve:
+            - Falso - album_id no existente
+            - Verdadero - album_id existente
+    */
+    public function validate_id_album_exists($album_id) {
+        try {
+        // Generamos select 
+        $sql = "SELECT id FROM albumes WHERE id = :album_id";
+        // Conectar con la base de datos
+        $bdAlbum = $this->db->connect();
+        // Preparar la consulta obteniendo el objeto PDOStatement
+        $stmt = $bdAlbum->prepare($sql);
+        // Vincular los parámetros
+        $stmt->bindParam(':album_id', $album_id, PDO::PARAM_INT);
+        // Ejecutamos sql
+        $stmt->execute();
+
+        // Validamos
+        if ($stmt->rowCount() > 0) {
+            return TRUE;
+        }
+
+        return FALSE; 
+
+        } catch (PDOException $e) {
+            // Manejo del error
+            $this->handleError($e); 
+
+        }
+    }
+
+    /*
+        Método: update_num_fotos($id, $num)
+        Descripción: Actualiza el contador de fotos de un álbum concreto
+    */
+    public function update_num_fotos(int $id, int $num) {
+        try {
+            $sql = "UPDATE albumes SET num_fotos = :num WHERE id = :id";
+            $bdAlbum = $this->db->connect();
+            $stmt = $bdAlbum->prepare($sql);
+            $stmt->bindParam(':num', $num, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            $this->handleError($e); 
+        }
+    }
+
+    /*
+        Método: increment_visitas($id)
+        Descripción: Suma 1 al contador de visitas de un álbum
+    */
+    public function increment_visitas(int $id) {
+        try {
+            // Usamos COALESCE por si el valor actual es NULL, que lo trate como 0
+            $sql = "UPDATE albumes SET num_visitas = COALESCE(num_visitas, 0) + 1 WHERE id = :id";
+            $bdAlbum = $this->db->connect();
+            $stmt = $bdAlbum->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            $this->handleError($e); 
+        }
+    }
+
 
     /*
         Método: handleError
@@ -439,151 +492,9 @@ class AlbumModel extends Model {
         }
     }
 
-    /*
-        Método: validate_unique_email($email)
-        Descripción: valida emial único en la tabla alumnos
-        Parámetros: 
-            - $emial
-        Devuelve:
-            - Falso - email existente
-            - Verdadero - email único
-    */
-    public function validate_unique_email($email) {
-        try {
-        // Generamos select 
-        $sql = "SELECT email FROM alumnos WHERE email = :email";
-        // Conectar con la base de datos
-        $bdAlbum = $this->db->connect();
-        // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $bdAlbum->prepare($sql);
-        // Vincular los parámetros
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
-        // Ejecutamos sql
-        $stmt->execute();
 
-        // Validamos
-        if ($stmt->rowCount() > 0) {
-            return FALSE;
-        }
 
-        return TRUE;
-
-            
-
-        } catch (PDOException $e) {
-            // Manejo del error
-            $this->handleError($e); 
-
-        }
-    }
-
-     /*
-        Método: validate_unique_dnil($dni)
-        Descripción: valida dni único en la tabla alumnos
-        Parámetros: 
-            - $dni
-        Devuelve:
-            - Falso - dni existente
-            - Verdadero - dni único
-    */
-    public function validate_unique_dni($dni) {
-        try {
-        // Generamos select 
-        $sql = "SELECT dni FROM alumnos WHERE dni = :dni";
-        // Conectar con la base de datos
-        $bdAlbum = $this->db->connect();
-        // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $bdAlbum->prepare($sql);
-        // Vincular los parámetros
-        $stmt->bindParam(':dni', $dni, PDO::PARAM_STR, 9);
-        // Ejecutamos sql
-        $stmt->execute();
-
-        // Validamos
-        if ($stmt->rowCount() > 0) {
-            return FALSE;
-        }
-
-        return TRUE; 
-
-        } catch (PDOException $e) {
-            // Manejo del error
-            $this->handleError($e); 
-
-        }
-    }
-
-    /*
-        Método: validate_curso_exists($curso_id)
-        Descripción: valida que el curso_id exista en la tabla cursos
-        Parámetros: 
-            - $curso_id
-        Devuelve:
-            - Falso - curso_id no existente
-            - Verdadero - curso_id existente
-    */
-    public function validate_curso_exists($curso_id) {
-        try {
-        // Generamos select 
-        $sql = "SELECT id FROM cursos WHERE id = :curso_id";
-        // Conectar con la base de datos
-        $bdAlbum = $this->db->connect();
-        // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $bdAlbum->prepare($sql);
-        // Vincular los parámetros
-        $stmt->bindParam(':curso_id', $curso_id, PDO::PARAM_INT);
-        // Ejecutamos sql
-        $stmt->execute();
-
-        // Validamos
-        if ($stmt->rowCount() > 0) {
-            return TRUE;
-        }
-
-        return FALSE; 
-
-        } catch (PDOException $e) {
-            // Manejo del error
-            $this->handleError($e); 
-
-        }
-    }
-
-    /*
-        Método: validate_id_alumno_exists($alumno_id)
-        Descripción: valida que el alumno_id exista en la tabla cursos
-        Parámetros: 
-            - $alumno_id
-        Devuelve:
-            - Falso - alumno_id no existente
-            - Verdadero - alumno_id existente
-    */
-    public function validate_id_alumno_exists($alumno_id) {
-        try {
-        // Generamos select 
-        $sql = "SELECT id FROM alumnos WHERE id = :alumno_id";
-        // Conectar con la base de datos
-        $bdAlbum = $this->db->connect();
-        // Preparar la consulta obteniendo el objeto PDOStatement
-        $stmt = $bdAlbum->prepare($sql);
-        // Vincular los parámetros
-        $stmt->bindParam(':alumno_id', $alumno_id, PDO::PARAM_INT);
-        // Ejecutamos sql
-        $stmt->execute();
-
-        // Validamos
-        if ($stmt->rowCount() > 0) {
-            return TRUE;
-        }
-
-        return FALSE; 
-
-        } catch (PDOException $e) {
-            // Manejo del error
-            $this->handleError($e); 
-
-        }
-    }
+    
 
    }
 

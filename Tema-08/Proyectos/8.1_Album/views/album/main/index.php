@@ -20,15 +20,15 @@
         <!-- capa de errores -->
         <?php require_once("template/partials/error.partial.php") ?>
 
-        <!-- Mostrar tabla de  alumnos -->
+        <!-- Mostrar tabla de  albums -->
         <!-- contenido principal -->
         <main>
             <legend>Colección de Albumes</legend>
-            <!-- Menú principal de gestión de alumnos de FP -->
+            <!-- Menú principal de gestión de albums de FP -->
             <?php require_once("views/album/partials/menu.album.partial.php") ?>
             <div class="table-responsive">
                 <table class="table table-hover">
-                    <!-- cabecera tabla alumnos -->
+                    <!-- cabecera tabla albums -->
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
@@ -38,6 +38,7 @@
                             <th scope="col">Etiquetas</th>
                             <th scope="col" class="text-end">Imágenes</th>
                             <th scope="col" class="text-end">Visitas</th>
+                            <th scope="col" class="text-end">Acciones</th>
 
                         </tr>
                     </thead>
@@ -55,26 +56,31 @@
                                 <td class="text-end"><?= $album['num_visitas']  ?></td>
 
                                 <!-- botones de acción -->
-                                <td>
+                                <td class="text-end">
                                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                         <!-- boton eliminar -->
-                                        <form method="POST" action="<?= URL ?>alumno/delete/<?= $album['id'] ?>" style="display:inline;">
+                                        <form method="POST" action="<?= URL ?>album/delete/<?= $album['id'] ?>" style="display:inline;">
                                             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                                             <button type="submit" class="btn btn-danger btn-sm 
-                                            <?= !in_array($_SESSION['role_id'], $GLOBALS['album']['delete'])? 'disabled':null ?>"
-                                            title="Eliminar" onclick="return confirm('Confirmar eliminación del album <?= $album['titulo'] ?>')">
+                                            <?= !in_array($_SESSION['role_id'], $GLOBALS['album']['delete']) ? 'disabled' : null ?>"
+                                                title="Eliminar" onclick="return confirm('Confirmar eliminación del album <?= $album['titulo'] ?>')">
                                                 <i class="bi bi-trash3"></i>
                                             </button>
                                         </form>
                                         <!-- boton editar -->
-                                        <a href="<?=  URL ?>alumno/edit/<?= $album['id'] ?>" class="btn btn-warning btn-sm
-                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['album']['edit'])? 'disabled':null ?>" title="Editar">
+                                        <a href="<?= URL ?>album/edit/<?= $album['id'] ?>" class="btn btn-warning btn-sm
+                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['album']['edit']) ? 'disabled' : null ?>" title="Editar">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <!-- boton ver -->
-                                        <a href="<?=  URL ?>alumno/show/<?= $album['id'] ?>" class="btn btn-primary btn-sm
-                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['album']['show'])? 'disabled':null ?>" title="Ver">
+                                        <a href="<?= URL ?>album/show/<?= $album['id'] ?>" class="btn btn-primary btn-sm
+                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['album']['show']) ? 'disabled' : null ?>" title="Ver">
                                             <i class="bi bi-eye"></i>
+                                        </a>
+                                        <!-- Boton añadir imagenes -->
+                                        <a href="<?= URL ?>album/addImages/<?= $album['id'] ?>" class="btn btn-success btn-sm
+                                        <?= !in_array($_SESSION['role_id'], $GLOBALS['album']['addImages'] ?? []) ? 'disabled' : null ?>" title="Añadir Imágenes">
+                                            <i class="bi bi-images"></i>
                                         </a>
                                     </div>
                                 </td>

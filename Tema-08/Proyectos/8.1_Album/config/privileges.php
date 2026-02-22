@@ -43,6 +43,7 @@
     $GLOBALS['album']['show'] = [ADMIN, EDITOR, REGISTRADO];
     $GLOBALS['album']['search'] = [ADMIN, EDITOR, REGISTRADO];
     $GLOBALS['album']['order'] = [ADMIN, EDITOR, REGISTRADO];
+    $GLOBALS['album']['addImages'] = [ADMIN, EDITOR];
 
     // Privilegios para el controlador User
     $GLOBALS['user']['render'] = [ADMIN];
@@ -52,3 +53,6 @@
     $GLOBALS['user']['show'] = [ADMIN];
     $GLOBALS['user']['search'] = [ADMIN];
     $GLOBALS['user']['order'] = [ADMIN];
+    $GLOBALS['album']['addImages'] = [ADMIN];
+
+    

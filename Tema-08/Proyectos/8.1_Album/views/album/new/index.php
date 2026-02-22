@@ -20,7 +20,7 @@
         <!-- capa de errores -->
         <?php require_once("template/partials/error.partial.php") ?>
 
-        <!-- Mostrar tabla de  alumnos -->
+        <!-- Mostrar tabla de  albumes -->
         <!-- contenido principal -->
         <main>
             <legend>Formulario Nuevo Album</legend>
@@ -32,7 +32,7 @@
                 <!-- proetección CSRF -->
                 <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
                 
-                <!-- campo nombre -->
+                <!-- campo Título -->
                 <div class="mb-3">
                     <label for="titulo" class="form-label">Título:</label>
                     <input type="text" class="form-control 
@@ -46,8 +46,23 @@
                     </span>
                 </div>
 
+                <!-- campo Descripción -->
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción:</label>
+                    <input type="text" class="form-control 
+                    <?=  (isset($this->errors['descripcion'])) ? 'is-invalid': null ?>"
+                    name="descripcion" 
+                    value="<?= htmlspecialchars($this->album->descripcion)?>"
+                    required>
+                    <!-- mostrar posibles errores de validación -->
+                    <span class="form-text text-danger" role="alert">
+                            <?= $this->errors['descripcion'] ??= null ?>
+                    </span>
+                </div>
 
-                <!-- campo apellidos -->
+
+
+                <!-- campo autor -->
                 <div class="mb-3">
                     <label for="autor" class="form-label">Autor:</label>
                     <input type="text" class="form-control
@@ -61,7 +76,7 @@
                     </span>
                 </div>
 
-                <!-- campo apellidos -->
+                <!-- campo fecha -->
                 <div class="mb-3">
                     <label for="fecha" class="form-label">Fecha:</label>
                     <input type="date" class="form-control
@@ -75,17 +90,29 @@
                     </span>
                 </div>
 
-                <!-- campo email -->
+                <!-- campo etiquetas -->
                 <div class="mb-3">
                     <label for="etiquetas" class="form-label">Etiquetas:</label>
                     <input type="text" class="form-control
                     <?=  (isset($this->errors['etiquetas'])) ? 'is-invalid': null ?>"
                     name="etiquetas" 
-                    value="<?= htmlspecialchars($this->album->etiquetas)?>"
-                    required>
+                    value="<?= htmlspecialchars($this->album->etiquetas)?>">
                     <!-- mostrar posibles errores de validación -->
                     <span class="form-text text-danger" role="alert">
                             <?= $this->errors['etiquetas'] ??= null ?>      
+                    </span>
+                </div>
+
+                <!-- Campo Carpeta -->
+                <div class="mb-3">
+                    <label for="carpeta" class="form-label">Carpeta (sin espacios):</label>
+                    <input type="text" class="form-control 
+                    <?=  (isset($this->errors['carpeta'])) ? 'is-invalid': null ?>"
+                    name="carpeta" 
+                    value="<?= htmlspecialchars($this->album->carpeta ?? '')?>"
+                    required>
+                    <span class="form-text text-danger" role="alert">
+                            <?= $this->errors['carpeta'] ??= null ?>      
                     </span>
                 </div>
 
