@@ -590,19 +590,19 @@ class Album extends Controller
             exit();
         }
 
-        // 1. Obtener los detalles del álbum para saber el nombre de la carpeta
+        // Obtener los detalles del álbum para saber el nombre de la carpeta
         $album = $this->model->read($id);
         
-        // 2. Comprobar si tiene una carpeta asignada y montar la ruta
+        // Comprobar si tiene una carpeta asignada y montar la ruta
         if (!empty($album->carpeta)) {
             $ruta_carpeta = 'images/' . $album->carpeta;
 
-            // 3. Comprobar si el directorio físico existe
+            // Comprobar si el directorio físico existe
             if (is_dir($ruta_carpeta)) {
                 // Leer todos los archivos de la carpeta ignorando . y ..
                 $archivos = array_diff(scandir($ruta_carpeta), array('.', '..'));
                 
-                // 4. Recorrer y eliminar cada imagen (archivo)
+                // Recorrer y eliminar cada imagen (archivo)
                 foreach ($archivos as $archivo) {
                     $ruta_archivo = $ruta_carpeta . '/' . $archivo;
                     if (is_file($ruta_archivo)) {
@@ -610,7 +610,7 @@ class Album extends Controller
                     }
                 }
                 
-                // 5. Eliminar la carpeta (ahora que está vacía)
+                // Eliminar la carpeta (ahora que está vacía)
                 rmdir($ruta_carpeta);
             }
         }
@@ -778,7 +778,7 @@ class Album extends Controller
         if (!empty($_FILES['imagenes']['name'][0])) {
             $num_archivos = count($_FILES['imagenes']['name']);
 
-            // FASE 1: Validación de TODOS los archivos (El enunciado exige cancelar todo si uno falla)
+            // Validación de TODOS los archivos (El enunciado exige cancelar todo si uno falla)
             for ($i = 0; $i < $num_archivos; $i++) {
                 if ($_FILES['imagenes']['error'][$i] === UPLOAD_ERR_OK) {
                     $size = $_FILES['imagenes']['size'][$i];
@@ -796,14 +796,14 @@ class Album extends Controller
                 }
             }
 
-            // FASE 2: Si hay errores, cancelamos la subida y volvemos al formulario
+            // Si hay errores, cancelamos la subida y volvemos al formulario
             if (!empty($errores)) {
                 $_SESSION['error'] = implode("<br>", $errores);
                 header('Location: ' . URL . 'album/addImages/' . $id);
                 exit();
             }
 
-            // FASE 3: Si no hay errores, movemos todos los archivos a la carpeta del álbum
+            // Si no hay errores, movemos todos los archivos a la carpeta del álbum
             for ($i = 0; $i < $num_archivos; $i++) {
                 $tmp_name = $_FILES['imagenes']['tmp_name'][$i];
                 $name = basename($_FILES['imagenes']['name'][$i]);
