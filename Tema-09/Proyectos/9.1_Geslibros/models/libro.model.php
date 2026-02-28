@@ -184,16 +184,18 @@ class libroModel extends Model {
     */
     public function create($libro) {
         try {
-            // Consulta SQL actualizada con ISBN y Fecha Edición
+            $geslibros = $this->db->connect();
+            
+            // 1. INICIAMOS LA TRANSACCIÓN
+            $geslibros->beginTransaction();
+
             $sql = "INSERT INTO libros 
                     (titulo, autor_id, editorial_id, stock, precio_venta, fecha_edicion, isbn) 
                     VALUES 
                     (:titulo, :autor_id, :editorial_id, :stock, :precio_venta, :fecha_edicion, :isbn)";
 
-            $geslibros = $this->db->connect();
             $stmt = $geslibros->prepare($sql);
 
-            // Vincular los parámetros existentes
             $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR, 80);
             $stmt->bindParam(':autor_id', $libro->autor_id, PDO::PARAM_INT);
             $stmt->bindParam(':editorial_id', $libro->editorial_id, PDO::PARAM_INT);
@@ -206,18 +208,23 @@ class libroModel extends Model {
             
             $libro_id = $geslibros->lastInsertId();
 
-            // Insertar géneros (relación N:M)
+            // 2. Insertar géneros pasándole la misma conexión
             if (!empty($libro->temas)) {
-                $this->insert_temas_libro($libro_id, $libro->temas); 
+                $this->insert_temas_libro($libro_id, $libro->temas, $geslibros); 
             }
+
+            // 3. SI TODO VA BIEN, CONFIRMAMOS LOS CAMBIOS
+            $geslibros->commit();
 
             return $libro_id;
 
         } catch (PDOException $e) {
+            // 4. SI HAY ERROR, DESHACEMOS LOS CAMBIOS
+            if (isset($geslibros)) {
+                $geslibros->rollBack();
+            }
             $this->handleError($e); 
         }
-
-        
     }
 
     /*
@@ -335,53 +342,54 @@ class libroModel extends Model {
             - false en caso de error
     */
     public function update($libro) {
-
         try {
-        // Consulta SQL para actualizar un libro
-        $sql = "UPDATE libros SET 
-                    titulo = :titulo, 
-                    autor_id = :autor_id, 
-                    editorial_id = :editorial_id, 
-                    stock = :stock, 
-                    precio_venta = :precio_venta,
-                    fecha_edicion = :fecha_edicion,
-                    isbn = :isbn
-                WHERE id = :id";
+            $geslibros = $this->db->connect();
+            
+            // 1. INICIAMOS LA TRANSACCIÓN
+            $geslibros->beginTransaction();
 
-        // Conectar con la base de datos
-        $geslibros = $this->db->connect();
-        $stmt = $geslibros->prepare($sql);
+            $sql = "UPDATE libros SET 
+                        titulo = :titulo, 
+                        autor_id = :autor_id, 
+                        editorial_id = :editorial_id, 
+                        stock = :stock, 
+                        precio_venta = :precio_venta,
+                        fecha_edicion = :fecha_edicion,
+                        isbn = :isbn
+                    WHERE id = :id";
 
-        // 2. Vincular los parámetros de la tabla 'libros'
-        $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR, 80); // Ajustar longitud
-        $stmt->bindParam(':autor_id', $libro->autor_id, PDO::PARAM_INT);
-        $stmt->bindParam(':editorial_id', $libro->editorial_id, PDO::PARAM_INT);
-        $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
-        $stmt->bindParam(':precio_venta', $libro->precio_venta, PDO::PARAM_STR); // DECIMAL
-        $stmt->bindParam(':fecha_edicion', $libro->fecha_edicion, PDO::PARAM_STR); // DATE
-        $stmt->bindParam(':isbn', $libro->isbn, PDO::PARAM_STR, 13);
-        $stmt->bindParam(':id', $libro->id, PDO::PARAM_INT);
+            $stmt = $geslibros->prepare($sql);
 
-        // Ejecutar la actualización de la tabla 'libros'
-        $stmt->execute();
-        
-        // Eliminar temas existentes
-        $this->delete_temas_libro($libro->id);
+            $stmt->bindParam(':titulo', $libro->titulo, PDO::PARAM_STR, 80); 
+            $stmt->bindParam(':autor_id', $libro->autor_id, PDO::PARAM_INT);
+            $stmt->bindParam(':editorial_id', $libro->editorial_id, PDO::PARAM_INT);
+            $stmt->bindParam(':stock', $libro->stock, PDO::PARAM_INT);
+            $stmt->bindParam(':precio_venta', $libro->precio_venta, PDO::PARAM_STR); 
+            $stmt->bindParam(':fecha_edicion', $libro->fecha_edicion, PDO::PARAM_STR); 
+            $stmt->bindParam(':isbn', $libro->isbn, PDO::PARAM_STR, 13);
+            $stmt->bindParam(':id', $libro->id, PDO::PARAM_INT);
 
-        // Insertar temas nuevos (el array está en $libro->temas)
-        if (!empty($libro->temas)) {
-            $this->insert_temas_libro($libro->id, $libro->temas);
-        }
-        
-        return true; 
+            $stmt->execute();
+            
+            // 2. Eliminar temas y poner los nuevos (usando la misma conexión)
+            $this->delete_temas_libro($libro->id, $geslibros);
+
+            if (!empty($libro->temas)) {
+                $this->insert_temas_libro($libro->id, $libro->temas, $geslibros);
+            }
+            
+            // 3. CONFIRMAMOS CAMBIOS
+            $geslibros->commit();
+            return true; 
 
         } catch (PDOException $e) {
-
-            // Manejo del error
+            // 4. DESHACEMOS EN CASO DE ERROR
+            if (isset($geslibros)) {
+                $geslibros->rollBack();
+            }
             $this->handleError($e); 
         }
     }
-
     /*
         Método: delete($id)
         Descripción: Elimina un libro de la base de datos ges$geslibros
@@ -419,10 +427,12 @@ class libroModel extends Model {
     Método: delete_temas_libro(int $libro_id)
     Descripción: Elimina los temas existentes para un libro.
     */
-    public function delete_temas_libro(int $libro_id) {
+    public function delete_temas_libro(int $libro_id, $geslibros = null) {
         try {
+            // Si no me pasan la conexión, la creo (por si se usa fuera de una transacción)
+            if ($geslibros === null) $geslibros = $this->db->connect();
+            
             $sql = "DELETE FROM libros_temas WHERE libro_id = :libro_id";
-            $geslibros = $this->db->connect();
             $stmt = $geslibros->prepare($sql);
             $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
             return $stmt->execute();
@@ -435,16 +445,17 @@ class libroModel extends Model {
     Método: insert_temas_libro(int $libro_id, array $temas_seleccionados)
     Descripción: Inserta los temas nuevos para un libro.
     */
-    public function insert_temas_libro(int $libro_id, array $temas_seleccionados) {
+    public function insert_temas_libro(int $libro_id, array $temas_seleccionados, $geslibros = null) {
         try {
+            // Si no me pasan la conexión, la creo
+            if ($geslibros === null) $geslibros = $this->db->connect();
+
             $sql = "INSERT INTO libros_temas (libro_id, tema_id) VALUES (:libro_id, :tema_id)";
-            $geslibros = $this->db->connect();
             $stmt = $geslibros->prepare($sql);
 
             foreach ($temas_seleccionados as $tema_id) {
                 $stmt->bindParam(':libro_id', $libro_id, PDO::PARAM_INT);
                 $stmt->bindParam(':tema_id', $tema_id, PDO::PARAM_INT);
-                // Ejecutar dentro del bucle
                 $stmt->execute(); 
             }
             return true;
@@ -590,34 +601,51 @@ class libroModel extends Model {
 
     // Valida si el autor existe en la tabla autores
     public function validateAutor($id) {
-        $sql = "SELECT id FROM autores WHERE id = :id LIMIT 1";
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute(['id' => $id]);
-        return $stmt->rowCount() > 0;
+        try {
+            $sql = "SELECT id FROM autores WHERE id = :id LIMIT 1";
+            $stmt = $this->db->connect()->prepare($sql);
+            $stmt->execute(['id' => $id]);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $this->handleError($e);
+            return false;
+        }
     }
 
-    // Valida si la editorial existe
     public function validateEditorial($id) {
-        $sql = "SELECT id FROM editoriales WHERE id = :id LIMIT 1";
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute(['id' => $id]);
-        return $stmt->rowCount() > 0;
+        try {
+            $sql = "SELECT id FROM editoriales WHERE id = :id LIMIT 1";
+            $stmt = $this->db->connect()->prepare($sql);
+            $stmt->execute(['id' => $id]);
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $this->handleError($e);
+            return false;
+        }
     }
 
-    // Valida si el ISBN es único
     public function validateUniqueIsbn($isbn) {
-        $sql = "SELECT id FROM libros WHERE isbn = :isbn LIMIT 1";
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute(['isbn' => $isbn]);
-        return $stmt->rowCount() == 0; // True si no existe
+        try {
+            $sql = "SELECT id FROM libros WHERE isbn = :isbn LIMIT 1";
+            $stmt = $this->db->connect()->prepare($sql);
+            $stmt->execute(['isbn' => $isbn]);
+            return $stmt->rowCount() == 0; 
+        } catch (PDOException $e) {
+            $this->handleError($e);
+            return false;
+        }
     }
 
-    // valida si el isbn es unico para edición (excluyendo el libro actual)
     public function validateUniqueIsbnUpdate($isbn, $id) {
-        $sql = "SELECT id FROM libros WHERE isbn = :isbn AND id != :id LIMIT 1";
-        $stmt = $this->db->connect()->prepare($sql);
-        $stmt->execute(['isbn' => $isbn, 'id' => $id]);
-        return $stmt->rowCount() == 0; // True si no existe
+        try {
+            $sql = "SELECT id FROM libros WHERE isbn = :isbn AND id != :id LIMIT 1";
+            $stmt = $this->db->connect()->prepare($sql);
+            $stmt->execute(['isbn' => $isbn, 'id' => $id]);
+            return $stmt->rowCount() == 0; 
+        } catch (PDOException $e) {
+            $this->handleError($e);
+            return false;
+        }
     }
 
     /*

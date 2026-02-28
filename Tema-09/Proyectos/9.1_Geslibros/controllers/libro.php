@@ -11,7 +11,6 @@ class Libro extends Controller
     {
 
         parent::__construct();
-        sec_session_start();
     }
 
     /*
@@ -23,6 +22,7 @@ class Libro extends Controller
 
     function render()
     {
+        sec_session_start();
 
         // Capa Login
         $this->requireLogin();
@@ -31,8 +31,9 @@ class Libro extends Controller
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad
         $this->requirePrivilege($GLOBALS['libro']['render']);
 
-        // Crear un token CSRF para los formularios
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
 
         // Comprobar si hay mensajes en la sesión y pasarlos a la vista
         if (isset($_SESSION['mensaje'])) {
@@ -62,6 +63,7 @@ class Libro extends Controller
             Carga de datos: lista de cursos para la lista dinámica del select
         */
     function new() {
+        sec_session_start();
 
         // Capa Login
         $this->requireLogin();
@@ -70,7 +72,9 @@ class Libro extends Controller
         // Solo los usuarios con privilegios pueden acceder a esta funcionalidad
         $this->requirePrivilege($GLOBALS['libro']['new']);
 
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
 
         // Inicializar con un objeto vacío por defecto
         $this->view->libro = new class_libro();
@@ -103,6 +107,8 @@ class Libro extends Controller
        */
     public function create()
     {
+        sec_session_start();
+
         // Capa Login
         $this->requireLogin();
 
@@ -146,38 +152,71 @@ class Libro extends Controller
         // Validación
         $errores = [];
 
-        // Título: Obligatorio
-        if (empty($titulo)) $errores['titulo'] = 'El título es obligatorio.';
+        // Validación
+        $errores = [];
 
-        // Autor: Obligatorio, numérico y existe
-        if (empty($autor_id) || !is_numeric($autor_id)) {
-            $errores['autor_id'] = 'Debe seleccionar un autor válido.';
+        // Título: Obligatorio
+        if (empty($titulo)) {
+            $errores['titulo'] = 'El título es obligatorio.';
+        }
+
+        // Autor: Obligatorio, Entero y existe (Clave Ajena)
+        if (empty($autor_id)) {
+            $errores['autor_id'] = 'Debe seleccionar un autor.';
+        } else if (!filter_var($autor_id, FILTER_VALIDATE_INT)) {
+            $errores['autor_id'] = 'Formato de autor no válido.';
         } else if (!$this->model->validateAutor($autor_id)) {
             $errores['autor_id'] = 'El autor seleccionado no existe.';
         }
 
-        // Editorial: Obligatorio, numérico y existe
-        if ($editorial_id === null || $editorial_id === '' || $editorial_id <= 0) {
-            $errores['editorial_id'] = 'Debe seleccionar una editorial válida.';
+        // Editorial: Obligatorio, Entero y existe (Clave Ajena)
+        if (empty($editorial_id)) {
+            $errores['editorial_id'] = 'Debe seleccionar una editorial.';
+        } else if (!filter_var($editorial_id, FILTER_VALIDATE_INT)) {
+            $errores['editorial_id'] = 'Formato de editorial no válido.';
+        } else if (!$this->model->validateEditorial($editorial_id)) {
+            $errores['editorial_id'] = 'La editorial seleccionada no existe.';
         }
 
+        // Precio: Obligatorio, Decimal (Float) y mayor que 0
+        if (empty($precio_venta)) {
+            $errores['precio_venta'] = 'El precio es obligatorio.';
+        } else if (!filter_var($precio_venta, FILTER_VALIDATE_FLOAT)) {
+            $errores['precio_venta'] = 'El precio debe ser un número decimal válido.';
+        } else if ($precio_venta <= 0) {
+            $errores['precio_venta'] = 'El precio debe ser un valor positivo.';
+        }
 
-        // Precio: Obligatorio y numérico
-        if (empty($precio_venta) || $precio_venta <= 0) $errores['precio_venta'] = 'El precio debe ser un valor positivo.';
-
-        // Fecha Edición: Obligatorio
-        if (empty($fecha_edicion)) $errores['fecha_edicion'] = 'La fecha de edición es obligatoria.';
+        // Fecha Edición: Obligatorio y con formato de fecha correcto
+        if (empty($fecha_edicion)) {
+            $errores['fecha_edicion'] = 'La fecha de edición es obligatoria.';
+        } else {
+            // Validar formato fecha (YYYY-MM-DD)
+            $valores_fecha = explode('-', $fecha_edicion);
+            if (count($valores_fecha) !== 3 || !checkdate($valores_fecha[1], $valores_fecha[2], $valores_fecha[0])) {
+                $errores['fecha_edicion'] = 'El formato de la fecha no es válido.';
+            }
+        }
 
         // ISBN: Obligatorio, 13 dígitos y único
-        if (empty($isbn) || !preg_match('/^\d{13}$/', $isbn)) {
+        if (empty($isbn)) {
+            $errores['isbn'] = 'El ISBN es obligatorio.';
+        } else if (!preg_match('/^\d{13}$/', $isbn)) {
             $errores['isbn'] = 'El ISBN debe tener exactamente 13 dígitos numéricos.';
         } else if (!$this->model->validateUniqueIsbn($isbn)) {
             $errores['isbn'] = 'Este ISBN ya está registrado.';
         }
 
-        // Géneros: Al menos 1 y que existan
+        // Géneros: Al menos 1 y que sean enteros válidos
         if (empty($generos_seleccionados)) {
             $errores['genero'] = 'Debe seleccionar al menos un género.';
+        } else {
+            foreach ($generos_seleccionados as $genero_id) {
+                if (!filter_var($genero_id, FILTER_VALIDATE_INT)) {
+                    $errores['genero'] = 'Uno de los géneros seleccionados no tiene un formato válido.';
+                    break;
+                }
+            }
         }
 
         // Comprobar errores
@@ -211,6 +250,8 @@ class Libro extends Controller
     */
     public function edit($params)
     {
+        sec_session_start();
+
         // Capa Login
         $this->requireLogin();
 
@@ -280,6 +321,8 @@ class Libro extends Controller
     */
     public function update($params)
     {
+        sec_session_start();
+
         // Capa Login
         $this->requireLogin();
 
@@ -336,66 +379,91 @@ class Libro extends Controller
         if (strcmp($titulo, $libro->titulo) != 0) {
             $cambios = true;
             if (empty($titulo)) {
-                $errores['titulo'] = 'El campo titulo es obligatorio';
+                $errores['titulo'] = 'El campo título es obligatorio';
             }
         }
 
-        // Autor: Validación Clave Ajena: Obligatorio, Numérico, id de autor existe en la tabla autores.
+        // Autor: Clave Ajena
         if (strcmp($autor_id, $libro->autor_id) != 0) {
             $cambios = true;
-            if (empty($autor_id) || !is_numeric($autor_id)) {
-                $errores['autor_id'] = 'Debe seleccionar un autor válido.';
+            if (empty($autor_id)) {
+                $errores['autor_id'] = 'Debe seleccionar un autor.';
+            } else if (!filter_var($autor_id, FILTER_VALIDATE_INT)) {
+                $errores['autor_id'] = 'Formato de autor no válido.';
             } else if (!$this->model->validateAutor($autor_id)) {
                 $errores['autor_id'] = 'El autor seleccionado no existe.';
             }
         }
-        // Editorial Validación Clave Ajena. Idem 
+
+        // Editorial: Clave Ajena 
         if (strcmp($editorial_id, $libro->editorial_id) != 0) {
             $cambios = true;
-            if (empty($editorial_id) || !is_numeric($editorial_id)) {
-                $errores['editorial_id'] = 'Debe seleccionar una editorial válida.';
+            if (empty($editorial_id)) {
+                $errores['editorial_id'] = 'Debe seleccionar una editorial.';
+            } else if (!filter_var($editorial_id, FILTER_VALIDATE_INT)) {
+                $errores['editorial_id'] = 'Formato de editorial no válido.';
             } else if (!$this->model->validateEditorial($editorial_id)) {
                 $errores['editorial_id'] = 'La editorial seleccionada no existe.';
             }
         }
-        // Precio: Valor obligatorio.
+
+        // Precio: Valor Float
         if (strcmp($precio_venta, $libro->precio_venta) != 0) {
             $cambios = true;
-            if (empty($precio_venta) || !is_numeric($precio_venta) || $precio_venta <= 0) {
-                $errores['precio_venta'] = 'El precio debe ser un valor positivo.';
+            if (empty($precio_venta)) {
+                $errores['precio_venta'] = 'El precio es obligatorio.';
+            } else if (!filter_var($precio_venta, FILTER_VALIDATE_FLOAT)) {
+                $errores['precio_venta'] = 'El precio debe ser un decimal válido.';
+            } else if ($precio_venta <= 0) {
+                $errores['precio_venta'] = 'El precio debe ser positivo.';
             }
         }
-        // Unidades: Opcional
+
+        // Unidades (Stock): Opcional pero Entero
         if (strcmp($stock, $libro->stock) != 0) {
             $cambios = true;
-            if (!is_numeric($stock) || $stock < 0) {
+            if (!empty($stock) && (!filter_var($stock, FILTER_VALIDATE_INT) || $stock < 0)) {
                 $errores['stock'] = 'El stock debe ser un número entero no negativo.';
             }
         }
 
-        // Fecha Edición: Obligatorio, Formato tipo fecha
+        // Fecha Edición: Formato de fecha
         if (strcmp($fecha_edicion, $libro->fecha_edicion) != 0) {
             $cambios = true;
             if (empty($fecha_edicion)) {
                 $errores['fecha_edicion'] = 'La fecha de edición es obligatoria.';
+            } else {
+                $valores_fecha = explode('-', $fecha_edicion);
+                if (count($valores_fecha) !== 3 || !checkdate($valores_fecha[1], $valores_fecha[2], $valores_fecha[0])) {
+                    $errores['fecha_edicion'] = 'El formato de la fecha no es válido.';
+                }
             }
         }
 
-        // Isbn: Obligatorio, formato isbn (13 dígitos numéricos), Valor único
+        // ISBN: 13 dígitos numéricos, Valor único
         if (strcmp($isbn, $libro->isbn) != 0) {
             $cambios = true;
-            if (empty($isbn) || !preg_match('/^\d{13}$/', $isbn)) {
+            if (empty($isbn)) {
+                $errores['isbn'] = 'El ISBN es obligatorio.';
+            } else if (!preg_match('/^\d{13}$/', $isbn)) {
                 $errores['isbn'] = 'El ISBN debe tener exactamente 13 dígitos numéricos.';
             } else if (!$this->model->validateUniqueIsbnUpdate($isbn, $id)) {
                 $errores['isbn'] = 'Este ISBN ya está registrado.';
             }
         }
 
-        // Géneros: Obligatorio (tengo que elegir al menos 1), valores numéricos, valores existentes en la tabla géneros.
+        // Géneros
         if ($generos_seleccionados != $this->model->get_temas_libro($id)) {
             $cambios = true;
             if (empty($generos_seleccionados)) {
                 $errores['genero'] = 'Debe seleccionar al menos un género.';
+            } else {
+                foreach ($generos_seleccionados as $genero_id) {
+                    if (!filter_var($genero_id, FILTER_VALIDATE_INT)) {
+                        $errores['genero'] = 'Formato de género inválido.';
+                        break;
+                    }
+                }
             }
         }
 
@@ -438,6 +506,8 @@ class Libro extends Controller
     */
     public function show($params)
     {
+        sec_session_start();
+
         // Capa Login
         $this->requireLogin();
 
@@ -483,6 +553,8 @@ class Libro extends Controller
     */
     public function delete($params)
     {
+        sec_session_start();
+
         // Capa Login
         $this->requireLogin();
 
@@ -530,6 +602,8 @@ class Libro extends Controller
     */
     public function search()
     {
+        sec_session_start();
+
         // Capa Login
         $this->requireLogin();
 
@@ -569,6 +643,8 @@ class Libro extends Controller
     */
     public function order($params)
     {
+        sec_session_start();
+
         // Capa Login
         $this->requireLogin();
 
@@ -638,6 +714,8 @@ class Libro extends Controller
     */
     public function export()
     {
+        sec_session_start();
+
         $this->requireLogin();
         $this->requirePrivilege($GLOBALS['libro']['export']);
 
@@ -670,6 +748,8 @@ class Libro extends Controller
     */
     public function import()
     {
+        sec_session_start();
+
         $this->requireLogin();
         $this->requirePrivilege($GLOBALS['libro']['import']);
 
@@ -742,6 +822,8 @@ class Libro extends Controller
     */
     public function pdf()
     {
+        sec_session_start();
+
         // Capa Login (Requisito de tu proyecto)
         $this->requireLogin();
 

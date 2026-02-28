@@ -3,7 +3,7 @@
 
 <head>
 	<?php require_once 'template/layouts/head.layout.php'; ?>
-	<title>Proyecto 6.2 Gestión Libros - geslibros</title>
+	<title>Proyecto 10.1 Gestión Libros - geslibros</title>
 </head>
 
 <body>

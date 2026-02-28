@@ -5,11 +5,11 @@ class class_contact {
     public $email;
     public $subject;
     public $message;
-    
+
     public function __construct(
-        $name = null, 
-        $email = null, 
-        $subject = null, 
+        $name = null,
+        $email = null,
+        $subject = null,
         $message = null
     )
     {
@@ -17,8 +17,6 @@ class class_contact {
         $this->email = $email;
         $this->subject = $subject;
         $this->message = $message;
+      
     }
 }
-
-
-?>

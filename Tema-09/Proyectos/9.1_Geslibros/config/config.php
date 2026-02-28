@@ -2,7 +2,7 @@
 # Configuración básica aplicación MVC
 
 # Ruta absoluta del proyecto
-define('URL', 'https://localhost/DWES/Tema-09/Proyectos/9.1_Geslibros/');
+define('URL', 'https://localhost/DWES/Tema-10/Proyectos/10.1_Geslibros/');
 
 
 # Constantes de configuración de la aplicación

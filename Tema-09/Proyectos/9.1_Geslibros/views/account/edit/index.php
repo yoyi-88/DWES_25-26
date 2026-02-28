@@ -23,7 +23,7 @@
                         <?php require_once("views/account/partials/menu.partial.php") ?>
                     </div>
                     <div class="card-body">
-                        <form action="<?= URL ?>account/update?>" method="post">
+                        <form action="<?= URL ?>account/update" method="post">
 
                             <!-- token crsf -->
                             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">

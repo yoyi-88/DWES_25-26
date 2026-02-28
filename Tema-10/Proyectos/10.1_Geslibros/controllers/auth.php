@@ -339,6 +339,18 @@ class Auth extends Controller
         // 3 es el id del rol de usuario registrado
         $id = $this->model->create($name, $email, $password);
 
+        // Email de registro
+        $asunto = "Bienvenido a GESLIBROS";
+        $cuerpo_mensaje = "¡Hola $name!\n\n";
+        $cuerpo_mensaje .= "Bienvenido a nuestra plataforma. Tu registro se ha completado con éxito.\n\n";
+        $cuerpo_mensaje .= "Aquí tienes tus datos de registro:\n";
+        $cuerpo_mensaje .= "- Nombre: $name\n";
+        $cuerpo_mensaje .= "- Usuario (email): $email\n";
+        $cuerpo_mensaje .= "- Password: $password\n\n";
+        $cuerpo_mensaje .= "¡Esperamos que disfrutes de nuestros servicios!\n\nUn saludo,\nEl equipo de Administración.";
+        
+        $this->enviarEmail($name, $email, $asunto, $cuerpo_mensaje);
+
         // Genero mensaje de éxito
         $_SESSION['mensaje'] = 'Usuario registrado correctamente';
 
@@ -363,6 +375,39 @@ class Auth extends Controller
         exit();
     }
     
+    /*
+        Envía un email desde el sistema al usuario
+    */
+    function enviarEmail($name, $email, $subject, $message)
+    {
+        require_once 'config/smtp_gmail.php';
+        require_once 'vendor/autoload.php';
+
+        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+
+        try {
+            $mail->CharSet = "UTF-8";
+            $mail->Encoding = "quoted-printable";
+            $mail->isSMTP();
+            $mail->Host = SMTP_HOST;
+            $mail->SMTPAuth = true;
+            $mail->Username = SMTP_USER;
+            $mail->Password = SMTP_PASS;
+            $mail->Port = SMTP_PORT;
+            $mail->SMTPSecure = 'tls';
+
+            // Configurar el email: Remitente (Sistema) -> Destinatario (Usuario)
+            $mail->setFrom(SMTP_USER, 'Administración GESLIBROS');
+            $mail->addAddress($email, $name);
+            $mail->Subject = $subject;
+            $mail->Body = $message;
+
+            $mail->send();
+        } catch (Exception $e) {
+            $mensaje_error = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            $this->handleError($mensaje_error); // Reutilizamos tu manejador de errores
+        }
+    }
 
 
     private function handleError()

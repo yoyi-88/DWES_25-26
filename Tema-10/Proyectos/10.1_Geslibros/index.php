@@ -8,6 +8,7 @@ require_once 'libs/app.php';
 require_once 'class/autor.class.php';
 require_once 'class/libro.class.php';
 require_once 'class/user.class.php';
+require_once 'class/contacto.class.php';
 require_once 'functions/session_seg.php';
 require_once 'config/privileges.php';
 

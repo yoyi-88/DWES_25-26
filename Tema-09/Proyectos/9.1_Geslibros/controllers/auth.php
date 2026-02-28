@@ -28,8 +28,10 @@ class Auth extends Controller
         // iniciar o continuar sesión
         sec_session_start();
 
-        // Crear un token CSRF para los formularios
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        // Crear un token CSRF solo si no existe
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
         
 
         // Inicializo los campos del formulario
@@ -196,8 +198,10 @@ class Auth extends Controller
         // inicio o continuo la sesión
         sec_session_start();
 
-        // Creo un token CSRF
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        // Crear un token CSRF solo si no existe
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
                 
         // Inicializo los campos del formulario
         $this->view->name = null;
@@ -279,7 +283,7 @@ class Auth extends Controller
         // longitud máxima 20 caracteres, clave secundaria
         if (empty($name)) {
             $errors['name'] = 'El nombre es obligatorio';
-        } else if ((strlen($name) < 5) and (strlen($name) > 20)) {
+        } else if ((strlen($name) < 5) || (strlen($name) > 20)) {
             $errors['name'] = 'La longitud del nombre debe estar entre 5 y 20 caracteres';
         } else if ($this->model->validate_exists_name($name)) {
             $errors['name'] = 'Name ya ha sido registrado';

@@ -2,7 +2,7 @@
 # Configuración básica aplicación MVC
 
 # Ruta absoluta del proyecto
-define('URL', 'https://localhost/DWES/tema-10/Proyectos/01-alumnos/');
+define('URL', 'http://localhost/DWES/tema-10/Proyectos/01-alumnos/');
 
 
 # Constantes de configuración de la aplicación

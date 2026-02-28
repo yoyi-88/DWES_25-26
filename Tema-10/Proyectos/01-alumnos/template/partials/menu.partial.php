@@ -15,7 +15,7 @@
           <a class="nav-link active" href="<?=  URL ?>alumno">Alumno</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="<?= URL ?>contact">Contactar</a>
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Link</a>
         </li>
       </ul>
       <div class="d-flex">

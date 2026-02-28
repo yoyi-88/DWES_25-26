@@ -3,7 +3,7 @@
 
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">MVC - Gestión FP</a>
+    <a class="navbar-brand" href="#">MVC - GesLibros</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
       aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -25,6 +25,9 @@
             <a class="nav-link active" href="<?= URL ?>user">Usuarios</a>
           </li>
         <?php endif; ?>
+        <li class="nav-item">
+          <a class="nav-link active" href="<?= URL ?>contact">Contactar</a>
+        </li>
       </ul>
       <div class="d-flex">
         <div class="collapse navbar-collapse" id="exCollapsingNavbar">

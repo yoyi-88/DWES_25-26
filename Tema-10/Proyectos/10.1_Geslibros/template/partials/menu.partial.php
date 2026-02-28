@@ -23,6 +23,8 @@
             <a class="nav-link active" href="<?= URL ?>user">Usuarios</a>
           </li>
         <?php endif; ?>
+        <li class="nav-item">
+          <a class="nav-link active" href="<?= URL ?>contact">Contactar</a>
       </ul>
       <div class="d-flex">
 

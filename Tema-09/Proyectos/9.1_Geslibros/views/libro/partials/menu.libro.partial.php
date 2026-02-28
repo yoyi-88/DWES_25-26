@@ -13,6 +13,7 @@
                     <?= in_array($_SESSION['role_id'], $GLOBALS['libro']['new']) ? 'active' : 'disabled' ?>"
                         aria-current="page" href="<?= URL ?>libro/new">Nuevo</a>
                 </li>
+                
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle 
                     <?= in_array($_SESSION['role_id'], $GLOBALS['libro']['order']) ? 'active' : 'disabled' ?>"
@@ -20,28 +21,26 @@
                         Ordenar por
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/1/<?= $_SESSION['csrf_token'] ?>">Id</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/2/<?= $_SESSION['csrf_token'] ?>">Título</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/3/<?= $_SESSION['csrf_token'] ?>">Autor</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/4/<?= $_SESSION['csrf_token'] ?>">Editorial</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/5/<?= $_SESSION['csrf_token'] ?>">Géneros</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/6/<?= $_SESSION['csrf_token'] ?>">Stock</a></li>
-                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/7/<?= $_SESSION['csrf_token'] ?>">Precio</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/1">Id</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/2">Título</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/3">Autor</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/4">Editorial</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/5">Géneros</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/6">Stock</a></li>
+                        <li><a class="dropdown-item" href="<?= URL ?>libro/order/7">Precio</a></li>
                     </ul>
-
                 </li>
-
 
                 <li class="nav-item">
                     <a class="nav-link 
                     <?= in_array($_SESSION['role_id'], $GLOBALS['libro']['export']) ? 'active' : 'disabled' ?>"
                         href="<?= URL ?>libro/export">Exportar CSV</a>
                 </li>
+                
                 <li>
-                    <a class="nav-link" <?= !in_array($_SESSION['role_id'], $GLOBALS['libro']['pdf']) ? 'disabled' : '' ?> href="<?= URL ?>libro/pdf" target="_blank" title="Generar informe en PDF">
+                    <a class="nav-link <?= !in_array($_SESSION['role_id'], $GLOBALS['libro']['pdf']) ? 'disabled' : 'active' ?>" href="<?= URL ?>libro/pdf" target="_blank" title="Generar informe en PDF">
                     Exportar PDF</a>
                 </li>
-
             </ul>
 
             <div class="d-flex flex-wrap gap-2">
@@ -59,9 +58,13 @@
                 </form>
 
                 <form class="d-flex" method="GET" action="<?= URL ?>libro/search">
-                    <input class="form-control me-2 form-control-sm" type="search" placeholder="buscar..." aria-label="Search" name="term">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                    <button class="btn btn-outline-secondary btn-sm" type="submit">Buscar</button>
+                    <input class="form-control me-2 form-control-sm" type="search" placeholder="buscar..." aria-label="Search" name="term"
+                        <?= !in_array($_SESSION['role_id'], $GLOBALS['libro']['search']) ? 'disabled' : '' ?>>
+                    
+                    <button class="btn btn-outline-secondary btn-sm" type="submit"
+                        <?= !in_array($_SESSION['role_id'], $GLOBALS['libro']['search']) ? 'disabled' : '' ?>>
+                        Buscar
+                    </button>
                 </form>
             </div>
 

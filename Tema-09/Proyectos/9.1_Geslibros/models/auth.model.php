@@ -218,72 +218,42 @@ class authModel extends Model {
     */
     public function create($name, $email, $password)
     {
-
         try {
-
-            // Iniciamos transacción
-            
-
-            // encriptamos la contraseña
-            $password_enc = password_hash($password, PASSWORD_DEFAULT);
-
-            // sentencia sql
-            $sql = "INSERT INTO Users (name, email, password) 
-            VALUES (:name, :email, :password)"; 
-
-            // conectamos con la base de datos
             $fp = $this->db->connect();
-
-            // iniciamos transacción
+            
+            // Iniciamos transacción
             $fp->beginTransaction();
 
-            // ejecuto prepare
-            $stmt = $fp->prepare($sql);
+            $password_enc = password_hash($password, PASSWORD_DEFAULT);
 
-            // vinculamos parámetros
+            // 1. Insertar usuario
+            $sql = "INSERT INTO users (name, email, password) VALUES (:name, :email, :password)"; 
+            $stmt = $fp->prepare($sql);
             $stmt->bindParam(':name', $name, PDO::PARAM_STR, 50);
             $stmt->bindParam(':email', $email, PDO::PARAM_STR, 50);
             $stmt->bindParam(':password', $password_enc, PDO::PARAM_STR, 255);
-
-            // ejecutamos e insertamos el usuario en la tabla users
             $stmt->execute();
 
-            // obtengo id del usuario que se acaba de registrar
             $ultimo_id = $fp->lastInsertId();
 
-            // Proceso 2: Añadir el rol de usuario registrado (id = 3) en la tabla roles_users
-            // sentencia sql
-            $sql = "INSERT INTO roles_users (user_id, role_id) 
-            VALUES (:user_id, :role_id)"; 
-
-            // ejecuto prepare
-            $stmt = $fp->prepare($sql);
-
-            // rol usuario registrado (id = 3)
+            // 2. Insertar rol de usuario registrado (id = 3)
+            $sql_role = "INSERT INTO roles_users (user_id, role_id) VALUES (:user_id, :role_id)"; 
+            $stmt_role = $fp->prepare($sql_role);
             $role_id = 3;
+            $stmt_role->bindParam(':user_id', $ultimo_id, PDO::PARAM_INT);
+            $stmt_role->bindParam(':role_id', $role_id, PDO::PARAM_INT);
+            $stmt_role->execute();
 
-            // vinculamos parámetros
-            $stmt->bindParam(':user_id', $ultimo_id, PDO::PARAM_INT);
-            $stmt->bindParam(':role_id', $role_id, PDO::PARAM_INT);
-
-            // ejecutamos
-            $stmt->execute();
-
-            // confirmamos transacción
+            // Confirmamos transacción
             $fp->commit();
 
-            // Devolvermos el último id del usuario registrado
             return $ultimo_id;
 
-
         } catch (PDOException $e) {
-
-            // Deshago la transacción
-            $fp->rollBack();
-
-            // Manejo del error
+            if (isset($fp)) {
+                $fp->rollBack();
+            }
             $this->handleError($e); 
-            
         }
     }
 
